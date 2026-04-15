@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<suite name="Legal Request E2E Suite" verbose="1" parallel="false">
+
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <test name="Existing OC E2E Test Session">
+        <classes>
+            <class name="com.thetestingacademy.tests.LegalRequestExistingOCE2ETest"/>
+        </classes>
+    </test>
+
+    <test name="New OC E2E Test Session">
+        <classes>
+            <class name="com.thetestingacademy.tests.LegalRequestNewOCE2ETest"/>
+        </classes>
+    </test>
+
+</suite>
