@@ -26,8 +26,8 @@ public class LegalRequestExistingOCPage {
 
     // Stored values for validation
     protected String requestMatterEx;
-    protected String selectedOCFirm;
-    protected String selectedAttorney;
+    public String selectedOCFirm;
+    public String selectedAttorney;
     protected String isOCConflicted;
 
     public void fillExistingOCRequest() {
@@ -71,7 +71,7 @@ public class LegalRequestExistingOCPage {
         });
 
         // STEP 3: Validate OC Firm
-        Allure.step("Validate OC Firm Name", () -> {
+        /*Allure.step("Validate OC Firm Name", () -> {
 
             try {
                 WebElement firmValue = wait.until(
@@ -92,7 +92,7 @@ public class LegalRequestExistingOCPage {
                 SceenshotUtil.takeScreenshot(driver, "OC Firm Validation Failed");
                 throw new RuntimeException(e);
             }
-        });
+        }); */
 
         // STEP 4: Select Attorney
         Allure.step("Selecting first Contact Attorney", () -> {
@@ -115,7 +115,7 @@ public class LegalRequestExistingOCPage {
         });
 
         // STEP 5: Validate Attorney
-        Allure.step("Validate Attorney", () -> {
+        /*Allure.step("Validate Attorney", () -> {
 
             try {
                 WebElement attorneyValue = wait.until(
@@ -136,7 +136,7 @@ public class LegalRequestExistingOCPage {
                 SceenshotUtil.takeScreenshot(driver, "Attorney Validation Failed");
                 throw new RuntimeException(e);
             }
-        });
+        }); */
 
         // STEP 6: OC Conflicted
         Allure.step("Selecting second option for 'Is OC Conflicted?'", () -> {

@@ -2,10 +2,16 @@ package com.thetestingacademy.tests;
 
 import com.thetestingacademy.base.BaseTest;
 import com.thetestingacademy.pages.LoginPage;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.io.ByteArrayInputStream;
 
 public class LoginTest extends BaseTest {
 
@@ -22,5 +28,19 @@ public class LoginTest extends BaseTest {
                 .enterPassword("Maantic@2026");
 
         loginPage.clickSignin();
+
+        // 📸 Screenshot at validation point
+        Allure.addAttachment(
+                "Login Validation Screenshot",
+                new ByteArrayInputStream(
+                        ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)
+                )
+        );
+
+        // ✅ Assertion
+        Assert.assertTrue(
+                loginPage.isLoginSuccessful(),
+                "Login failed - Vendor Req page not opened"
+        );
     }
 }

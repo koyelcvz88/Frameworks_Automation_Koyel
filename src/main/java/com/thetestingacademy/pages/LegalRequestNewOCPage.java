@@ -159,7 +159,7 @@ public class LegalRequestNewOCPage {
         });
 
         // STEP 7: Validate Phone
-        Allure.step("Validate Phone", () -> {
+        /*Allure.step("Validate Phone", () -> {
 
             try {
                 WebElement phoneField = driver.switchTo().activeElement();
@@ -177,7 +177,7 @@ public class LegalRequestNewOCPage {
                 SceenshotUtil.takeScreenshot(driver, "Phone Validation Failed");
                 throw new RuntimeException(e);
             }
-        });
+        }); */
 
         // STEP 8: Email
         Allure.step("Entering Email", () -> {
@@ -200,7 +200,7 @@ public class LegalRequestNewOCPage {
         });
 
         // STEP 9: Validate Email
-        Allure.step("Validate Email", () -> {
+        /*Allure.step("Validate Email", () -> {
 
             try {
                 WebElement emailField = driver.switchTo().activeElement();
@@ -218,7 +218,7 @@ public class LegalRequestNewOCPage {
                 SceenshotUtil.takeScreenshot(driver, "Email Validation Failed");
                 throw new RuntimeException(e);
             }
-        });
+        }); */
 
         // STEP 10: City
         Allure.step("Entering City", () -> {

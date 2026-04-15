@@ -34,4 +34,10 @@ public class LoginPage {
     public void clickSignin() {
         driver.findElement(signInButton).click();
     }
+
+    // ✅ Validation method (USED IN TEST ASSERTION)
+    public boolean isLoginSuccessful() {
+        return driver.getCurrentUrl()
+                .equals("https://trimont-test.appiancloud.com/suite/sites/vendor-req");
+    }
 }
