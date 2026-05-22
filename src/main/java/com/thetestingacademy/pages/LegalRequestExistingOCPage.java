@@ -1,5 +1,6 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
 import com.thetestingacademy.utils.SceenshotUtil;
 import org.openqa.selenium.*;
@@ -7,10 +8,12 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.time.Duration;
 
 public class LegalRequestExistingOCPage {
+
 
     WebDriver driver;
     WebDriverWait wait;
@@ -30,16 +33,28 @@ public class LegalRequestExistingOCPage {
     public String selectedAttorney;
     protected String isOCConflicted;
 
+
     public void fillExistingOCRequest() {
 
         // STEP 1: Request Matter
         Allure.step("Entering Request Matter", () -> {
 
-            WebElement requestMatterExTxtBox = wait.until(
+            /*WebElement requestMatterExTxtBox = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
                             By.xpath("//label[contains(text(),'Request/Matter Name')]/following::input[1]")
                     )
+            ); */
+            By inputLocator = By.xpath("//label[contains(.,'Request/Matter Name')]/following::input[1]");
+
+            WebElement requestMatterExTxtBox = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(inputLocator)
             );
+
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});", requestMatterExTxtBox
+            );
+
+            wait.until(ExpectedConditions.elementToBeClickable(requestMatterExTxtBox));
 
             requestMatterExTxtBox.click();
 
@@ -71,7 +86,7 @@ public class LegalRequestExistingOCPage {
         });
 
         // STEP 3: Validate OC Firm
-        /*Allure.step("Validate OC Firm Name", () -> {
+        Allure.step("Validate OC Firm Name", () -> {
 
             try {
                 WebElement firmValue = wait.until(
@@ -92,7 +107,7 @@ public class LegalRequestExistingOCPage {
                 SceenshotUtil.takeScreenshot(driver, "OC Firm Validation Failed");
                 throw new RuntimeException(e);
             }
-        }); */
+        });
 
         // STEP 4: Select Attorney
         Allure.step("Selecting first Contact Attorney", () -> {
@@ -115,7 +130,7 @@ public class LegalRequestExistingOCPage {
         });
 
         // STEP 5: Validate Attorney
-        /*Allure.step("Validate Attorney", () -> {
+        Allure.step("Validate Attorney", () -> {
 
             try {
                 WebElement attorneyValue = wait.until(
@@ -136,7 +151,7 @@ public class LegalRequestExistingOCPage {
                 SceenshotUtil.takeScreenshot(driver, "Attorney Validation Failed");
                 throw new RuntimeException(e);
             }
-        }); */
+        });
 
         // STEP 6: OC Conflicted
         Allure.step("Selecting second option for 'Is OC Conflicted?'", () -> {
@@ -168,6 +183,29 @@ public class LegalRequestExistingOCPage {
 
             System.out.println("Submit button clicked successfully.");
             Allure.step("Submit button clicked successfully.");
+        });
+
+        // STEP 8: Capture Request Number (Post Submit Confirmation Screen)
+        Allure.step("Capture EXOC Request Number from confirmation screen", () -> {
+
+            // WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+            String exOCRequestNumber = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//span[contains(text(),'Legal Matter Request Initiated')]/following::span//strong")
+                    )
+            ).getText().trim();
+
+            TestData.exOCRequestNumber = exOCRequestNumber;
+
+            System.out.println("EXOC Request Number: " + exOCRequestNumber);
+
+            Allure.step("EXOC Request Number captured: " + exOCRequestNumber);
+            Allure.addAttachment("EXOC Request Number", exOCRequestNumber);
+            //return exOCRequestNumber;
+
+            // store if needed for later steps
+            //this.exOCRequestNumber = exOCRequestNumber;
         });
 
         Allure.step("Existing OC Request Completed Successfully");

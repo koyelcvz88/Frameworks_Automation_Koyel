@@ -8,13 +8,13 @@
 
     <test name="Existing OC E2E Test Session">
         <classes>
-            <class name="com.thetestingacademy.tests.LegalRequestExistingOCE2ETest"/>
+            <class name="com.thetestingacademy.tests.LegalRequestExistingOCE2ETest2"/>
         </classes>
     </test>
 
     <test name="New OC E2E Test Session">
         <classes>
-            <class name="com.thetestingacademy.tests.LegalRequestNewOCE2ETest"/>
+            <class name="com.thetestingacademy.tests.LegalRequestNewOCE2ETest2"/>
         </classes>
     </test>
 

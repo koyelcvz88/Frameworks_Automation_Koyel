@@ -1,4 +1,4 @@
-package com.thetestingacademy.tests;
+/*package com.thetestingacademy.tests;
 
 import com.thetestingacademy.pages.LegalRequestFormPage;
 import io.qameta.allure.*;
@@ -33,4 +33,4 @@ public class LegalRequestFormTest extends BaseTest {
         System.out.println("✅ TC2 PASSED");
         Allure.step("TC2 Passed Successfully!");
     }
-}
+} */

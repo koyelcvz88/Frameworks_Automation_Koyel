@@ -1,4 +1,4 @@
-package com.thetestingacademy.tests;
+/*package com.thetestingacademy.tests;
 
 import io.qameta.allure.*;
 import org.openqa.selenium.By;
@@ -125,4 +125,4 @@ public class LegalRequestNewOCE2ETest extends BaseTest {
         System.out.println("✅ FULL E2E PASSED (TC1 + TC2 + TC4)");
         Allure.step("E2E FLOW COMPLETED SUCCESSFULLY");
     }
-}
+} */

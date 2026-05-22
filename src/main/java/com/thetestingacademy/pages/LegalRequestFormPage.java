@@ -130,11 +130,17 @@ public class LegalRequestFormPage {
             int year = today.getYear(); // e.g., 2026
 
             // Construct the aria-label exactly as in your date button
-            String ariaLabel = String.format("Select %s, %s %dth %d", dayOfWeek, month, dayOfMonth, year);
+            //String ariaLabel = String.format("Select %s, %s %dth %d", dayOfWeek, month, dayOfMonth, year);
 
             // Locate the date button dynamically
-            WebElement todayDateBtn = wait.until(ExpectedConditions.elementToBeClickable(
+            /*WebElement todayDateBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//button[@aria-label='" + ariaLabel + "']")));
+            todayDateBtn.click(); */
+            String day = String.valueOf(LocalDate.now().getDayOfMonth());
+
+            WebElement todayDateBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[not(@disabled) and normalize-space()='" + day + "']")));
+
             todayDateBtn.click();
 
             dueDate = String.format("%d %s %d", dayOfMonth, month, year);

@@ -1,5 +1,6 @@
-package com.thetestingacademy.pages;
+/*package com.thetestingacademy.pages;
 
+import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
 import com.thetestingacademy.utils.SceenshotUtil;
 import org.openqa.selenium.*;
@@ -7,8 +8,11 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import java.io.ByteArrayInputStream;
 
 import java.time.Duration;
+
+//import static com.thetestingacademy.utils.TestData.newOCRequestNumber;
 
 public class LegalRequestNewOCPage {
     WebDriver driver;
@@ -39,11 +43,24 @@ public class LegalRequestNewOCPage {
         // STEP 1: Request Matter
         Allure.step("Entering Request Matter", () -> {
 
-            WebElement field = wait.until(
+            /* WebElement field = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
                             By.xpath("//label[contains(text(),'Request/Matter Name')]/following::input[1]")
                     )
             );
+
+            By inputLocator = By.xpath("//label[contains(.,'Request/Matter Name')]/following::input[1]");
+
+            WebElement field = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(inputLocator)
+            );
+
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});", field
+            );
+
+            wait.until(ExpectedConditions.elementToBeClickable(field));
+
 
             Thread.sleep(1000);
             field.click();
@@ -85,29 +102,90 @@ public class LegalRequestNewOCPage {
                             By.xpath("//strong[normalize-space()='OC Firm Name']")
                     )
             );
+            /*WebElement field = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//label[.//strong[normalize-space()='OC Firm Name']]//following::input[1]")
+                    )
+            );
+            WebElement label = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//div[not(contains(@style,'display:none'))]//strong[normalize-space()='OC Firm Name']")
+                    )
+            );
 
-            Thread.sleep(1000);
-            actions.click(field)
+            WebElement ocFirmInput  = label.findElement(
+                    By.xpath("//strong[normalize-space()='OC Firm Name']/following::input[1]")
+            );
+
+            WebElement input = wait.until(ExpectedConditions.elementToBeClickable(ocFirmInput));
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView(true);", input);
+            input.click();
+             actions.click(field)
                     .sendKeys(Keys.TAB)
                     .sendKeys("Auto New OC Firm")
                     .perform();
 
-            ocFirmName = "Auto New OC Firm";
+             field.click();
+            //field.clear();
+            //actions.sendKeys("Auto New OC Firm").perform(); */
+            /* input.click();
+            input.clear();
+            input.sendKeys("Auto New OC Firm");
+            input.sendKeys(Keys.TAB);
+            //ocFirmName = "Auto New OC Firm";
+            // small stabilization (important in Appian/react forms)
+
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].focus();", input);
+
+            input.clear();
+            input.sendKeys("Auto New OC Firm");
+            input.sendKeys(Keys.TAB);
+            String ocFirmName = input.getAttribute("value");
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].blur();", input);
+            String ocFirmName = field.getAttribute("value");
 
             System.out.println("OC Firm Name entered: " + ocFirmName);
             Allure.step("OC Firm Name entered: " + ocFirmName);
         });
 
+
+// 3. Wait for UI to stabilize (critical in dynamic forms)
+        /* wait.until(driver ->
+                ((JavascriptExecutor) driver)
+                        .executeScript("return document.readyState")
+                        .equals("complete")
+        );
+
         // STEP 4: Justification
         Allure.step("Entering OC Justification", () -> {
 
-            WebElement field = driver.findElement(
+            /*WebElement field = driver.findElement(
                     By.xpath("//strong[normalize-space()='New Outside Counsel Justification']")
             );
 
-            Thread.sleep(1000);
+            WebElement field = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//*[contains(text(),'New Outside Counsel Justification')]")
+                    )
+            );
 
-            actions.click(field)
+            WebElement field = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//label[.//strong[contains(text(),'Justification')]]//following::textarea[1]")
+                    )
+            );
+
+            field.click();
+            field.clear();
+            field.sendKeys("Outside counsel engaged for strategic legal support.");
+            field.sendKeys(Keys.TAB);
+
+            String ocJustification = field.getAttribute("value");
+
+            /* actions.click(field)
                     .sendKeys(Keys.TAB)
                     .sendKeys("Outside counsel engaged for strategic legal support.")
                     .perform();
@@ -145,7 +223,7 @@ public class LegalRequestNewOCPage {
                     By.xpath("//strong[normalize-space()='Phone']")
             );
 
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
             actions.click(field)
                     .sendKeys(Keys.TAB)
@@ -159,13 +237,13 @@ public class LegalRequestNewOCPage {
         });
 
         // STEP 7: Validate Phone
-        /*Allure.step("Validate Phone", () -> {
+        Allure.step("Validate Phone", () -> {
 
             try {
                 WebElement phoneField = driver.switchTo().activeElement();
                 String value = phoneField.getAttribute("value").replaceAll("[^0-9]", "");
 
-                Thread.sleep(1500);
+                Thread.sleep(2500);
 
                 Assert.assertTrue(value.matches("\\d{10}"));
 
@@ -177,7 +255,7 @@ public class LegalRequestNewOCPage {
                 SceenshotUtil.takeScreenshot(driver, "Phone Validation Failed");
                 throw new RuntimeException(e);
             }
-        }); */
+        });
 
         // STEP 8: Email
         Allure.step("Entering Email", () -> {
@@ -186,7 +264,7 @@ public class LegalRequestNewOCPage {
                     By.xpath("//strong[normalize-space()='Email']")
             );
 
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
             actions.click(field)
                     .sendKeys(Keys.TAB)
@@ -200,13 +278,13 @@ public class LegalRequestNewOCPage {
         });
 
         // STEP 9: Validate Email
-        /*Allure.step("Validate Email", () -> {
+        Allure.step("Validate Email", () -> {
 
             try {
                 WebElement emailField = driver.switchTo().activeElement();
                 String value = emailField.getAttribute("value");
 
-                Thread.sleep(1500);
+                Thread.sleep(2500);
 
                 Assert.assertTrue(value.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"));
 
@@ -218,7 +296,7 @@ public class LegalRequestNewOCPage {
                 SceenshotUtil.takeScreenshot(driver, "Email Validation Failed");
                 throw new RuntimeException(e);
             }
-        }); */
+        });
 
         // STEP 10: City
         Allure.step("Entering City", () -> {
@@ -276,7 +354,47 @@ public class LegalRequestNewOCPage {
             Allure.step("Submit button clicked successfully.");
         });
 
+        // STEP 13: Post-submit Validation
+        /*Allure.step("Post-submit validation: Verify that request was submitted successfully", () -> {
+            // After submit, ensure the page URL is correct or there's some confirmation message
+            String confirmationMessage = driver.getPageSource();
+            Assert.assertTrue(confirmationMessage.contains("Request submitted successfully"),
+                    "Request submission failed");
+
+            // Add Screenshot for validation
+            Allure.addAttachment(
+                    "Post-submit validation Screenshot",
+                    new ByteArrayInputStream(
+                            ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)
+                    )
+            );
+        });
+
+        // STEP 13: Capture Request Number (Post Submit Confirmation Screen)
+        Allure.step("Capture NEWOC Request Number from confirmation screen", () -> {
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+
+            String newOCRequestNumber = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//span[contains(text(),'Legal Matter Request Initiated')]/following::span//strong")
+                    )
+            ).getText().trim();
+
+            TestData.newOCRequestNumber = newOCRequestNumber;
+
+            System.out.println("NEWOC Request Number: " + newOCRequestNumber);
+
+            Allure.step("NEWOC Request Number captured: " + newOCRequestNumber);
+            Allure.addAttachment("NewOC Request Number", newOCRequestNumber);
+            //return newOCRequestNumber;
+
+            // store if needed for later steps
+            //this.newOCRequestNumber = newOCRequestNumber;
+        });
+
+        // STEP 14: Completion
         Allure.step("New OC Request Completed Successfully");
         SceenshotUtil.takeScreenshot(driver, "New OC Request Completed Successfully");
     }
-}
+} */
