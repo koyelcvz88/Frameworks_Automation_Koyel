@@ -522,7 +522,7 @@ public class E2ELegalRequest_NewOC_Test extends BaseTest {
         // -------------------------
         // Approve FLOW HANDLING
         // -------------------------
-        Allure.step("REVIEW NEW VENDOR TASK - Validating APPROVE E2E Flow", () -> {
+        Allure.step("EXECUTE AND UPLOAD ENGAGEMENT LETTER TASK - Validating APPROVE E2E Flow", () -> {
 
             ELPage.handleExecuteUploadELFields();
         });

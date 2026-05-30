@@ -341,7 +341,7 @@ public class ExecuteAndUploadELPage {
 
             System.out.println("✅ Executed Engagement Letter uploaded successfully");
             Allure.step("Executed Engagement Letter uploaded successfully");
-            SceenshotUtil.takeScreenshot(driver, "Executed_Engagement_Letter_Upload_Failed");
+            SceenshotUtil.takeScreenshot(driver, "Executed Engagement Letter uploaded successfully");
         });
 
         // STEP : Upload W9 Form
@@ -365,7 +365,7 @@ public class ExecuteAndUploadELPage {
 
             System.out.println("✅ W9 Form uploaded successfully");
             Allure.step("W9 Form uploaded successfully");
-            SceenshotUtil.takeScreenshot(driver, "W9 Form_Upload_Failed");
+            SceenshotUtil.takeScreenshot(driver, "W9 Form uploaded successfully");
 
         });
         // Click Submit
@@ -606,7 +606,7 @@ public class ExecuteAndUploadELPage {
 
                     System.out.println("✅ Both uploaded documents verified successfully");
 
-                    SceenshotUtil.takeScreenshot(driver, "Documents Verified");
+                    SceenshotUtil.takeScreenshot(driver, "Documents Verified for Engagement Letter");
 
                     documentsVerified = true;
                     break;
@@ -634,7 +634,7 @@ public class ExecuteAndUploadELPage {
 
             System.out.println("✅ Uploaded documents successfully verified");
 
-            SceenshotUtil.takeScreenshot(driver, "Documents Final Verified");
+            SceenshotUtil.takeScreenshot(driver, "Documents Verified for W9 Form");
 
         });
     }

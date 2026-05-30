@@ -78,6 +78,7 @@ public class ConfirmWorkCompletionPage {
     private By commentsLink = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
     private By commentSpanLocator = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
     private By cancelBtn = By.xpath("//button[.//span[normalize-space()='Cancel']]");
+    private By yesButton = By.xpath("//button[.//span[normalize-space()='Yes']]");
     // =========================================================
     // UTILITY METHOD (ADDED)
     // =========================================================
@@ -210,14 +211,17 @@ public class ConfirmWorkCompletionPage {
             ZoneId zone = ZoneId.of("America/New_York"); // MUST match Appian server config
             LocalDate today = LocalDate.now(zone);
 
+            String dayOfWeek = today.getDayOfWeek()
+                    .getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
             int dayOfMonth = today.getDayOfMonth();
-            String day = String.valueOf(dayOfMonth);
+            //String day = String.valueOf(dayOfMonth);
 
             String month = today.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
             int year = today.getYear();
 
             //  wait for calendar to fully render month grid
-            wait.until(ExpectedConditions.visibilityOfElementLocated(calendarRoot));
+            /*wait.until(ExpectedConditions.visibilityOfElementLocated(calendarRoot));
 
             //  click correct visible day
             By todayBtn = By.xpath(
@@ -261,6 +265,101 @@ public class ConfirmWorkCompletionPage {
 
             if (!submitStillEnabled) {
                 throw new AssertionError("Submit got disabled after date selection (Appian validation triggered)");
+            } */
+            // Handle suffix
+            String suffix;
+
+            if (dayOfMonth >= 11 && dayOfMonth <= 13) {
+                suffix = "th";
+            } else {
+                switch (dayOfMonth % 10) {
+                    case 1:
+                        suffix = "st";
+                        break;
+                    case 2:
+                        suffix = "nd";
+                        break;
+                    case 3:
+                        suffix = "rd";
+                        break;
+                    default:
+                        suffix = "th";
+                }
+            }
+
+            // Exact Appian aria-label
+            String ariaLabel = String.format(
+                    "Select %s, %s %d%s %d",
+                    dayOfWeek,
+                    month,
+                    dayOfMonth,
+                    suffix,
+                    year
+            );
+
+            System.out.println("Looking for date: " + ariaLabel);
+
+            // Wait for calendar render
+            wait.until(ExpectedConditions.visibilityOfElementLocated(calendarRoot));
+
+            // Exact date selection
+            By todayBtn = By.xpath(
+                    "//button[@aria-label=\"" + ariaLabel + "\"]"
+            );
+
+            WebElement selectedDate = wait.until(
+                    ExpectedConditions.elementToBeClickable(todayBtn)
+            );
+
+            System.out.println("Matched aria-label: "
+                    + selectedDate.getAttribute("aria-label"));
+
+            selectedDate.click();
+
+            // Wait until input gets populated
+            wait.until(driver -> {
+                String val = driver.findElement(inputBox).getAttribute("value");
+                return val != null && val.matches("\\d{2}/\\d{2}/\\d{4}");
+            });
+
+            String uiValue = driver.findElement(inputBox).getAttribute("value");
+
+            System.out.println("UI Selected Date Value: " + uiValue);
+
+            // Expected format
+            String expected = String.format(
+                    "%02d/%02d/%d",
+                    today.getMonthValue(),
+                    dayOfMonth,
+                    year
+            );
+
+            requestClosedate = String.format(
+                    "%d %s %d",
+                    dayOfMonth,
+                    month,
+                    year
+            );
+
+            // Validation
+            if (!uiValue.equals(expected)) {
+                throw new AssertionError(
+                        "Date mismatch! Expected: "
+                                + expected
+                                + " but found: "
+                                + uiValue
+                );
+            }
+
+            // Detect Appian validation state
+            boolean submitStillEnabled = driver.findElements(
+                    By.xpath("//button[normalize-space()='Submit' and @disabled]")
+            ).isEmpty();
+
+            if (!submitStillEnabled) {
+                throw new AssertionError(
+                        "Submit got disabled after date selection (Appian validation triggered)"
+                );
             }
 
             System.out.println("Selected today's date: " + requestClosedate);
@@ -352,25 +451,32 @@ public class ConfirmWorkCompletionPage {
         // =====================================================
         // 2. DATE OF WITHDRAWAL
         // =====================================================
-        Allure.step("Handle Date of Completion (select current date only)", () -> {
+        Allure.step("Handle Date of Withdrawl (select current date only)", () -> {
 
             WebElement calendar = wait.until(
                     ExpectedConditions.elementToBeClickable(calendarBtn)
             );
             calendar.click();
 
-            // Use fixed business timezone
+            // DEBUG
+            WebElement header = driver.findElement(calHdr);
+            System.out.println("Calendar Header: " + header.getText());
+
+            //  Using fixed business timezone
             ZoneId zone = ZoneId.of("America/New_York"); // MUST match Appian server config
             LocalDate today = LocalDate.now(zone);
 
+            String dayOfWeek = today.getDayOfWeek()
+                    .getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
             int dayOfMonth = today.getDayOfMonth();
-            String day = String.valueOf(dayOfMonth);
+            //String day = String.valueOf(dayOfMonth);
 
             String month = today.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
             int year = today.getYear();
 
             // wait for calendar to fully render month grid
-            By calendarRoot = By.xpath("//*[contains(@class,'DatePicker') or contains(@class,'Calendar')]");
+            /*By calendarRoot = By.xpath("//*[contains(@class,'DatePicker') or contains(@class,'Calendar')]");
             wait.until(ExpectedConditions.visibilityOfElementLocated(calendarRoot));
 
             // click correct visible day (avoid hidden duplicates)
@@ -414,12 +520,107 @@ public class ConfirmWorkCompletionPage {
 
             if (!submitStillEnabled) {
                 throw new AssertionError("Submit got disabled after date selection (Appian validation triggered)");
+            } */
+            // Handle suffix
+            String suffix;
+
+            if (dayOfMonth >= 11 && dayOfMonth <= 13) {
+                suffix = "th";
+            } else {
+                switch (dayOfMonth % 10) {
+                    case 1:
+                        suffix = "st";
+                        break;
+                    case 2:
+                        suffix = "nd";
+                        break;
+                    case 3:
+                        suffix = "rd";
+                        break;
+                    default:
+                        suffix = "th";
+                }
+            }
+
+            // Exact Appian aria-label
+            String ariaLabel = String.format(
+                    "Select %s, %s %d%s %d",
+                    dayOfWeek,
+                    month,
+                    dayOfMonth,
+                    suffix,
+                    year
+            );
+
+            System.out.println("Looking for date: " + ariaLabel);
+
+            // Wait for calendar render
+            wait.until(ExpectedConditions.visibilityOfElementLocated(calendarRoot));
+
+            // Exact date selection
+            By todayBtn = By.xpath(
+                    "//button[@aria-label=\"" + ariaLabel + "\"]"
+            );
+
+            WebElement selectedDate = wait.until(
+                    ExpectedConditions.elementToBeClickable(todayBtn)
+            );
+
+            System.out.println("Matched aria-label: "
+                    + selectedDate.getAttribute("aria-label"));
+
+            selectedDate.click();
+
+            // Wait until input gets populated
+            wait.until(driver -> {
+                String val = driver.findElement(inputBox).getAttribute("value");
+                return val != null && val.matches("\\d{2}/\\d{2}/\\d{4}");
+            });
+
+            String uiValue = driver.findElement(inputBox).getAttribute("value");
+
+            System.out.println("UI Selected Date Value: " + uiValue);
+
+            // Expected format
+            String expected = String.format(
+                    "%02d/%02d/%d",
+                    today.getMonthValue(),
+                    dayOfMonth,
+                    year
+            );
+
+            requestClosedate = String.format(
+                    "%d %s %d",
+                    dayOfMonth,
+                    month,
+                    year
+            );
+
+            // Validation
+            if (!uiValue.equals(expected)) {
+                throw new AssertionError(
+                        "Date mismatch! Expected: "
+                                + expected
+                                + " but found: "
+                                + uiValue
+                );
+            }
+
+            // Detect Appian validation state
+            boolean submitStillEnabled = driver.findElements(
+                    By.xpath("//button[normalize-space()='Submit' and @disabled]")
+            ).isEmpty();
+
+            if (!submitStillEnabled) {
+                throw new AssertionError(
+                        "Submit got disabled after date selection (Appian validation triggered)"
+                );
             }
 
             System.out.println("Selected today's date: " + requestClosedate);
             Allure.step("Selected today's date: " + requestClosedate);
 
-            SceenshotUtil.takeScreenshot(driver, "Date of Completion Selected");
+            SceenshotUtil.takeScreenshot(driver, "Date of Withdrawl Selected");
         });
 
         // =====================================================
@@ -807,7 +1008,79 @@ public class ConfirmWorkCompletionPage {
             SceenshotUtil.takeScreenshot(driver, "Task Cancelled");
         });
     });
-}
+
+        // =====================================================
+        // 7. Click Yes
+        // =====================================================
+        Allure.step("Click Cancel and handle confirmation popup (Yes)", () -> {
+
+            // =========================
+            // STEP 1: CLICK CANCEL BUTTON
+            // =========================
+            WebElement cancelElement = wait.until(
+                    ExpectedConditions.elementToBeClickable(cancelBtn)
+            );
+
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block:'center'});", cancelElement);
+
+            try {
+                cancelElement.click();
+            } catch (Exception e) {
+                System.out.println("⚠️ Normal click failed → JS click used for Cancel");
+                ((JavascriptExecutor) driver)
+                        .executeScript("arguments[0].click();", cancelElement);
+            }
+
+            System.out.println("✅ Cancel button clicked");
+
+            // =========================
+            // STEP 2: WAIT FOR MODAL POPUP
+            // =========================
+            By cancelModal =
+                    By.xpath("//div[@role='dialog' or contains(@class,'Modal') or contains(@class,'Dialog')]");
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(cancelModal));
+
+            wait.until(driver ->
+                    driver.findElements(cancelModal)
+                            .stream()
+                            .anyMatch(WebElement::isDisplayed)
+            );
+
+            System.out.println("✅ Cancel confirmation modal appeared");
+
+            // =========================
+            // STEP 3: CLICK YES BUTTON
+            // =========================
+
+            WebElement yesBtn = wait.until(
+                    ExpectedConditions.elementToBeClickable(yesButton)
+            );
+
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block:'center'});", yesBtn);
+
+            try {
+                yesBtn.click();
+            } catch (Exception e) {
+                System.out.println("⚠️ Normal click failed → JS click used for Yes");
+                ((JavascriptExecutor) driver)
+                        .executeScript("arguments[0].click();", yesBtn);
+            }
+
+            System.out.println("✅ Yes clicked on confirmation popup");
+
+            // =========================
+            // STEP 4: VERIFY MODAL CLOSED
+            // =========================
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(cancelModal));
+
+            System.out.println("✅ Cancel confirmation completed (modal closed)");
+
+            SceenshotUtil.takeScreenshot(driver, "Cancel_Confirmation_Yes_Clicked");
+        });
+    }
 
 
 

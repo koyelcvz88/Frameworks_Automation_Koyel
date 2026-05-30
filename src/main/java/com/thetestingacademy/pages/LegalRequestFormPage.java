@@ -115,7 +115,7 @@ public class LegalRequestFormPage {
             Allure.step("'" + ocFeesPayer + "' option selected.");
         });
 
-        Allure.step("Selecting Due Date", () -> {
+        /*Allure.step("Selecting Due Date", () -> {
 
             // Open the calendar
             WebElement calendarBtn = wait.until(ExpectedConditions.elementToBeClickable(
@@ -136,7 +136,7 @@ public class LegalRequestFormPage {
             /*WebElement todayDateBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//button[@aria-label='" + ariaLabel + "']")));
             todayDateBtn.click(); */
-            String day = String.valueOf(LocalDate.now().getDayOfMonth());
+            /*String day = String.valueOf(LocalDate.now().getDayOfMonth());
 
             WebElement todayDateBtn = wait.until(ExpectedConditions.elementToBeClickable(
                     By.xpath("//button[not(@disabled) and normalize-space()='" + day + "']")));
@@ -148,6 +148,75 @@ public class LegalRequestFormPage {
             // Print to console
             System.out.println("Date selected today: " + dueDate);
             // Also log in Allure
+            Allure.step("Date selected today: " + dueDate);
+        }); */
+        Allure.step("Selecting Due Date", () -> {
+
+            // Open the calendar
+            WebElement calendarBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.cssSelector("button.DatePickerWidget---calendar_btn")));
+            calendarBtn.click();
+
+            // Get today's date
+            LocalDate today = LocalDate.now();
+
+            String dayOfWeek = today.getDayOfWeek()
+                    .getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+            int dayOfMonth = today.getDayOfMonth();
+
+            String month = today.getMonth()
+                    .getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+            int year = today.getYear();
+
+            // Handle st/nd/rd/th suffix
+            String suffix;
+
+            if (dayOfMonth >= 11 && dayOfMonth <= 13) {
+                suffix = "th";
+            } else {
+                switch (dayOfMonth % 10) {
+                    case 1:
+                        suffix = "st";
+                        break;
+                    case 2:
+                        suffix = "nd";
+                        break;
+                    case 3:
+                        suffix = "rd";
+                        break;
+                    default:
+                        suffix = "th";
+                }
+            }
+
+            // Build exact aria-label
+            String ariaLabel = String.format(
+                    "Select %s, %s %d%s %d",
+                    dayOfWeek,
+                    month,
+                    dayOfMonth,
+                    suffix,
+                    year
+            );
+
+            System.out.println("Looking for date: " + ariaLabel);
+
+            // Click exact matching date
+            WebElement todayDateBtn = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//button[@aria-label=\"" + ariaLabel + "\"]")
+                    ));
+
+            todayDateBtn.click();
+
+            dueDate = String.format("%d %s %d", dayOfMonth, month, year);
+
+            // Print to console
+            System.out.println("Date selected today: " + dueDate);
+
+            // Allure log
             Allure.step("Date selected today: " + dueDate);
         });
     }

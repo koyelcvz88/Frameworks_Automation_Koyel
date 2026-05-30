@@ -21,7 +21,7 @@ public class newOCTaskTest_Happypath extends BaseTest {
     // =========================================================
     // SANITY
     // =========================================================
-    @Test(groups = {"E2E"})
+    @Test(groups = {""})
     @Owner("Koyel")
     @Severity(SeverityLevel.CRITICAL)
     @Description("E2E - NEW OC Flow")

@@ -19,3 +19,7 @@
     </test>
 
 </suite>
+<packages>
+<package name="com.thetestingacademy.tests">
+</package>
+</packages>

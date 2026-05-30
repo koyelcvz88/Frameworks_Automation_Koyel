@@ -4,74 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e1e6c331-6015-4ad7-8025-f1ef2c66c026" name="Changes" comment="adding files to Trimont_POM_Framework git">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/BaseTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/ConfigReader2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/ConfirmWorkCompletionPageOld.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/ExecuteAndUploadELPageOld.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/LegalRequestNewOCPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/New_OC_Request_NavigatorPage_ExtraCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/Removed/ReviewNewVendorPage_ExtraCode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/config/ConfigReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ConfirmWorkCompletionPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/DashboardPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/EnterInvoice_PaymentConfirmationPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ExOCSummaryPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/Ex_OC_Request_NavigatorPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ExecuteAndUploadELPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/NewOCSummaryPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/NewOC_Team_RequestPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/New_OC_Request_NavigatorPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/RequestResubmissionPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ReviewConflictWaiverPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ReviewNewVendorPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ReviewOFACNewVendorPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/Update_CancelRequestPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/utils/DynamicDataUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/utils/TestData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/data.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/newoc.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_ExOC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_NewOC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_RelatedAction_OC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/RegressionLegalRequest_ExOC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/RegressionLegalRequest_NewOC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestExistingOCE2ETest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestExistingOCTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestFormTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestInitiationTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestInitiationTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestNewOCE2ETest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestNewOCTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestNewOCTest2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LoginTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LoginTest_EX_OC.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LoginTest_New_OC.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/exOCTaskTestOld.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/SanityLegalRequest_ExOC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/SanityLegalRequest_NewOC_Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/SmokeLegalRequestTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/exOCTaskTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/newOCTaskTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/newOCTaskTest_Happypath.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/Trimont_Smoke_Demo.xml" afterDir="false" />
+    <list default="true" id="e1e6c331-6015-4ad7-8025-f1ef2c66c026" name="Changes" comment="adding files to Trimont_POM_Framework git - May 2026">
+      <change afterPath="$PROJECT_DIR$/src/test/resources/Trimont_E2E_Demo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/Trimont_Regression_Demo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/Trimont_Sanity_Demo.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/base/BaseTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/base/BaseTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestExistingOCPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestExistingOCPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ConfirmWorkCompletionPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ConfirmWorkCompletionPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ExecuteAndUploadELPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/ExecuteAndUploadELPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestFormPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestFormPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestInitiationPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestInitiationPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestNewOCPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LegalRequestNewOCPage2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/LoginPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LegalRequestExistingOCE2ETest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestExistingOCE2ETest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LegalRequestExistingOCTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestExistingOCTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LegalRequestFormTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestFormTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LegalRequestInitiationTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LegalRequestNewOCE2ETest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/Removed/LegalRequestNewOCE2ETest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LegalRequestNewOCTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/LoginTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/Update_CancelRequestPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/thetestingacademy/pages/Update_CancelRequestPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_ExOC_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_ExOC_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_NewOC_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_NewOC_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_RelatedAction_OC_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/E2ELegalRequest_RelatedAction_OC_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/RegressionLegalRequest_ExOC_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/RegressionLegalRequest_ExOC_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/RegressionLegalRequest_NewOC_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/RegressionLegalRequest_NewOC_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/SanityLegalRequest_NewOC_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/SanityLegalRequest_NewOC_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/exOCTaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/exOCTaskTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/newOCTaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/newOCTaskTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/newOCTaskTest_Happypath.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/thetestingacademy/tests/newOCTaskTest_Happypath.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/resources/Trimont_POM_Demo.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/Trimont_POM_Demo.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/Trimont_Smoke_Demo.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/Trimont_Smoke_Demo.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,38 +81,49 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_POM_Demo.xml.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_Smoke_Demo.xml.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestExistingOCE2ETest2.e2e_existing_oc_flow.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestExistingOCE2ETest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestExistingOCPage.fillExistingOCRequest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestExistingOCTest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestExistingOCTest.tc3_existing_oc_flow.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestExistingOCTest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestFormTest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestInitiationTest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestInitiationTest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestNewOCE2ETest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LegalRequestNewOCTest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LoginTest.loginTest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LoginTest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LoginTest2.loginTest2.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LoginTest_EX_OC.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.LoginTest_New_OC.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.exOCTaskTest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.newOCTaskTest.executor&quot;: &quot;Run&quot;,
-    &quot;TestNG.newOCTaskTest_Happypath.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_E2E_Demo.xml.executor": "Run",
+    "TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_POM_Demo.xml.executor": "Run",
+    "TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_Regression_Demo.xml.executor": "Run",
+    "TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_Sanity_Demo.xml.executor": "Run",
+    "TestNG.C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources/Trimont_Smoke_Demo.xml.executor": "Run",
+    "TestNG.E2ELegalRequest_RelatedAction_OC_Test.executor": "Run",
+    "TestNG.LegalRequestExistingOCE2ETest2.e2e_existing_oc_flow.executor": "Run",
+    "TestNG.LegalRequestExistingOCE2ETest2.executor": "Run",
+    "TestNG.LegalRequestExistingOCPage.fillExistingOCRequest.executor": "Run",
+    "TestNG.LegalRequestExistingOCTest.executor": "Run",
+    "TestNG.LegalRequestExistingOCTest.tc3_existing_oc_flow.executor": "Run",
+    "TestNG.LegalRequestExistingOCTest2.executor": "Run",
+    "TestNG.LegalRequestFormTest2.executor": "Run",
+    "TestNG.LegalRequestInitiationTest.executor": "Run",
+    "TestNG.LegalRequestInitiationTest2.executor": "Run",
+    "TestNG.LegalRequestNewOCE2ETest2.executor": "Run",
+    "TestNG.LegalRequestNewOCTest2.executor": "Run",
+    "TestNG.LoginTest.loginTest.executor": "Run",
+    "TestNG.LoginTest2.executor": "Run",
+    "TestNG.LoginTest2.loginTest2.executor": "Run",
+    "TestNG.LoginTest_EX_OC.executor": "Run",
+    "TestNG.LoginTest_New_OC.executor": "Run",
+    "TestNG.RegressionLegalRequest_ExOC_Test.executor": "Run",
+    "TestNG.SanityLegalRequest_ExOC_Test.executor": "Run",
+    "TestNG.SmokeLegalRequestTest.executor": "Run",
+    "TestNG.exOCTaskTest.executor": "Run",
+    "TestNG.newOCTaskTest.executor": "Run",
+    "TestNG.newOCTaskTest_Happypath.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/User/IdeaProjects/Trimont_POM_Framework/src/test/resources"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\User\IdeaProjects\Trimont_POM_Framework\src\test\resources" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\User\IdeaProjects\Trimont_POM_Framework\src\test\java\com\thetestingacademy\tests\Removed" />
       <recent name="C:\Users\User\IdeaProjects\Trimont_POM_Framework\src\main\java\com\thetestingacademy\Removed" />
@@ -214,12 +177,21 @@
       <option name="project" value="LOCAL" />
       <updated>1776278092709</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="adding files to Trimont_POM_Framework git - May 2026">
+      <option name="closed" value="true" />
+      <created>1779479425567</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1779479425567</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="adding files to Trimont_POM_Framework git" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding files to Trimont_POM_Framework git" />
+    <MESSAGE value="adding files to Trimont_POM_Framework git - May 2026" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding files to Trimont_POM_Framework git - May 2026" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

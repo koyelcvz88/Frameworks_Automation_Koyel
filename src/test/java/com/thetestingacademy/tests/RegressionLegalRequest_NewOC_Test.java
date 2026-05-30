@@ -24,7 +24,7 @@ public class RegressionLegalRequest_NewOC_Test extends BaseTest {
     @Test(groups = {"Regression"})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Regression Edge Flow - NEW OC Request + Navigation + Task 1 Reject + Task 1 Approve + Task 2 Reject Flow")
-    public void regression_ex_oc_flow() {
+    public void regression_new_oc_flow() {
 
         // =========================
         // OPEN APPLICATION
@@ -426,7 +426,7 @@ public class RegressionLegalRequest_NewOC_Test extends BaseTest {
         // -------------------------
         // Approve FLOW HANDLING
         // -------------------------
-        Allure.step("REQUEST RESUBMISSION TASK - Validating APPROVE E2E Flow", () -> {
+        Allure.step("REQUEST RESUBMISSION TASK - Validating EDGE Flow", () -> {
 
             ResubPage.handleRequestResubmissionFields();
         });

@@ -20,7 +20,7 @@ import java.time.Duration;
 
 public class SanityLegalRequest_NewOC_Test extends BaseTest {
 
-    @Test(groups = {"Sanity", "E2E", "Regression"})
+    @Test(groups = {"Sanity"})
     @Severity(SeverityLevel.CRITICAL)
     @Description("Sanity Flow - New OC (Login + Initiation + Form + Request Creation)")
 

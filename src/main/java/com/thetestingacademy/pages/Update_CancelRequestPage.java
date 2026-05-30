@@ -57,7 +57,7 @@ public class Update_CancelRequestPage {
         // =========================================================
 
         Allure.step("Update Request Flow", () -> {
-            Allure.step("Click Update Request button", () -> {
+            /*Allure.step("Click Update Request button", () -> {
 
                 WebElement updateBtn = wait.until(
                         ExpectedConditions.elementToBeClickable(UpdateRequestBtn)
@@ -80,6 +80,95 @@ public class Update_CancelRequestPage {
                 Allure.step("Update Request button is clicked");
 
                 SceenshotUtil.takeScreenshot(driver, "Update Request button is clicked");
+            }); */
+            Allure.step("Click Update Request button", () -> {
+
+                // Wait for full page load
+                wait.until(driver ->
+                        ((JavascriptExecutor) driver)
+                                .executeScript("return document.readyState")
+                                .equals("complete")
+                );
+
+                // Wait for Appian loaders/spinners to disappear
+                try {
+
+                    wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                            By.xpath(
+                                    "//div[contains(@class,'loading') " +
+                                            "or contains(@class,'spinner') " +
+                                            "or contains(@class,'appian-spinner')]"
+                            )
+                    ));
+
+                } catch (Exception ignored) {
+
+                }
+
+                // Wait for button presence
+                WebElement updateBtn = wait.until(
+                        ExpectedConditions.presenceOfElementLocated(UpdateRequestBtn)
+                );
+
+                // Scroll to element
+                ((JavascriptExecutor) driver)
+                        .executeScript(
+                                "arguments[0].scrollIntoView({block:'center'});",
+                                updateBtn
+                        );
+
+                // Wait until clickable
+                wait.until(ExpectedConditions.elementToBeClickable(updateBtn));
+
+                // Debugging logs
+                System.out.println("Button displayed: " + updateBtn.isDisplayed());
+                System.out.println("Button enabled: " + updateBtn.isEnabled());
+
+                // Safe click
+                try {
+
+                    updateBtn.click();
+
+                } catch (Exception e) {
+
+                    System.out.println("Normal click failed. Using JS click.");
+
+                    ((JavascriptExecutor) driver)
+                            .executeScript("arguments[0].click();", updateBtn);
+                }
+
+                // HARD ASSERT → modal/dialog must appear
+                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath(
+                                "//div[@role='dialog' " +
+                                        "or contains(@class,'Modal') " +
+                                        "or contains(@class,'Dialog')]"
+                        )
+                ));
+
+                // Extra stability for Appian rendering
+                wait.until(driver -> {
+
+                    List<WebElement> modals =
+                            driver.findElements(
+                                    By.xpath(
+                                            "//div[@role='dialog' " +
+                                                    "or contains(@class,'Modal') " +
+                                                    "or contains(@class,'Dialog')]"
+                                    )
+                            );
+
+                    return modals.stream().anyMatch(WebElement::isDisplayed);
+                });
+
+                System.out.println("✅ Update Request button is clicked");
+
+                Allure.step("Update Request button is clicked");
+
+                SceenshotUtil.takeScreenshot(
+                        driver,
+                        "Update_Request_Button_Clicked"
+                );
             });
 
 

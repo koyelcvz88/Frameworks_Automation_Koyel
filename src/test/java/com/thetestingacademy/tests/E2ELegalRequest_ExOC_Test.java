@@ -163,7 +163,7 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
         // -------------------------
         // TASK NAVIGATION
         // -------------------------
-        Allure.step("Task 1 - Navigation and opening task", () -> {
+        Allure.step("CONFLICT WORK COMPLETION Task  - Navigation and opening task", () -> {
 
             taskPage.openAndEnterConfirmWorkCompletionTask();
         });
@@ -187,7 +187,7 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
         // -------------------------
         // TASK FIELDS HANDLING
         // -------------------------
-        Allure.step("Task 1 - Validating and selecting fields", () -> {
+        Allure.step("CONFLICT WORK COMPLETION Task - Validating and selecting fields", () -> {
 
             taskPage.handleConfirmWorkCompletionFields();
         });
@@ -204,7 +204,7 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
         // -------------------------
         // TASK NAVIGATION
         // -------------------------
-        Allure.step("Task 1 - Navigation and opening task", () -> {
+        Allure.step("ENTER INVOICE PAYMENT CONFIRMATION Task - Navigation and opening task", () -> {
 
             task2Page.openAndEnterInvoicepaymentConfirmationTask();
         });
@@ -228,7 +228,7 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
         // -------------------------
         // TASK FIELDS HANDLING
         // -------------------------
-        Allure.step("Task 1 - Validating and selecting fields", () -> {
+        Allure.step("ENTER INVOICE PAYMENT CONFIRMATION Task - Validating and selecting fields", () -> {
 
             task2Page.handleEnterInvoiceandPaymentConfirmationFields();
         });

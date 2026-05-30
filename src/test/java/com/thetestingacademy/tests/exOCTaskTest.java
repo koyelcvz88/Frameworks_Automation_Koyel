@@ -16,7 +16,7 @@ public class exOCTaskTest extends BaseTest {
     // =========================================================
     // SANITY
     // =========================================================
-    @Test(groups = {"Sanity"})
+    @Test(groups = {""})
     @Owner("Koyel")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Sanity - EX OC Flow till Task 1")
@@ -233,8 +233,8 @@ public class exOCTaskTest extends BaseTest {
         Update_CancelRequestPage actionPage = new Update_CancelRequestPage(driver);
         Allure.step("Cancel Request Fields", () -> {
 
-            //actionPage.handleEnterUpdateRequestFields();
-            actionPage.handleEnterCancelRequestFields();
+            actionPage.handleEnterUpdateRequestFields();
+            //actionPage.handleEnterCancelRequestFields();
             /*EnterInvoice_PaymentConfirmationPage task2Page = new EnterInvoice_PaymentConfirmationPage(driver);
 
             // -------------------------------

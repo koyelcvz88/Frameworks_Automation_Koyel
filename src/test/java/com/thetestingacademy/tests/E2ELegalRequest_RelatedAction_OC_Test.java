@@ -19,7 +19,7 @@ public class E2ELegalRequest_RelatedAction_OC_Test extends BaseTest {
     @Test(groups = {"E2E"})
     @Severity(SeverityLevel.CRITICAL)
     @Description("E2E Flow - EX OC Request + Navigation + Update Request + Cancel Request ")
-    public void e2e_ex_oc_flow() {
+    public void e2e_ex_oc_relActflow() {
 
         // =========================
         // OPEN APPLICATION
@@ -54,11 +54,6 @@ public class E2ELegalRequest_RelatedAction_OC_Test extends BaseTest {
         Allure.step("Navigate Home + Open EX OC Request", () -> {
             new Ex_OC_Request_NavigatorPage(driver).exOCRequest();
         });
-
-        // =========================
-        // SUMMARY + TASK NAVIGATION
-        // =========================
-        navigateToSummaryAndTasks();
 
         // =========================================================
         // Update and Cancel Request
