@@ -1,4 +1,4 @@
-package com.thetestingacademy.tests;
+package com.thetestingacademy.tests.OldSuites;
 
 import com.thetestingacademy.base.BaseTest;
 import com.thetestingacademy.config.ConfigReader;
@@ -16,7 +16,7 @@ import java.time.Duration;
 
 @Epic("VenReq Automation Suite")
 @Feature("NEW OC Request + Task Workflow")
-public class newOCTaskTest_Happypath extends BaseTest {
+public class newOCTaskTest extends BaseTest {
 
     // =========================================================
     // SANITY
@@ -57,6 +57,42 @@ public class newOCTaskTest_Happypath extends BaseTest {
         navigateToSummaryAndTasks();
 
         // =========================
+        // REVIEW NEW VENDOR TASK
+        // =========================
+        executeTaskNewVendorEdge();
+
+        // - RELOGIN AS LEGAL MANAGER
+        reloginAsLegal(
+                ConfigReader.getData("new.username"),
+                ConfigReader.getData("new.password")
+        );
+
+        // STEP 5 - Navigate to Home + Teams tab + Open request
+        openRequestTeamsTab();
+
+        // =========================
+        // SUMMARY + TASK NAVIGATION
+        // =========================
+        navigateToSummaryAndTasks();
+
+        // =========================
+        // REQUEST RESUBMISSION TASK
+        // =========================
+        executeTaskrequestResub();
+
+        // - RELOGIN AS LEGAL SENIOR MANAGER
+        reloginToApplication(
+                ConfigReader.getData("newSrLegal.username"),
+                ConfigReader.getData("newSrLegal.password")
+        );
+
+        // - Navigate to Home + Teams tab + Open request
+        openRequestTeamsTab();
+
+        // -  NAVIGATE TO SUMMARY AND TASK TAB
+        navigateToSummaryAndTasks();
+
+        // =========================
         // REVIEW NEW VENDOR APPROVE FLOW TASK EXECUTION
         // =========================
         executeTaskNewVendor();
@@ -74,92 +110,18 @@ public class newOCTaskTest_Happypath extends BaseTest {
         navigateToSummaryAndTasks();
 
         // =========================
-        // REVIEW OFAC NEW VENDOR TASK APPROVE FLOW TASK EXECUTION
+        // REVIEW OFAC NEW VENDOR TASK EDGE
         // =========================
-        executeTaskNewOFACVendor();
-
-        // - RELOGIN AS CMS INTERNAL COUNSEL
-        reloginAsIternalCounsel(
-                ConfigReader.getData("newCounsel.username"),
-                ConfigReader.getData("newCounsel.password")
-        );
-
-        // - Navigate to Home + Teams tab + Open request
-        openRequestTeamsTab();
-
-        // -  NAVIGATE TO SUMMARY AND TASK TAB
-        navigateToSummaryAndTasks();
-
-        // =========================
-        // REVIEW OFAC NEW VENDOR TASK APPROVE FLOW TASK EXECUTION
-        // =========================
-        executeTaskConflictWaiver();
-
-        // STEP 4 - RELOGIN AS LEGAL SENIOR MANAGER
-        reloginToApplication(
-                ConfigReader.getData("newSrLegal.username"),
-                ConfigReader.getData("newSrLegal.password")
-        );
-
-        // STEP 5 - Navigate to Home + Teams tab + Open request
-        openRequestTeamsTab();
-
-        // STEP 6 -  NAVIGATE TO SUMMARY AND TASK TAB
-        navigateToSummaryAndTasks();
-
-        // =========================
-        // EXECUTE AND UPLOAD ENGAGEMENT LETTER TASK APPROVE FLOW TASK EXECUTION
-        // =========================
-        executeTaskExecuteEL();
-
-        // - RELOGIN AS LEGAL MANAGER
-        reloginAsLegal(
-                ConfigReader.getData("new.username"),
-                ConfigReader.getData("new.password")
-        );
-
-        // STEP 5 - Navigate to Home + Teams tab + Open request
-        openRequestTeamsTab();
-
-        // =========================
-        // SUMMARY + TASK NAVIGATION
-        // =========================
-        navigateToSummaryAndTasks();
-
-        // =========================
-        // CONFIRM WORK COMPLETION TASK  FLOW TASK EXECUTION
-        // =========================
-        executeTask1();
-        ;
-
-        // =========================================================
-        // ENTER INVOICE PAYMENT CONFIRMATION FLOW TASK EXECUTION
-        // =========================================================
-        executeTask2();
+        executeTaskNewOFACVendorEdge();
 
 
-        /*// =========================
-        // REQUEST RESUBMISSION TASK
-        // =========================
-        executeTaskrequestResub();
 
-        // - RELOGIN AS LEGAL SENIOR MANAGER
-        reloginToApplication(
-                ConfigReader.getData("newSrLegal.username"),
-                ConfigReader.getData("newSrLegal.password")
-        );
-
-        // - Navigate to Home + Teams tab + Open request
-        openRequestTeamsTab();
-
-        // -  NAVIGATE TO SUMMARY AND TASK TAB
-        navigateToSummaryAndTasks(); */
-    /*
+    /*executeTask1();
+    executeTask2();
     relatedAction();*/
 
         Allure.step("SANITY FLOW COMPLETED SUCCESSFULLY");
     }
-
     // =========================================================
     // COMMON FLOW
     // =========================================================
@@ -234,8 +196,7 @@ public class newOCTaskTest_Happypath extends BaseTest {
 
             // WAIT FOR LOGIN PAGE
             wait.until(ExpectedConditions.visibilityOfElementLocated(
-                   // By.id("un")));
-                    By.xpath("//input[@placeholder='Username']")));
+                    By.id("un")));
 
             LoginPage loginPage = new LoginPage(driver);
 
@@ -247,10 +208,9 @@ public class newOCTaskTest_Happypath extends BaseTest {
             Assert.assertTrue(dashboard.isLoaded(),
                     "Relogin failed for user: " + username);
 
-            System.out.println("✅ Relogin successful AS SENIOR LEGAL MANAGER");
+            System.out.println("✅ Relogin successful");
         });
     }
-
     // =========================================================
     //Navigate to Home + Teams tab + Open request
     // =========================================================
@@ -269,7 +229,6 @@ public class newOCTaskTest_Happypath extends BaseTest {
                     "Request_Reopened_After_Relogin");
         });
     }
-
     // =========================================================
     // SUMMARY NAVIGATION
     // =========================================================
@@ -330,46 +289,10 @@ public class newOCTaskTest_Happypath extends BaseTest {
         });
     } */
 
-
     // =========================================================
-    // RE LOGIN AS  LEGAL MANAGER
+    // REVIEW NEW VENDOR REJECT FLOW TASK EXECUTION
     // =========================================================
-    private void reloginAsLegal(String username, String password) {
-
-        Allure.step("Relaunch application and relogin", () -> {
-
-            // IMPORTANT
-            // Navigate back to login page first
-
-            driver.get(ConfigReader.getData("base.url"));
-
-            WebDriverWait wait =
-                    new WebDriverWait(driver,
-                            Duration.ofSeconds(30));
-
-            // WAIT FOR LOGIN PAGE
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.id("un")));
-
-            LoginPage loginPage = new LoginPage(driver);
-
-            DashboardPage dashboard = loginPage
-                    .enterUsername(username)
-                    .enterPassword(password)
-                    .clickSignin();
-
-            Assert.assertTrue(dashboard.isLoaded(),
-                    "Relogin failed for user: " + username);
-
-            System.out.println("✅ Relogin successful as Vendor Manager");
-        });
-    }
-
-
-    // =========================================================
-    // REVIEW NEW VENDOR APPROVE FLOW TASK EXECUTION
-    // =========================================================
-    private void executeTaskNewVendor() {
+    private void executeTaskNewVendorEdge() {
 
         ReviewNewVendorPage VendorPage =
                 new ReviewNewVendorPage(driver);
@@ -399,13 +322,130 @@ public class newOCTaskTest_Happypath extends BaseTest {
         });
 
         // -------------------------
-        // Approve FLOW HANDLING
+        // EDGE FLOW HANDLING
         // -------------------------
-        Allure.step("REVIEW NEW VENDOR TASK - Validating APPROVE E2E Flow", () -> {
+        Allure.step("REVIEW NEW VENDOR TASK - Validating EDGE Flow", () -> {
 
-            VendorPage.handleReviewNewVendorFields();
+            VendorPage.handleReviewNewVendorEdgeFlow();
         });
     }
+
+
+        // =========================================================
+        // RE LOGIN AS  LEGAL MANAGER
+        // =========================================================
+        private void reloginAsLegal(String username, String password) {
+
+            Allure.step("Relaunch application and relogin", () -> {
+
+                // IMPORTANT
+                // Navigate back to login page first
+
+                driver.get(ConfigReader.getData("base.url"));
+
+                WebDriverWait wait =
+                        new WebDriverWait(driver,
+                                Duration.ofSeconds(30));
+
+                // WAIT FOR LOGIN PAGE
+                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.id("un")));
+
+                LoginPage loginPage = new LoginPage(driver);
+
+                DashboardPage dashboard = loginPage
+                        .enterUsername(username)
+                        .enterPassword(password)
+                        .clickSignin();
+
+                Assert.assertTrue(dashboard.isLoaded(),
+                        "Relogin failed for user: " + username);
+
+                System.out.println("✅ Relogin successful");
+            });
+        }
+
+    // =========================================================
+    // REQUEST RESUBMISSION TASK EXECUTION
+    // =========================================================
+    private void executeTaskrequestResub() {
+
+        RequestResubmissionPage ResubPage =
+                new RequestResubmissionPage(driver);
+
+        // -------------------------
+        // TASK NAVIGATION
+        // -------------------------
+        Allure.step("REQUEST RESUBMISSION TASK - Navigation and opening task", () -> {
+
+            ResubPage.openAndEnterRequestResubmissionTask();
+        });
+
+        // -------------------------
+        // VALIDATION
+        // -------------------------
+        Allure.step("Validate Task URL opened", () -> {
+
+            String currentUrl = driver.getCurrentUrl();
+
+            boolean isOpened = currentUrl.contains("/start-process/");
+
+            SceenshotUtil.takeScreenshot(driver,
+                    isOpened ? "Task URL Verified" : "Task URL Mismatch");
+
+            Assert.assertTrue(isOpened,
+                    "Task URL not opened correctly. URL: " + currentUrl);
+        });
+
+        // -------------------------
+        // Approve FLOW HANDLING
+        // -------------------------
+        Allure.step("REQUEST RESUBMISSION TASK - Validating APPROVE E2E Flow", () -> {
+
+            ResubPage.handleRequestResubmissionFields();
+        });
+    }
+
+        // =========================================================
+        // REVIEW NEW VENDOR APPROVE FLOW TASK EXECUTION
+        // =========================================================
+        private void executeTaskNewVendor() {
+
+            ReviewNewVendorPage VendorPage =
+                    new ReviewNewVendorPage(driver);
+
+            // -------------------------
+            // TASK NAVIGATION
+            // -------------------------
+            Allure.step("REVIEW NEW VENDOR TASK - Navigation and opening task", () -> {
+
+                VendorPage.openAndEnterReviewNewVendorTask();
+            });
+
+            // -------------------------
+            // VALIDATION
+            // -------------------------
+            Allure.step("Validate Task URL opened", () -> {
+
+                String currentUrl = driver.getCurrentUrl();
+
+                boolean isOpened = currentUrl.contains("/start-process/");
+
+                SceenshotUtil.takeScreenshot(driver,
+                        isOpened ? "Task URL Verified" : "Task URL Mismatch");
+
+                Assert.assertTrue(isOpened,
+                        "Task URL not opened correctly. URL: " + currentUrl);
+            });
+
+            // -------------------------
+            // Approve FLOW HANDLING
+            // -------------------------
+            Allure.step("REVIEW NEW VENDOR TASK - Validating APPROVE E2E Flow", () -> {
+
+                VendorPage.handleReviewNewVendorFields();
+            });
+        }
 
     // =========================================================
     // RE LOGIN AS VENDOR MANAGER
@@ -442,9 +482,9 @@ public class newOCTaskTest_Happypath extends BaseTest {
     }
 
     // =========================================================
-    // REVIEW OFAC NEW VENDOR APPROVE FLOW TASK EXECUTION
+    // REVIEW OFAC NEW VENDOR REJECT FLOW TASK EXECUTION
     // =========================================================
-    private void executeTaskNewOFACVendor() {
+    private void executeTaskNewOFACVendorEdge() {
 
         ReviewOFACNewVendorPage OFACPage =
                 new ReviewOFACNewVendorPage(driver);
@@ -472,137 +512,24 @@ public class newOCTaskTest_Happypath extends BaseTest {
             Assert.assertTrue(isOpened,
                     "Task URL not opened correctly. URL: " + currentUrl);
         });
-
         // -------------------------
-        // Approve FLOW HANDLING
+        // EDGE FLOW HANDLING
         // -------------------------
-        Allure.step("REVIEW OFAC NEW VENDOR TASK - Validating APPROVE E2E Flow", () -> {
+        Allure.step("REVIEW OFAC NEW VENDOR TASK - Validating EDGE Flow", () -> {
 
-            OFACPage.handleReviewOFACNewVendorFields();
-        });
-    }
-
-    // =========================================================
-    // RE LOGIN AS CMS OUTSIDE COUNSEL
-    // =========================================================
-    private void reloginAsIternalCounsel(String username, String password) {
-
-        Allure.step("Relaunch application and relogin", () -> {
-
-            // IMPORTANT
-            // Navigate back to login page first
-
-            driver.get(ConfigReader.getData("base.url"));
-
-            WebDriverWait wait =
-                    new WebDriverWait(driver,
-                            Duration.ofSeconds(30));
-
-            // WAIT FOR LOGIN PAGE
-            wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.id("un")));
-
-            LoginPage loginPage = new LoginPage(driver);
-
-            DashboardPage dashboard = loginPage
-                    .enterUsername(username)
-                    .enterPassword(password)
-                    .clickSignin();
-
-            Assert.assertTrue(dashboard.isLoaded(),
-                    "Relogin failed for user: " + username);
-
-            System.out.println("✅ Relogin successful");
-        });
-    }
-
-    // =========================================================
-    // REVIEW CONFLICT WAIVER APPROVE FLOW TASK EXECUTION
-    // =========================================================
-    private void executeTaskConflictWaiver() {
-
-        ReviewConflictWaiverPage ConflictPage =
-                new ReviewConflictWaiverPage(driver);
-
-        // -------------------------
-        // TASK NAVIGATION
-        // -------------------------
-        Allure.step("REVIEW CONFLICT WAIVER TASK - Navigation and opening task", () -> {
-
-            ConflictPage.openAndEnterReviewConflictWaiverTask();
-        });
-
-        // -------------------------
-        // VALIDATION
-        // -------------------------
-        Allure.step("Validate Task URL opened", () -> {
-
-            String currentUrl = driver.getCurrentUrl();
-
-            boolean isOpened = currentUrl.contains("/start-process/");
-
-            SceenshotUtil.takeScreenshot(driver,
-                    isOpened ? "Task URL Verified" : "Task URL Mismatch");
-
-            Assert.assertTrue(isOpened,
-                    "Task URL not opened correctly. URL: " + currentUrl);
-        });
-
-        // -------------------------
-        // Approve FLOW HANDLING
-        // -------------------------
-        Allure.step("REVIEW CONFLICT WAIVER TASK - Validating APPROVE E2E Flow", () -> {
-
-            ConflictPage.handleReviewConflictWaiverFields();
-        });
-    }
-
-    // =========================================================
-    // EXECUTE AND UPLOAD ENGAGEMENT LETTER APPROVE FLOW TASK EXECUTION
-    // =========================================================
-    private void executeTaskExecuteEL() {
-
-        ExecuteAndUploadELPage ELPage =
-                new ExecuteAndUploadELPage(driver);
-
-        // -------------------------
-        // TASK NAVIGATION
-        // -------------------------
-        Allure.step("EXECUTE AND UPLOAD ENGAGEMENT LETTER TASK - Navigation and opening task", () -> {
-
-            ELPage.openAndEnterExecuteUploadELTask();
-        });
-
-        // -------------------------
-        // VALIDATION
-        // -------------------------
-        Allure.step("Validate Task URL opened", () -> {
-
-            String currentUrl = driver.getCurrentUrl();
-
-            boolean isOpened = currentUrl.contains("/start-process/");
-
-            SceenshotUtil.takeScreenshot(driver,
-                    isOpened ? "Task URL Verified" : "Task URL Mismatch");
-
-            Assert.assertTrue(isOpened,
-                    "Task URL not opened correctly. URL: " + currentUrl);
-        });
-
-        // -------------------------
-        // Approve FLOW HANDLING
-        // -------------------------
-        Allure.step("REVIEW NEW VENDOR TASK - Validating APPROVE E2E Flow", () -> {
-
-            ELPage.handleExecuteUploadELFields();
+            OFACPage.handleReviewOFACNewVendorEdgeFlow();
         });
     }
 
 
-    // =========================================================
+
+
+
+
+        // =========================================================
     // TASK 1
     // =========================================================
-    private void executeTask1() {
+    /*private void executeTask1() {
 
         ConfirmWorkCompletionPage taskPage = new ConfirmWorkCompletionPage(driver);
 
@@ -670,9 +597,7 @@ public class newOCTaskTest_Happypath extends BaseTest {
         Allure.step("Task 2 - Validating and selecting fields", () -> {
 
             task2Page.handleEnterInvoiceandPaymentConfirmationFields();
-        });
-    }
-}
+        }); */
         // =========================================================
         // Update and Cancel Request
         // =========================================================
@@ -712,3 +637,4 @@ public class newOCTaskTest_Happypath extends BaseTest {
             });
         });
     } */
+}

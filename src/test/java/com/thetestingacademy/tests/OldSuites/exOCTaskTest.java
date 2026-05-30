@@ -1,4 +1,4 @@
-package com.thetestingacademy.tests;
+package com.thetestingacademy.tests.OldSuites;
 
 import com.thetestingacademy.base.BaseTest;
 import com.thetestingacademy.config.ConfigReader;

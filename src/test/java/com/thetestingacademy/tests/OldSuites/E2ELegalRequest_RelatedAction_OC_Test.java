@@ -1,4 +1,4 @@
-package com.thetestingacademy.tests;
+package com.thetestingacademy.tests.OldSuites;
 
 import com.thetestingacademy.base.BaseTest;
 import com.thetestingacademy.pages.*;
@@ -13,13 +13,13 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 
 @Epic("VenReq Automation Suite")
-@Feature("E2E Suite - EX OC End-to-End Task Flow")
-public class E2ELegalRequest_ExOC_Test extends BaseTest {
+@Feature("E2E Suite - Update and Cancel Request End-to-End Test Flow")
+public class E2ELegalRequest_RelatedAction_OC_Test extends BaseTest {
 
     @Test(groups = {"E2E"})
     @Severity(SeverityLevel.CRITICAL)
-    @Description("E2E Flow - EX OC Request + Navigation + Task 1 Execution + Task 2 Execution")
-    public void e2e_ex_oc_flow() {
+    @Description("E2E Flow - EX OC Request + Navigation + Update Request + Cancel Request ")
+    public void e2e_ex_oc_relActflow() {
 
         // =========================
         // OPEN APPLICATION
@@ -55,20 +55,10 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
             new Ex_OC_Request_NavigatorPage(driver).exOCRequest();
         });
 
-        // =========================
-        // SUMMARY + TASK NAVIGATION
-        // =========================
-        navigateToSummaryAndTasks();
-
-        // =========================
-        // TASK 1 EXECUTION
-        // =========================
-        executeTask1();
-
-        // =========================
-        // TASK 2 EXECUTION
-        // =========================
-        executeTask2();
+        // =========================================================
+        // Update and Cancel Request
+        // =========================================================
+        relatedAction();
 
         // =========================
         // FINAL SCREENSHOT
@@ -77,13 +67,13 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
                 .getScreenshotAs(OutputType.BYTES);
 
         Allure.addAttachment(
-                "E2E Flow Completed for EX OC",
+                "E2E Flow Completed for Related action Test",
                 "image/png",
                 new ByteArrayInputStream(screenshot),
                 ".png"
         );
 
-        Allure.step("E2E Flow Completed for EX OC Successfully");
+        Allure.step("E2E Flow Completed for Related action Successfully");
     }
 
     // =========================================================
@@ -153,84 +143,21 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
     }
 
     // =========================================================
-    // TASK 1 EXECUTION
+    // Update and Cancel Request
     // =========================================================
-    private void executeTask1() {
+    private void relatedAction() {
 
-        ConfirmWorkCompletionPage taskPage =
-                new ConfirmWorkCompletionPage(driver);
-
-        // -------------------------
-        // TASK NAVIGATION
-        // -------------------------
-        Allure.step("CONFLICT WORK COMPLETION Task  - Navigation and opening task", () -> {
-
-            taskPage.openAndEnterConfirmWorkCompletionTask();
-        });
-
-        // -------------------------
-        // VALIDATION
-        // -------------------------
-        Allure.step("Validate Task URL opened", () -> {
-
-            String currentUrl = driver.getCurrentUrl();
-
-            boolean isOpened = currentUrl.contains("/start-process/");
-
+        Update_CancelRequestPage actionPage = new Update_CancelRequestPage(driver);
+        Allure.step("Update Request Fields", () -> {
+            actionPage.handleEnterUpdateRequestFields();
             SceenshotUtil.takeScreenshot(driver,
-                    isOpened ? "Task URL Verified" : "Task URL Mismatch");
-
-            Assert.assertTrue(isOpened,
-                    "Task URL not opened correctly. URL: " + currentUrl);
+                     "Update Request Related Action Flow Completed");
         });
 
-        // -------------------------
-        // TASK FIELDS HANDLING
-        // -------------------------
-        Allure.step("CONFLICT WORK COMPLETION Task - Validating and selecting fields", () -> {
-
-            taskPage.handleConfirmWorkCompletionFields();
-        });
-    }
-
-    // =========================================================
-    // TASK 2 EXECUTION
-    // =========================================================
-    private void executeTask2() {
-
-        EnterInvoice_PaymentConfirmationPage task2Page =
-                new EnterInvoice_PaymentConfirmationPage(driver);
-
-        // -------------------------
-        // TASK NAVIGATION
-        // -------------------------
-        Allure.step("ENTER INVOICE PAYMENT CONFIRMATION Task - Navigation and opening task", () -> {
-
-            task2Page.openAndEnterInvoicepaymentConfirmationTask();
-        });
-
-        // -------------------------
-        // VALIDATION
-        // -------------------------
-        Allure.step("Validate Task URL opened", () -> {
-
-            String currentUrl = driver.getCurrentUrl();
-
-            boolean isOpened = currentUrl.contains("/start-process/");
-
+        Allure.step("Cancel Request Fields", () -> {
+            actionPage.handleEnterCancelRequestFields();
             SceenshotUtil.takeScreenshot(driver,
-                    isOpened ? "Task URL Verified" : "Task URL Mismatch");
-
-            Assert.assertTrue(isOpened,
-                    "Task URL not opened correctly. URL: " + currentUrl);
-        });
-
-        // -------------------------
-        // TASK FIELDS HANDLING
-        // -------------------------
-        Allure.step("ENTER INVOICE PAYMENT CONFIRMATION Task - Validating and selecting fields", () -> {
-
-            task2Page.handleEnterInvoiceandPaymentConfirmationFields();
+                    "Cancel Request Related Action Flow Completed");
         });
     }
 }

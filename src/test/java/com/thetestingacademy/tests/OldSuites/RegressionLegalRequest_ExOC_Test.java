@@ -1,30 +1,25 @@
-package com.thetestingacademy.tests;
+package com.thetestingacademy.tests.OldSuites;
 
 import com.thetestingacademy.base.BaseTest;
-import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.pages.*;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
-import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
-import java.time.Duration;
 
 @Epic("VenReq Automation Suite")
-@Feature("Sanity Suite - EX OC End-to-End Task Flow")
-public class SanityLegalRequest_ExOC_Test extends BaseTest {
+@Feature("Regression Suite - EX OC End-to-End EDGE Flow")
+public class RegressionLegalRequest_ExOC_Test extends BaseTest {
 
-    @Test(groups = {"Sanity"})
+    @Test(groups = {"Regression"})
     @Severity(SeverityLevel.CRITICAL)
-    @Description("Sanity Flow - EX OC Request + Navigation + Task 1 Execution")
-    public void sanity_ex_oc_flow() {
+    @Description("Regression Edge Flow - EX OC Request + Navigation + Task 1 EdgeFlow")
+    public void regression_ex_oc_flow() {
 
         // =========================
         // OPEN APPLICATION
@@ -68,7 +63,12 @@ public class SanityLegalRequest_ExOC_Test extends BaseTest {
         // =========================
         // TASK 1 EXECUTION
         // =========================
-        executeTask1();
+        executeEdgeTask1();
+
+        // =========================
+        // TASK 1 EXECUTION
+        // =========================
+        //executeEdgeTask2();
 
         // =========================
         // FINAL SCREENSHOT
@@ -77,13 +77,13 @@ public class SanityLegalRequest_ExOC_Test extends BaseTest {
                 .getScreenshotAs(OutputType.BYTES);
 
         Allure.addAttachment(
-                "Sanity Flow Completed for EX OC",
+                "Regression Flow Completed for EX OC",
                 "image/png",
                 new ByteArrayInputStream(screenshot),
                 ".png"
         );
 
-        Allure.step("Sanity Flow Completed for EX OC Successfully");
+        Allure.step("Regression Flow Completed for EX OC Successfully");
     }
 
     // =========================================================
@@ -155,7 +155,7 @@ public class SanityLegalRequest_ExOC_Test extends BaseTest {
     // =========================================================
     // TASK 1 EXECUTION
     // =========================================================
-    private void executeTask1() {
+    private void executeEdgeTask1() {
 
         ConfirmWorkCompletionPage taskPage =
                 new ConfirmWorkCompletionPage(driver);
@@ -185,11 +185,51 @@ public class SanityLegalRequest_ExOC_Test extends BaseTest {
         });
 
         // -------------------------
-        // TASK FIELDS HANDLING
+        // EDGE FLOW HANDLING
         // -------------------------
-        Allure.step("Task 1 - Validating and selecting fields", () -> {
+        Allure.step("Task 1 - Validating EDGE Flow", () -> {
 
-            taskPage.handleConfirmWorkCompletionFields();
+            taskPage.handleConfirmWorkCompletionEdgeFlow();
         });
+    }
+    // =========================================================
+    // TASK 1 EXECUTION
+    // =========================================================
+    private void executeEdgeTask2() {
+
+        EnterInvoice_PaymentConfirmationPage task2Page =
+                new EnterInvoice_PaymentConfirmationPage(driver);
+
+        // -------------------------
+        // TASK NAVIGATION
+        // -------------------------
+        Allure.step("Task 2 - Navigation and opening task", () -> {
+
+            task2Page.openAndEnterInvoicepaymentConfirmationTask() ;
+        });
+
+        // -------------------------
+        // VALIDATION
+        // -------------------------
+        Allure.step("Validate Task URL opened", () -> {
+
+            String currentUrl = driver.getCurrentUrl();
+
+            boolean isOpened = currentUrl.contains("/start-process/");
+
+            SceenshotUtil.takeScreenshot(driver,
+                    isOpened ? "Task URL Verified" : "Task URL Mismatch");
+
+            Assert.assertTrue(isOpened,
+                    "Task URL not opened correctly. URL: " + currentUrl);
+        });
+
+        // -------------------------
+        // EDGE FLOW HANDLING
+        // -------------------------
+        /*Allure.step("Task 2 - Validating and selecting fields", () -> {
+
+            //task2Page.handleInvoicePaymentEdgeFlow();
+        }); */
     }
 }

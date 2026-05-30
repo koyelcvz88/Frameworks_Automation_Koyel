@@ -1,4 +1,4 @@
-package com.thetestingacademy.tests;
+package com.thetestingacademy.tests.OldSuites;
 
 import com.thetestingacademy.base.BaseTest;
 import com.thetestingacademy.pages.*;
@@ -13,13 +13,13 @@ import org.testng.annotations.Test;
 import java.io.ByteArrayInputStream;
 
 @Epic("VenReq Automation Suite")
-@Feature("Regression Suite - EX OC End-to-End EDGE Flow")
-public class RegressionLegalRequest_ExOC_Test extends BaseTest {
+@Feature("E2E Suite - EX OC End-to-End Task Flow")
+public class E2ELegalRequest_ExOC_Test extends BaseTest {
 
-    @Test(groups = {"Regression"})
+    @Test(groups = {"E2E"})
     @Severity(SeverityLevel.CRITICAL)
-    @Description("Regression Edge Flow - EX OC Request + Navigation + Task 1 EdgeFlow")
-    public void regression_ex_oc_flow() {
+    @Description("E2E Flow - EX OC Request + Navigation + Task 1 Execution + Task 2 Execution")
+    public void e2e_ex_oc_flow() {
 
         // =========================
         // OPEN APPLICATION
@@ -63,12 +63,12 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
         // =========================
         // TASK 1 EXECUTION
         // =========================
-        executeEdgeTask1();
+        executeTask1();
 
         // =========================
-        // TASK 1 EXECUTION
+        // TASK 2 EXECUTION
         // =========================
-        //executeEdgeTask2();
+        executeTask2();
 
         // =========================
         // FINAL SCREENSHOT
@@ -77,13 +77,13 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
                 .getScreenshotAs(OutputType.BYTES);
 
         Allure.addAttachment(
-                "Regression Flow Completed for EX OC",
+                "E2E Flow Completed for EX OC",
                 "image/png",
                 new ByteArrayInputStream(screenshot),
                 ".png"
         );
 
-        Allure.step("Regression Flow Completed for EX OC Successfully");
+        Allure.step("E2E Flow Completed for EX OC Successfully");
     }
 
     // =========================================================
@@ -155,7 +155,7 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
     // =========================================================
     // TASK 1 EXECUTION
     // =========================================================
-    private void executeEdgeTask1() {
+    private void executeTask1() {
 
         ConfirmWorkCompletionPage taskPage =
                 new ConfirmWorkCompletionPage(driver);
@@ -163,7 +163,7 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
         // -------------------------
         // TASK NAVIGATION
         // -------------------------
-        Allure.step("Task 1 - Navigation and opening task", () -> {
+        Allure.step("CONFLICT WORK COMPLETION Task  - Navigation and opening task", () -> {
 
             taskPage.openAndEnterConfirmWorkCompletionTask();
         });
@@ -185,17 +185,18 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
         });
 
         // -------------------------
-        // EDGE FLOW HANDLING
+        // TASK FIELDS HANDLING
         // -------------------------
-        Allure.step("Task 1 - Validating EDGE Flow", () -> {
+        Allure.step("CONFLICT WORK COMPLETION Task - Validating and selecting fields", () -> {
 
-            taskPage.handleConfirmWorkCompletionEdgeFlow();
+            taskPage.handleConfirmWorkCompletionFields();
         });
     }
+
     // =========================================================
-    // TASK 1 EXECUTION
+    // TASK 2 EXECUTION
     // =========================================================
-    private void executeEdgeTask2() {
+    private void executeTask2() {
 
         EnterInvoice_PaymentConfirmationPage task2Page =
                 new EnterInvoice_PaymentConfirmationPage(driver);
@@ -203,9 +204,9 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
         // -------------------------
         // TASK NAVIGATION
         // -------------------------
-        Allure.step("Task 2 - Navigation and opening task", () -> {
+        Allure.step("ENTER INVOICE PAYMENT CONFIRMATION Task - Navigation and opening task", () -> {
 
-            task2Page.openAndEnterInvoicepaymentConfirmationTask() ;
+            task2Page.openAndEnterInvoicepaymentConfirmationTask();
         });
 
         // -------------------------
@@ -225,11 +226,11 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
         });
 
         // -------------------------
-        // EDGE FLOW HANDLING
+        // TASK FIELDS HANDLING
         // -------------------------
-        /*Allure.step("Task 2 - Validating and selecting fields", () -> {
+        Allure.step("ENTER INVOICE PAYMENT CONFIRMATION Task - Validating and selecting fields", () -> {
 
-            //task2Page.handleInvoicePaymentEdgeFlow();
-        }); */
+            task2Page.handleEnterInvoiceandPaymentConfirmationFields();
+        });
     }
 }

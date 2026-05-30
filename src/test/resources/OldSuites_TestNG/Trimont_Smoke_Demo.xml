@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="E2E Suite"
+<suite name="Smoke Suite"
        verbose="1"
        parallel="false">
 
@@ -9,19 +9,19 @@
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
     </listeners>
 
-    <!-- E2E Execution -->
-    <test name="E2E Tests">
+    <!-- Smoke Execution -->
+    <test name="Smoke Tests">
 
-        <!-- Execute only E2E group -->
+        <!-- Execute only Smoke group -->
         <groups>
             <run>
-                <include name="E2E"/>
+                <include name="Smoke"/>
             </run>
         </groups>
 
         <!-- Execute all classes from package -->
         <packages>
-            <package name="com.thetestingacademy.tests"/>
+            <package name="com.thetestingacademy.tests.OldSuites"/>
         </packages>
 
     </test>
