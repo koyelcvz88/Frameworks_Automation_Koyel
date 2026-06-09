@@ -1,24 +1,18 @@
 package com.thetestingacademy.pagesHC;
-
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
-public class NewOCSummaryPage {
+public class ExOCSummaryPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    public NewOCSummaryPage(WebDriver driver) {
+    public ExOCSummaryPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
