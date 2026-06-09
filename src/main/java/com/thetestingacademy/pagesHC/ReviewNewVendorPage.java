@@ -1,21 +1,23 @@
-/*package com.thetestingacademy.pages;
+package com.thetestingacademy.pagesHC;
 
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.time.Duration;
 import java.util.List;
 
-public class ReviewNewVendorPage_ExtraCode {
+public class ReviewNewVendorPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    public ReviewNewVendorPage_ExtraCode(WebDriver driver) {
+    public ReviewNewVendorPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
@@ -23,23 +25,12 @@ public class ReviewNewVendorPage_ExtraCode {
     // =========================================================
     // GRID LOCATORS (TASK LIST)
     // =========================================================
-    String requestNumber = TestData.newOCRequestNumber;
-    private String currentTaskId;
-
-
     private By checkboxA = By.xpath(".//input[@type='checkbox']");
     /*private By taskLinkA = By.xpath(","
             + "'Review New Vendor')]"); */
-    /*private By taskLinkA = By.xpath(
+    private By taskLinkA = By.xpath(
             "//table//tbody//tr[.//a[normalize-space()='Review New Vendor']]//td//a[normalize-space()='Review New Vendor']"
     );
-    private By claimVisibleA = By.xpath("//button[.//span[text()='Claim']]");
-    private By tableVisibleA = By.xpath("//table//tbody//tr");
-    /*private By taskA = By.xpath(//a[contains(normalize-space()
-            "//*[contains(normalize-space(),'Review New Vendor')]"); */
-    /*private By taskA = By.xpath(
-            "//table//tbody//tr[.//a[normalize-space()='Review New Vendor']]");
-
     private By claimButtonA = By.xpath("//button[.//span[normalize-space()='Claim']]");
 
     // =========================================================
@@ -66,7 +57,7 @@ public class ReviewNewVendorPage_ExtraCode {
     private By processingIndicatorA = By.xpath(
             "//*[contains(@class,'loading') or contains(@class,'spinner') or @aria-busy='true']"
     );
-    private By saveCloseA = By.xpath("//span[normalize-space()='Save & Close']");
+    //private By saveCloseA = By.xpath("//span[normalize-space()='Save & Close']");
     private By taskGridA = By.xpath("//table//tbody//tr");
     private By commentsLinkA = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
     private By commentSpanLocatorA = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
@@ -83,271 +74,14 @@ public class ReviewNewVendorPage_ExtraCode {
     // =========================================================
     public void openAndEnterReviewNewVendorTask() throws InterruptedException {
 
-        Allure.step("TASK 1 - Review New Vendor: Full navigation flow", () -> {
+        Allure.step("TASK - Review New Vendor: Full navigation flow", () -> {
 
-            // STEP 0: WAIT FOR GRID
-            /*wait.until(ExpectedConditions.or(
-                    ExpectedConditions.visibilityOfElementLocated(claimVisibleA),
-                    ExpectedConditions.visibilityOfElementLocated(tableVisibleA)
-            ));
-
-            System.out.println("✅ Task grid loaded");
-            SceenshotUtil.takeScreenshot(driver, "Task Grid Loaded");
-
-            // STEP 1: FIND TASK (retry + refresh)
-
-            int attempts = 0;
-            int maxAttempts = 3;
-
-            while (attempts < maxAttempts) {
-
-                try {
-                    new WebDriverWait(driver, Duration.ofSeconds(10))
-                            .until(d -> ((JavascriptExecutor) d)
-                                    .executeScript("return document.readyState")
-                                    .equals("complete"));
-
-                    Thread.sleep(3000);
-
-                    List<WebElement> rows = driver.findElements(taskA);
-
-                    if (!rows.isEmpty() && rows.get(0).isDisplayed()) {
-
-                        System.out.println("✅ Task found");
-                        SceenshotUtil.takeScreenshot(driver, "Task Found");
-                        break;
-                    }
-
-                } catch (Exception ignored) {}
-
-                attempts++;
-
-                System.out.println("🔄 Refresh attempt: " + attempts);
-                SceenshotUtil.takeScreenshot(driver, "Task Refresh Attempt " + attempts);
-
-                driver.navigate().refresh();
-            }
-
-            if (attempts == maxAttempts) {
-                throw new RuntimeException("❌ Task not found after retries");
-            } */
-            // STEP 1: RETRY LOGIC (FIXED) 2nd code
-
-            /*int attempts = 0;
-            int maxAttempts = 3;
-            boolean taskFound = false;
-            By taskLocator = By.xpath(
-                    "//a[contains(@class,'LinkedItem') and contains(.,'" + requestNumber.replace("#", "") + "')]"
-            );
-
-            while (attempts < maxAttempts) {
-
-                try {
-
-                    System.out.println("🔍 Searching for task. Attempt: " + (attempts + 1));
-
-                    new WebDriverWait(driver, Duration.ofSeconds(25))
-                            .until(d -> ((JavascriptExecutor) d)
-                                    .executeScript("return document.readyState")
-                                    .equals("complete"));
-
-                    Thread.sleep(8000);
-
-                    try {
-                        new WebDriverWait(driver, Duration.ofSeconds(15))
-                                .until(ExpectedConditions.invisibilityOfElementLocated(
-                                        By.xpath("//*[contains(@class,'LoadingIndicator') or contains(@class,'loading')]")
-                                ));
-                    } catch (Exception ignored) {}
-
-                    // IMPORTANT: re-fetch every time
-                    List<WebElement> tasks = new WebDriverWait(driver, Duration.ofSeconds(10))
-                            .until(d -> d.findElements(taskLocator));
-
-                    if (!tasks.isEmpty()) {
-
-                        WebElement task = tasks.get(0);
-
-                        ((JavascriptExecutor) driver)
-                                .executeScript("arguments[0].scrollIntoView({block:'center'});", task);
-
-                        Thread.sleep(1500);
-
-                        wait.until(ExpectedConditions.elementToBeClickable(task));
-
-                        System.out.println("✅ Task found");
-                        SceenshotUtil.takeScreenshot(driver, "Task Found");
-
-                        try {
-                            task.click();
-                        } catch (Exception e) {
-                            System.out.println("⚠️ Normal click failed. Using JS click.");
-                            ((JavascriptExecutor) driver)
-                                    .executeScript("arguments[0].click();", task);
-                        }
-
-                        System.out.println("✅ Task clicked");
-                        SceenshotUtil.takeScreenshot(driver, "Task Clicked");
-
-                        taskFound = true;
-                        break;
-                    }
-
-                    System.out.println("⚠️ Task not found on attempt: " + (attempts + 1));
-
-                } catch (Exception e) {
-                    System.out.println("⚠️ Exception: " + e.getMessage());
-                }
-
-                attempts++;
-
-                if (attempts < maxAttempts) {
-
-                    System.out.println("🔄 Refreshing page...");
-                    SceenshotUtil.takeScreenshot(driver, "Refresh Attempt " + attempts);
-
-                    driver.navigate().refresh();
-
-                    wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a")));
-
-                    System.out.println("✅ Grid reloaded after refresh");
-
-                    try {
-                        Thread.sleep(7000);
-                    } catch (InterruptedException ignored) {}
-                }
-            }
-
-            if (!taskFound) {
-                SceenshotUtil.takeScreenshot(driver, "Final Task Not Found");
-                throw new RuntimeException("❌ Task not found after retry: " + requestNumber);
-            }
-            /* this.currentTaskId = requestNumber.replace("#", "").trim();
-
-            wait.until(driver ->
-                    ((JavascriptExecutor) driver)
-                            .executeScript("return document.readyState")
-                            .equals("complete")
-            );
-
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ignored) {
-            }
-
-            By taskLocator = By.xpath("//*[contains(text(),'" + currentTaskId + "')]");
-
-            WebElement task = wait.until(driver -> {
-                try {
-                    return driver.findElement(taskLocator);
-                } catch (Exception e) {
-                    return null;
-                }
-            });
-
-            if (task == null) {
-                throw new RuntimeException("❌ Task not found: " + currentTaskId);
-            }
-
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", task);
-
-            try {
-                task.click();
-            } catch (ElementClickInterceptedException e) {
-                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", task);
-            }
-
-            System.out.println("✅ Task clicked: " + currentTaskId);
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ignored) {
-            }
-
-
-            // STEP 2: SELECT CHECKBOX
-            WebElement cb = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(checkboxA)
-            );
-
-            wait.until(ExpectedConditions.visibilityOf(cb));
-
-            cb.click();
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", cb);
-
-            Thread.sleep(800);
-
-            try {
-                wait.until(ExpectedConditions.elementToBeClickable(cb)).click();
-            } catch (Exception e) {
-                System.out.println("⚠️ Normal checkbox click failed. Using JS click.");
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", cb);
-            }
-
-            System.out.println("✅ Checkbox selected");
-            SceenshotUtil.takeScreenshot(driver, "Checkbox Selected");
-
-            // STEP 3: OPEN TASK
-            WebElement link = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(taskLinkA)
-            );
-
-            wait.until(ExpectedConditions.visibilityOf(link));
-
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", link);
-
-            Thread.sleep(1000);
-
-            try {
-                wait.until(ExpectedConditions.elementToBeClickable(link)).click();
-            } catch (Exception e) {
-                System.out.println("⚠️ Normal link click failed. Using JS click.");
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", link);
-            }
-
-            System.out.println("✅ Task opened");
-            SceenshotUtil.takeScreenshot(driver, "Task Opened - Review New Vendor"); */
-
-            // STEP 2: SELECT CHECKBOX (ROBUST FIX - DROP IN) ----- FIXED CODE
-
-            /*By cbLocator = checkboxA;
-            // wait for DOM presence first
-            WebElement cb = wait.until(ExpectedConditions.presenceOfElementLocated(cbLocator));
-            // scroll FIRST (important for Appian UI rendering)
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", cb);
-
-            // small stabilization wait (replace Thread.sleep ideally later)
-            Thread.sleep(500);
-
-            // re-fetch after scroll (prevents stale/intercept issues in Appian)
-            cb = wait.until(ExpectedConditions.visibilityOfElementLocated(cbLocator));
-
-            try {
-                WebElement clickableCb = wait.until(ExpectedConditions.elementToBeClickable(cbLocator));
-                clickableCb.click();
-                System.out.println("✅ Checkbox selected using normal click");
-            } catch (Exception e) {
-                System.out.println("⚠️ Normal click failed. Using JS click.");
-
-                WebElement freshCb = driver.findElement(cbLocator);
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", freshCb);
-            }
-
-            SceenshotUtil.takeScreenshot(driver, "Checkbox Selected");
-
-             */
-            /*boolean taskOpened = false;
+            // STEP 1: Refresh Task Grid
+            boolean taskOpened = false;
 
             for (int attempt = 1; attempt <= 10; attempt++) {
 
-                System.out.println("🔄 Searching for Task 1 for NEW OC - Attempt: " + attempt);
+                System.out.println("🔄 Searching for Task  for NEW OC - Attempt: " + attempt);
 
                 try {
 
@@ -406,15 +140,15 @@ public class ReviewNewVendorPage_ExtraCode {
 
                                 /* =====  VALIDATION ===== */
 
-                               /* wait.until(ExpectedConditions.or(
+                                wait.until(ExpectedConditions.or(
 
                                         // Appian task page URL
                                         ExpectedConditions.urlContains("start-process"),
 
-                                        // fallback if Appian uses task route
+
                                         ExpectedConditions.urlContains("task"),
 
-                                        // safest validation -> page fully loaded with Close Request button
+                                        //  validation -> page fully loaded with Attorney Approve button
                                         ExpectedConditions.visibilityOfElementLocated(attApprovedOption)
 
                                 ));
@@ -486,6 +220,7 @@ public class ReviewNewVendorPage_ExtraCode {
 
             Thread.sleep(1000);
         });
+
         Allure.step("Click Submit button to complete task", () -> {
 
             WebElement sbmtbtnA = wait.until(
@@ -594,7 +329,7 @@ public class ReviewNewVendorPage_ExtraCode {
 
             SceenshotUtil.takeScreenshot(driver, "Comment Saved");
         });
-        Allure.step("Verify comment is displayed in UI after submission", () -> {
+        /*Allure.step("Verify comment is displayed in UI after submission", () -> {
 
             String expectedComment = ConfigReader.getNewOC("newVendor.comments").trim();
 
@@ -630,7 +365,52 @@ public class ReviewNewVendorPage_ExtraCode {
             System.out.println("✅ Comment verified successfully inside Comments section");
 
             SceenshotUtil.takeScreenshot(driver, "Comment Verified in UI");
+        }); */
+        Allure.step("Verify comment is displayed in UI after submission", () -> {
+
+            String expectedComment = ConfigReader.getNewOC("newVendor.comments").trim();
+
+            // Step 1: locate Comments section label first
+            WebElement section = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(commentSectionA)
+            );
+
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    section
+            );
+
+            // Step 2: locate comment globally but still anchored near section text
+            By actualCommentLocator = By.xpath(
+                    "//*[contains(normalize-space(),'" + expectedComment + "')]"
+            );
+
+            WebElement actualComment = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(actualCommentLocator)
+            );
+
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    actualComment
+            );
+
+            String actualText = actualComment.getText().trim();
+
+            System.out.println("Expected Comment: " + expectedComment);
+            System.out.println("Actual Comment: " + actualText);
+
+            if (!actualText.contains(expectedComment)) {
+                throw new RuntimeException(
+                        "❌ Comment mismatch!\nExpected: " + expectedComment +
+                                "\nActual: " + actualText
+                );
+            }
+
+            System.out.println("✅ Comment verified successfully inside Comments section");
+
+            SceenshotUtil.takeScreenshot(driver, "Comment Verified in UI");
         });
+
         Allure.step("Click Submit button to complete task", () -> {
 
             WebElement sbmtbtnA = wait.until(
@@ -697,7 +477,7 @@ public class ReviewNewVendorPage_ExtraCode {
         // =====================================================
         Allure.step("Open Comments tab and validate comment from UI span", () -> {
 
-            String expectedComment = ConfigReader.getData("existing.comments").trim();
+            String expectedComment = ConfigReader.getNewOC("newVendor.comments").trim();
 
             int maxAttempts = 3;
             boolean commentVerified = false;
@@ -812,4 +592,4 @@ public class ReviewNewVendorPage_ExtraCode {
         });
 
     }
-} */
+}
