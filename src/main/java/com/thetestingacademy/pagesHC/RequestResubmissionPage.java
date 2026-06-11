@@ -1,29 +1,19 @@
 package com.thetestingacademy.pagesHC;
 
-import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
-import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
-public class RequestResubmissionPage {
+public class RequestResubmissionPage extends CommonUIActions {
 
-    private WebDriver driver;
-    private WebDriverWait wait;
-
-    public RequestResubmissionPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    public RequestResubmissionPage(org.openqa.selenium.WebDriver driver) {
+        super(driver);
     }
 
     // =========================================================
@@ -62,16 +52,10 @@ public class RequestResubmissionPage {
 
         Allure.step("TASK - Request Resubmission: Full navigation flow", () -> {
 
-            // STEP 0: WAIT FOR GRID
-                    wait.until(ExpectedConditions.or(
-                    ExpectedConditions.visibilityOfElementLocated(claimVisibleR),
-                    ExpectedConditions.visibilityOfElementLocated(tableVisibleR)
-            ));
+            waitForVisible(tableVisibleR);
 
             System.out.println("✅ Task grid loaded");
             SceenshotUtil.takeScreenshot(driver, "Task Grid Loaded");
-
-            // STEP 1: FIND TASK (retry + refresh)
 
             int attempts = 0;
             int maxAttempts = 3;
@@ -79,17 +63,13 @@ public class RequestResubmissionPage {
             while (attempts < maxAttempts) {
 
                 try {
-                    new WebDriverWait(driver, Duration.ofSeconds(10))
-                            .until(d -> ((JavascriptExecutor) d)
-                                    .executeScript("return document.readyState")
-                                    .equals("complete"));
 
+                    waitForPageLoad();
                     Thread.sleep(3000);
 
                     List<WebElement> rows = driver.findElements(taskR);
 
                     if (!rows.isEmpty() && rows.get(0).isDisplayed()) {
-
                         System.out.println("✅ Task found");
                         SceenshotUtil.takeScreenshot(driver, "Task Found");
                         break;
@@ -109,22 +89,13 @@ public class RequestResubmissionPage {
                 throw new RuntimeException("❌ Task not found after retries");
             }
 
-            // STEP 2: SELECT CHECKBOX
-            WebElement cb = wait.until(
-                    ExpectedConditions.elementToBeClickable(checkboxR)
-            );
-
-            cb.click();
+            // COMMON UI ACTIONS
+            click(checkboxR);
 
             System.out.println("✅ Checkbox selected");
             SceenshotUtil.takeScreenshot(driver, "Checkbox Selected");
 
-            // STEP 3: OPEN TASK
-            WebElement link = wait.until(
-                    ExpectedConditions.elementToBeClickable(taskLinkR)
-            );
-
-            link.click();
+            click(taskLinkR);
 
             System.out.println("✅ Task opened");
             SceenshotUtil.takeScreenshot(driver, "Task Opened - Request Resubmission");
@@ -135,46 +106,11 @@ public class RequestResubmissionPage {
     // Task UI - Submit Field
     // =========================================================
     public void handleRequestResubmissionFields() {
-        Allure.step("Click Submit button to complete task", () -> {
+        Allure.step("Click Resubmit button to complete task", () -> {
 
-            WebElement sbmtbtn = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(reSubmitButton)
-            );
-
-            //  ensure it's actually enabled
-            wait.until(driver ->
-                    sbmtbtn.isDisplayed() && sbmtbtn.isEnabled()
-            );
-
-            //  scroll into view
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtn);
-
-            //  wait for stability before click
-            wait.until(ExpectedConditions.elementToBeClickable(sbmtbtn));
-
-            sbmtbtn.click();
+            click(reSubmitButton);
 
             System.out.println("✅ ReSubmit button clicked");
-
-            /*// WAIT FOR POST-SUBMIT STATE CHANGE
-            // Option A: URL change
-            boolean urlChanged = wait.until(driver ->
-                    !driver.getCurrentUrl().contains("start-process")
-            );
-
-            if (!urlChanged) {
-                throw new AssertionError("ReSubmit click did not navigate away - likely validation failure");
-            }
-
-            //  confirm no validation banner appears
-            boolean validationErrorPresent = !driver.findElements(
-                    By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
-            ).isEmpty();
-
-            if (validationErrorPresent) {
-                throw new AssertionError("Validation error detected after resubmit");
-            } */
 
             SceenshotUtil.takeScreenshot(driver, "Task ReSubmitted");
         });
@@ -184,26 +120,19 @@ public class RequestResubmissionPage {
         // -------------------------------
         Allure.step("Click Back to Home and validate Home page", () -> {
 
-            WebElement backToHomeBtn = wait.until(
+            WebElement backBtn = wait.until(
                     ExpectedConditions.elementToBeClickable(backToHome)
             );
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    backToHomeBtn
-            );
+            scrollToElement(backToHome);
 
             try {
-                backToHomeBtn.click();
+                click(backBtn);
             } catch (Exception e) {
-
                 System.out.println("⚠️ Normal click failed. Using JS click.");
-
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", backToHomeBtn);
+                jsClick(backBtn);
             }
 
-            // wait until redirected to home page
             wait.until(ExpectedConditions.urlContains("/home"));
 
             String currentUrl = driver.getCurrentUrl();

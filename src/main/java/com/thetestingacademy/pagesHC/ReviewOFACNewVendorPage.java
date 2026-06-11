@@ -1,6 +1,5 @@
 package com.thetestingacademy.pagesHC;
 
-import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
@@ -11,54 +10,52 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class ReviewNewVendorPage extends CommonUIActions {
+public class ReviewOFACNewVendorPage {
+    private WebDriver driver;
+    private WebDriverWait wait;
 
-    public ReviewNewVendorPage(WebDriver driver) {
-        super(driver);
+    public ReviewOFACNewVendorPage(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     }
 
     // =========================================================
-    // GRID LOCATORS
+    // GRID LOCATORS (TASK LIST)
     // =========================================================
-    private By checkboxA = By.xpath(
-            "//table//tbody//tr[.//a[normalize-space()='Review New Vendor']]//input[@type='checkbox']"
+    private By checkboxB = By.xpath(".//input[@type='checkbox']");
+    private By taskLinkB = By.xpath(
+            "//table//tbody//tr[.//a[normalize-space()='Review OFAC For New Vendor']]//td//a[normalize-space()='Review OFAC For New Vendor']"
     );
-
-    private By taskLinkA = By.xpath(
-            "//table//tbody//tr[.//a[normalize-space()='Review New Vendor']]//td//a[normalize-space()='Review New Vendor']"
-    );
-
-    private By claimButtonA = By.xpath("//button[.//span[normalize-space()='Claim']]");
-    private By taskRow = By.xpath("//table//tbody//tr");
+    private By claimButtonB = By.xpath("//button[.//span[normalize-space()='Claim']]");
 
     // =========================================================
     // TASK PAGE LOCATORS (UI)
     // =========================================================
-    private By attApprovedOption = By.xpath(
-            "//label[normalize-space()='New OC Counsel/Attorney Approved']"
+    private By OFACApprovedOption = By.xpath(
+            "//label[normalize-space()='OFAC Approved']"
     );
-    private By submitButtonA = By.xpath("//button[.//span[text()='Submit']]");
+    private By submitButtonB = By.xpath("//button[.//span[text()='Submit']]");
 
     // =========================================================
     // Edge scenario locators
     // =========================================================
 
-    private By attRejectedOption = By.xpath(
-            "//label[normalize-space()='New OC Counsel/Attorney Rejected']"
+    private By OFACRejectedOption = By.xpath(
+            "//label[normalize-space()='OFAC Rejected']"
     );
-    private By commentBoxA = By.xpath("//textarea");
-    private By saveArrowA = By.xpath(
+    private By commentBoxB = By.xpath("//textarea");
+    private By saveArrowB = By.xpath(
             "//button[not(@disabled)]//*[name()='svg' and @data-owl-icon-name='chevron-right']/ancestor::button[1]"
     );
-    private By commentSectionA = By.xpath(
+    private By commentSectionB = By.xpath(
             "//*[normalize-space()='Comments']/ancestor::div[1]");
-    private By processingIndicatorA = By.xpath(
+    /*private By processingIndicatorB = By.xpath(
             "//*[contains(@class,'loading') or contains(@class,'spinner') or @aria-busy='true']"
-    );
-    //private By saveCloseA = By.xpath("//span[normalize-space()='Save & Close']");
-    private By taskGridA = By.xpath("//table//tbody//tr");
-    private By commentsLinkA = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
-    private By commentSpanLocatorA = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
+    ); */
+    //private By saveCloseB = By.xpath("//span[normalize-space()='Save & Close']");
+    private By taskGridB = By.xpath("//table//tbody//tr");
+    private By commentsLinkB = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
+    private By commentSpanLocatorB = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
 
     // =========================================================
     // UTILITY METHOD (ADDED)
@@ -68,116 +65,147 @@ public class ReviewNewVendorPage extends CommonUIActions {
     }
 
     // =========================================================
-    // NAVIGATION
+    // Navigation TASK 1
     // =========================================================
-    public void openAndEnterReviewNewVendorTask() throws InterruptedException {
+    public void openAndEnterReviewOFACNewVendorTask() throws InterruptedException {
 
-            Allure.step("TASK - Review New Vendor: Full navigation flow", () -> {
+        Allure.step("TASK - Review OFAC New Vendor: Full navigation flow", () -> {
 
-                boolean taskOpened = false;
+            // STEP 1: Refresh Task Grid
+            boolean taskOpened = false;
 
-                for (int attempt = 1; attempt <= 10; attempt++) {
+            for (int attempt = 1; attempt <= 10; attempt++) {
 
-                    System.out.println("🔄 Searching Task - Attempt: " + attempt);
+                System.out.println("🔄 Searching for Task for NEW OC - Attempt: " + attempt);
 
-                    try {
+                try {
 
-                        List<WebElement> rows = wait.until(
-                                ExpectedConditions.presenceOfAllElementsLocatedBy(taskRow)
-                        );
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//table//tbody//tr")));
 
-                        System.out.println("Rows found: " + rows.size());
+                    List<WebElement> rows = driver.findElements(
+                            By.xpath("//table//tbody//tr"));
 
-                        for (WebElement row : rows) {
+                    System.out.println("Rows found: " + rows.size());
 
-                            try {
+                    for (int i = 0; i < rows.size(); i++) {
 
-                                String rowText = row.getText();
+                        try {
 
-                                if (rowText.contains("Review New Vendor")
-                                        && rowText.contains("To Do")) {
+                            rows = driver.findElements(By.xpath("//table//tbody//tr"));
+                            WebElement row = rows.get(i);
 
-                                    System.out.println("✅ Matching row found");
+                            String rowText = row.getText();
 
-                                    // =========================
-                                    // CHECKBOX (SCOPED TO ROW)
-                                    // =========================
-                                    WebElement chckbx = row.findElement(
-                                            By.xpath(".//input[@type='checkbox']")
-                                    );
+                            System.out.println("ROW => " + rowText);
 
-                                    click(chckbx);
-                                    System.out.println("✅ Checkbox selected");
+                            if (rowText.contains("Review OFAC For New Vendor")
+                                    && rowText.contains("To Do")) {
 
-                                    // =========================
-                                    // CLAIM BUTTON (GLOBAL)
-                                    // =========================
-                                    WebElement claimBtn = wait.until(
-                                            ExpectedConditions.elementToBeClickable(claimButtonA)
-                                    );
+                                System.out.println("✅ Task 2 row located");
 
-                                    click(claimBtn);
-                                    System.out.println("✅ Claim clicked");
+                                // ==============================
+                                // SELECT CHECKBOX
+                                // ==============================
 
-                                    // =========================
-                                    // TASK LINK (SCOPED TO ROW)
-                                    // =========================
-                                    WebElement task = row.findElement(
-                                            By.xpath(".//a[normalize-space()='Review New Vendor']")
-                                    );
+                                WebElement chckbx = row.findElement(checkboxB);
 
-                                    click(task);
-                                    System.out.println("✅ Task opened");
+                                ((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", chckbx);
 
-                                    // =========================
-                                    // VALIDATION
-                                    // =========================
-                                    wait.until(ExpectedConditions.or(
-                                            ExpectedConditions.urlContains("task"),
-                                            ExpectedConditions.urlContains("start-process"),
-                                            ExpectedConditions.visibilityOfElementLocated(attApprovedOption)
-                                    ));
+                                System.out.println("✅ Checkbox selected");
 
-                                    System.out.println("Current URL: " + driver.getCurrentUrl());
+                                // WAIT FOR CLAIM BUTTON
+                                WebElement claimBtn = wait.until(
+                                        ExpectedConditions.elementToBeClickable(claimButtonB));
 
-                                    taskOpened = true;
-                                    break;
-                                }
+                                ((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", claimBtn);
 
-                            } catch (StaleElementReferenceException e) {
-                                System.out.println("⚠ Row stale, retrying...");
+                                System.out.println("✅ Claim button clicked");
+
+                                // WAIT FOR TASK LINK
+                                WebElement task = wait.until(
+                                        ExpectedConditions.elementToBeClickable(taskLinkB));
+
+                                ((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", task);
+
+                                System.out.println("✅ Task opened");
+
+                                /* =====  VALIDATION ===== */
+
+                                wait.until(ExpectedConditions.or(
+
+                                        // Appian task page URL
+                                        ExpectedConditions.urlContains("start-process"),
+
+
+                                        ExpectedConditions.urlContains("task"),
+
+                                        //  validation -> page fully loaded with OFAC Approve button
+                                        ExpectedConditions.visibilityOfElementLocated(OFACApprovedOption)
+
+                                ));
+
+                                System.out.println("✅ Task URL verified: "
+                                        + driver.getCurrentUrl());
+
+                                taskOpened = true;
+
+                                break;
+
                             }
+
+                        } catch (StaleElementReferenceException e) {
+
+                            System.out.println("⚠ Row became stale, retrying row...");
                         }
-
-                        if (taskOpened) break;
-
-                        driver.navigate().refresh();
-                        Thread.sleep(3000);
-
-                    } catch (Exception e) {
-                        System.out.println("❌ Attempt failed: " + e.getMessage());
-                        driver.navigate().refresh();
-                        Thread.sleep(3000);
                     }
-                }
 
-                if (!taskOpened) {
-                    throw new RuntimeException("❌ Task not found after retries");
-                }
+                    if (taskOpened) {
+                        break;
+                    }
 
-                System.out.println("✅ Task opened successfully");
-                SceenshotUtil.takeScreenshot(driver, "Task Opened - Review New Vendor");
-            });
+                    driver.navigate().refresh();
+
+                    System.out.println("🔄 Page refreshed");
+
+                    Thread.sleep(3000);
+
+                } catch (Exception e) {
+
+                    System.out.println("❌ Attempt failed: " + e.getMessage());
+
+                    driver.navigate().refresh();
+
+                    Thread.sleep(3000);
+                }
+            }
+
+            if (!taskOpened) {
+                throw new RuntimeException(
+                        "❌ Task 2 could not be opened after retries");
+            }
+
+            System.out.println("✅ Task opened and validated successfully");
+
+            SceenshotUtil.takeScreenshot(driver, "Task Opened - Review OFAC For New Vendor");
+        });
     }
+
+
     // =========================================================
-    // APPROVE FLOW
+    // Task UI - Fields
     // =========================================================
-    public void handleReviewNewVendorFields() {
+    public void handleReviewOFACNewVendorFields() {
 
         Allure.step("Select Approved radio button", () -> {
 
-            // COMMON UI ACTION replaces explicit wait + click
-            click(attApprovedOption);
+            WebElement AttorneyApprove = wait.until(
+                    ExpectedConditions.elementToBeClickable(OFACApprovedOption));
+
+            AttorneyApprove.click();
 
             System.out.println("✅ Approved radio button selected");
             Allure.step("Approved radio button selected");
@@ -187,26 +215,39 @@ public class ReviewNewVendorPage extends CommonUIActions {
 
             Thread.sleep(1000);
         });
-
         Allure.step("Click Submit button to complete task", () -> {
 
-            // COMMON UI ACTION: wait + click handled internally
-            click(submitButtonA);
+            WebElement sbmtbtnB = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(submitButtonB)
+            );
+
+            //  ensure it's actually enabled
+            wait.until(driver ->
+                    sbmtbtnB.isDisplayed() && sbmtbtnB.isEnabled()
+            );
+
+            //  scroll into view
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnB);
+
+            //  wait for stability before click
+            wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnB));
+
+            sbmtbtnB.click();
 
             System.out.println("✅ Submit button clicked");
 
             // WAIT FOR POST-SUBMIT STATE CHANGE
+            // Option A: URL change
             boolean urlChanged = wait.until(driver ->
                     !driver.getCurrentUrl().contains("start-process")
             );
 
             if (!urlChanged) {
-                throw new AssertionError(
-                        "Submit click did not navigate away - likely validation failure"
-                );
+                throw new AssertionError("Submit click did not navigate away - likely validation failure");
             }
 
-            // confirm no validation banner appears
+            //  confirm no validation banner appears
             boolean validationErrorPresent = !driver.findElements(
                     By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
             ).isEmpty();
@@ -219,15 +260,13 @@ public class ReviewNewVendorPage extends CommonUIActions {
         });
     }
 
-    // =========================================================
-    // Edge FLOW
-    // =========================================================
-    public void handleReviewNewVendorEdgeFlow() {
-
+    public void handleReviewOFACNewVendorEdgeFlow() {
         Allure.step("Select Rejected radio button", () -> {
 
-            // COMMON UI ACTION replaces explicit wait + WebElement handling
-            click(attRejectedOption);
+            WebElement AttorneyReject= wait.until(
+                    ExpectedConditions.elementToBeClickable(OFACRejectedOption));
+
+            AttorneyReject.click();
 
             System.out.println("✅ Rejected radio button selected");
             Allure.step("Rejected radio button selected");
@@ -241,31 +280,34 @@ public class ReviewNewVendorPage extends CommonUIActions {
         // =====================================================
         // 3. COMMENTS
         // =====================================================
-
         Allure.step("Enter comment and submit via right arrow", () -> {
 
-            String expectedComment = ConfigReader.getNewOC("newVendor.comments");
+            String expectedComment = ConfigReader.getNewOC("newOFAC.comments");
 
-            // TYPE using CommonUIActions (replaces click + clear + sendKeys)
-            type(commentBoxA, expectedComment);
+            WebElement comments = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(commentBoxB)
+            );
+
+            comments.click();
+            comments.clear();
+            comments.sendKeys(expectedComment);
 
             SceenshotUtil.takeScreenshot(driver, "Comments Entered");
 
-            // wait briefly for Appian UI state update (kept as-is per rule)
+            // wait briefly for Appian UI state update
             Thread.sleep(2000);
 
             // locate enabled arrow button only
             WebElement arrowBtn = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(saveArrowA)
+                    ExpectedConditions.presenceOfElementLocated(saveArrowB)
             );
 
-            // scroll using JS (kept as-is since CommonUIActions rule not applied here)
             ((JavascriptExecutor) driver).executeScript(
                     "arguments[0].scrollIntoView({block:'center'});",
                     arrowBtn
             );
 
-            // JS click (kept unchanged for Appian stability)
+            // JS click works better for Appian
             ((JavascriptExecutor) driver).executeScript(
                     "arguments[0].click();",
                     arrowBtn
@@ -284,14 +326,17 @@ public class ReviewNewVendorPage extends CommonUIActions {
 
         Allure.step("Verify comment is displayed in UI after submission", () -> {
 
-            String expectedComment = ConfigReader.getNewOC("newVendor.comments").trim();
+            String expectedComment = ConfigReader.getNewOC("newOFAC.comments").trim();
 
             // Step 1: locate Comments section label first
             WebElement section = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(commentSectionA)
+                    ExpectedConditions.visibilityOfElementLocated(commentSectionB)
             );
 
-            scrollToElement(commentSectionA);
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    section
+            );
 
             // Step 2: locate comment globally but still anchored near section text
             By actualCommentLocator = By.xpath(
@@ -302,7 +347,10 @@ public class ReviewNewVendorPage extends CommonUIActions {
                     ExpectedConditions.visibilityOfElementLocated(actualCommentLocator)
             );
 
-            scrollToElement(actualCommentLocator);
+            ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    actualComment
+            );
 
             String actualText = actualComment.getText().trim();
 
@@ -323,12 +371,28 @@ public class ReviewNewVendorPage extends CommonUIActions {
 
         Allure.step("Click Submit button to complete task", () -> {
 
-            // COMMON UI ACTION replaces wait + scroll + click chain
-            click(submitButtonA);
+            WebElement sbmtbtnB = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(submitButtonB)
+            );
+
+            //  ensure it's actually enabled
+            wait.until(driver ->
+                    sbmtbtnB.isDisplayed() && sbmtbtnB.isEnabled()
+            );
+
+            //  scroll into view
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnB);
+
+            //  wait for stability before click
+            wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnB));
+
+            sbmtbtnB.click();
 
             System.out.println("✅ Submit button clicked");
 
             // WAIT FOR POST-SUBMIT STATE CHANGE
+            // Option A: URL change
             boolean urlChanged = wait.until(driver ->
                     !driver.getCurrentUrl().contains("start-process")
             );
@@ -337,7 +401,7 @@ public class ReviewNewVendorPage extends CommonUIActions {
                 throw new AssertionError("Submit click did not navigate away - likely validation failure");
             }
 
-            // confirm no validation banner appears
+            //  confirm no validation banner appears
             boolean validationErrorPresent = !driver.findElements(
                     By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
             ).isEmpty();
@@ -348,18 +412,17 @@ public class ReviewNewVendorPage extends CommonUIActions {
 
             SceenshotUtil.takeScreenshot(driver, "Task Submitted");
         });
-
         // =====================================================
         // 5. NAVIGATE BACK TO GRID (implicit)
         // =====================================================
         Allure.step("Verify return to task grid", () -> {
 
-            // COMMON UI ACTION (wait for element visibility instead of presence checks)
-            waitForVisible(taskGridA);
+            // Wait for grid to reappear after Save & Close navigation
+            wait.until(ExpectedConditions.presenceOfElementLocated(taskGridB));
 
             // Ensure grid is actually rendered (not just DOM placeholder)
             wait.until(driver ->
-                    driver.findElements(taskGridA).size() > 0
+                    driver.findElements(taskGridB).size() > 0
             );
 
             System.out.println("✅ Returned to task grid successfully");
@@ -397,34 +460,35 @@ public class ReviewNewVendorPage extends CommonUIActions {
                         System.out.println("✅ Page refreshed");
                     }
 
-                    // STEP 1: Click Comments Tab (COMMON UI ACTION)
+                    // STEP 1: Click Comments Tab
                     WebElement commentsTab = wait.until(
-                            ExpectedConditions.elementToBeClickable(commentsLinkA)
+                            ExpectedConditions.elementToBeClickable(commentsLinkB)
                     );
 
-                    scrollToElement(commentsTab);
+                    ((JavascriptExecutor) driver)
+                            .executeScript("arguments[0].scrollIntoView({block:'center'});", commentsTab);
 
                     try {
-                        click(commentsTab);
+                        commentsTab.click();
                     } catch (Exception e) {
                         System.out.println("⚠️ JS click fallback used");
-                        jsClick(commentsTab);
+                        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", commentsTab);
                     }
 
                     System.out.println("✅ Comments tab clicked");
 
-                    // STEP 2: WAIT FOR COMMENT SPANS (UNCHANGED LOGIC)
+                    // STEP 2: WAIT FOR COMMENT SPANS
                     List<WebElement> spans = new WebDriverWait(driver, Duration.ofSeconds(20))
                             .until(driver1 -> {
 
-                                List<WebElement> s = driver1.findElements(commentSpanLocatorA);
+                                List<WebElement> s = driver1.findElements(commentSpanLocatorB);
 
                                 return (s.size() >= 1) ? s : null;
                             });
 
                     System.out.println("✅ Comment spans loaded: " + spans.size());
 
-                    // STEP 3: SEARCH COMMENT IN SPANS (UNCHANGED LOGIC)
+                    // STEP 3: SEARCH COMMENT IN SPANS
                     boolean found = false;
                     String actual = "";
 
@@ -478,10 +542,12 @@ public class ReviewNewVendorPage extends CommonUIActions {
             if (!commentVerified && lastException != null) {
                 throw new RuntimeException("❌ Final failure", lastException);
             }
-
             System.out.println("✅ Comment successfully verified from UI span");
 
             SceenshotUtil.takeScreenshot(driver, "Comments Final Verified");
+
+            //System.out.println("✅ Comment successfully verified for user: " + username);
         });
+
     }
 }
