@@ -1,4 +1,4 @@
-package com.thetestingacademy.pagesHC;
+package com.thetestingacademy.pagesHC.pages;
 
 import com.thetestingacademy.actions.CommonUIActions;
 import io.qameta.allure.Allure;

@@ -1,4 +1,4 @@
-package com.thetestingacademy.pagesHC;
+package com.thetestingacademy.pagesHC.pages;
 
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;

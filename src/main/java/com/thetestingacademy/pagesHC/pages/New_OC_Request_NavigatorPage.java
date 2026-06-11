@@ -1,4 +1,4 @@
-package com.thetestingacademy.pagesHC;
+package com.thetestingacademy.pagesHC.pages;
 
 import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
@@ -13,11 +13,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
-public class Ex_OC_Request_NavigatorPage extends CommonUIActions {
+public class New_OC_Request_NavigatorPage extends CommonUIActions {
 
     private final DataModel testData;
 
-    public Ex_OC_Request_NavigatorPage(WebDriver driver, DataModel testData) {
+    public New_OC_Request_NavigatorPage(WebDriver driver, DataModel testData) {
         super(driver);
         this.testData = testData;
     }
@@ -43,9 +43,9 @@ public class Ex_OC_Request_NavigatorPage extends CommonUIActions {
     // =========================================================
     // SINGLE BUSINESS FLOW METHOD (RECOMMENDED)
     // =========================================================
-    public void exOCRequest() {
+    public void newOCRequest() {
 
-        Allure.step("Home → Open Latest EX OC Request Number", () -> {
+        Allure.step("Home → Open Latest NEW OC Request Number", () -> {
 
             // -------------------------------
             // STEP 1: Navigate to Home
@@ -68,32 +68,29 @@ public class Ex_OC_Request_NavigatorPage extends CommonUIActions {
             // STEP 2: Get Request Number
             // ==========================================
 
-            Allure.step("Fetch EX OC Request Number", () -> {
+            Allure.step("Fetch NEW OC Request Number", () -> {
 
-                targetRequest = TestData.exOCRequestNumber;
+                targetRequest = TestData.newOCRequestNumber;
 
                 if (targetRequest == null || targetRequest.isEmpty()) {
 
                     throw new RuntimeException(
-                            "EX OC Request Number missing in TestData"
+                            "NEW OC Request Number missing in TestData"
                     );
                 }
-
                 //  Remove '#'
                 targetRequest = targetRequest.replace("#", "").trim();
 
                 System.out.println("Processed Target Request : " + targetRequest);
 
-                Allure.step(
-                        "Target Request : " + targetRequest
-                );
+                Allure.step("Target Request : " + targetRequest);
             });
 
             // ==========================================
             // STEP 3: Open Request
             // ==========================================
 
-            Allure.step("Open Existing OC Request", () -> {
+            Allure.step("Open New OC Request", () -> {
 
                 By requestLink = By.xpath(
                         "//a[contains(@class,'LinkedItem') and contains(text(),'"
@@ -123,22 +120,13 @@ public class Ex_OC_Request_NavigatorPage extends CommonUIActions {
 
                     System.out.println("Clicked EX OC Request : " + targetRequest);
 
-                    SceenshotUtil.takeScreenshot(
-                            driver,
-                            "Clicked EX OC Request"
-                    );
+                    SceenshotUtil.takeScreenshot(driver, "Clicked NEW OC Request");
 
                 } catch (Exception e) {
 
-                    SceenshotUtil.takeScreenshot(
-                            driver,
-                            "EX OC Request Not Found"
-                    );
+                    SceenshotUtil.takeScreenshot(driver, "NEW OC Request Not Found");
 
-                    throw new RuntimeException(
-                            "EX OC Request not found on Home Page : "
-                                    + targetRequest
-                    );
+                    throw new RuntimeException("NEW OC Request not found on Home Page : " + targetRequest);
                 }
             });
 
@@ -187,12 +175,13 @@ public class Ex_OC_Request_NavigatorPage extends CommonUIActions {
             // FINAL STEP
             // ==========================================
 
-            Allure.step("Existing OC Request Opened Successfully", () -> {
+            Allure.step("NEW OC Request Opened Successfully", () -> {
 
-                SceenshotUtil.takeScreenshot(driver, "Existing OC Request Opened Successfully");
+                SceenshotUtil.takeScreenshot(driver, "NEW OC Request Opened Successfully");
 
             });
         });
     }
 }
+
 
