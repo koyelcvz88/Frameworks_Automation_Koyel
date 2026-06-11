@@ -1,4 +1,4 @@
-package com.thetestingacademy.Removed;
+package com.thetestingacademy.pagesHC;
 
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
@@ -10,12 +10,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class ExecuteAndUploadELPageOld {
+public class ExecuteAndUploadELPage {
     private WebDriver driver;
     private WebDriverWait wait;
     private Actions actions;
 
-    public ExecuteAndUploadELPageOld(WebDriver driver) {
+    public ExecuteAndUploadELPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         this.actions = new Actions(driver);
@@ -34,27 +34,10 @@ public class ExecuteAndUploadELPageOld {
     // TASK PAGE LOCATORS (UI)
     // =========================================================
     private By executeEngagementLettersCheckbox = By.xpath(".//input[@type='checkbox']");
-            //By.xpath("//span[contains(text(),'Execution of the Engagement Letter')]");
-            //By.xpath("//strong[normalize-space()='Execute Engagement letters']/preceding::input[@type='checkbox'][1]");
-            /*By.xpath(
-                    "//div[contains(@class,'CheckboxGroup---choice_pair')]//input[@type='checkbox']"
-            );
-
-    /*private By uploadExecutedEngagementLettersButton = By.xpath(
-            "//span[contains(normalize-space(),'Upload Executed Engagement Letters')]//following::span[text()='Upload'][1]"
-    );
-    By.xpath("//span[contains(text(),'Execution of the Engagement Letter')]");*/
-
     private By uploadExecutedEngagementLettersButton = By.xpath(
             "(//div[contains(.,'Upload Executed Engagement Letters')]/following::button[.//span[normalize-space()='Upload']])[1]");
-            /*By.xpath(
-            "//div[contains(.,'Upload Executed Engagement Letters')]\n" +
-                    "   //button[.//span[normalize-space()='Upload']]"
-    ); */
+
     private By uploadW9Button = By.xpath("(//div[contains(.,'Upload W9 Form')]/following::button[.//span[normalize-space()='Upload']])[1]");
-    /*private By uploadW9Button =
-                    By.xpath("//div[.//span[normalize-space()='Upload W9 Form']]\n" +
-            "   //button[.//span[normalize-space()='Upload']]"); */
     private By submitButtonC = By.xpath("//button[.//span[text()='Submit']]");
 
     // =========================================================
@@ -64,8 +47,6 @@ public class ExecuteAndUploadELPageOld {
     private By taskGridC = By.xpath("//table//tbody//tr");
     private By EngagementLetterLink = By.xpath("//a[normalize-space()='Engagement Letter']");
     private By W9FormLink = By.xpath("//a[normalize-space()='W-9 Form']");
-    private By commentsLinkC = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
-    private By commentSpanLocatorC = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
 
     // =========================================================
     // UTILITY METHOD (ADDED)
@@ -213,30 +194,9 @@ public class ExecuteAndUploadELPageOld {
         // STEP : Select Execute Engagement Letters Checkbox
         Allure.step("Selecting 'Execute Engagement letters' checkbox", () -> {
 
-            /*WebElement checkboxLabel = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(executeEngagementLettersCheckbox)
-            );
-
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", checkboxLabel);
-
-            Thread.sleep(800);
-
-            try {
-                checkboxLabel.click();
-            } catch (Exception e) {
-                System.out.println("⚠️ Normal click failed, using JS click");
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", checkboxLabel);
-            }
-
-            System.out.println("✅ Checkbox selected successfully");
-        }); */
-            // ==============================
-
-// ==============================
-// STEP: FIND ROW + SELECT CHECKBOX + EXPAND ROW (APPIAN SAFE)
-// ==============================
+        // ==============================
+        // STEP: FIND ROW + SELECT CHECKBOX + EXPAND ROW (APPIAN SAFE)
+        // ==============================
 
             boolean actionDone = false;
 
@@ -342,9 +302,9 @@ public class ExecuteAndUploadELPageOld {
                 }
             }
 
-// ==============================
-// FINAL VALIDATION
-// ==============================
+           // ==============================
+           // FINAL VALIDATION
+           // ==============================
 
             if (!actionDone) {
                 throw new RuntimeException("❌ Engagement row selection failed after retries");
@@ -356,422 +316,14 @@ public class ExecuteAndUploadELPageOld {
         });
 
         // STEP : Upload Engagement Letter
-        /*Allure.step("Uploading Executed Engagement Letters", () -> {
+         Allure.step("Uploading Executed Engagement Letters", () -> {
 
-            try {
-
-                // ==============================
-                // CLICK UPLOAD BUTTON
-                // ==============================
-                WebElement uploadButton1 = wait.until(
-                        ExpectedConditions.elementToBeClickable(
-                                uploadExecutedEngagementLettersButton)
-                );
-
-                ((JavascriptExecutor) driver).executeScript(
-                        "arguments[0].scrollIntoView({block:'center'});",
-                        uploadButton1
-                );
-
-                Thread.sleep(1000);
-
-                try {
-                    uploadButton1.click();
-                } catch (Exception e) {
-
-                    ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].click();", uploadButton1);
-                }
-
-                System.out.println("✅ Upload button clicked successfully");
-
-                // ==============================
-                // WAIT FOR FILE INPUT
-                // ==============================
-                WebElement uploadFileInput = wait.until(
-                        ExpectedConditions.presenceOfElementLocated(
-                                By.xpath("//input[@type='file']")
-                        )
-                );
-
-                // ==============================
-                // BUILD FILE PATH CORRECTLY
-                // ==============================
-                String filePath = Paths.get(
-                        System.getProperty("user.dir"),
-                        "src",
-                        "main",
-                        "resources",
-                        "Legal_Engagement_Letter_Trimont.pdf"
-                ).toAbsolutePath().toString();
-
-                System.out.println("📂 FILE PATH => " + filePath);
-
-                // ==============================
-                // VALIDATE FILE EXISTS
-                // ==============================
-                File file = new File(filePath);
-
-                if (!file.exists()) {
-
-                    throw new RuntimeException(
-                            "❌ File NOT found: " + filePath
-                    );
-                }
-
-                System.out.println("✅ File exists");
-
-                // ==============================
-                // UPLOAD FILE
-                // ==============================
-                uploadFileInput.sendKeys(filePath);
-
-                Thread.sleep(4000);
-
-                System.out.println(
-                        "✅ Executed Engagement Letter uploaded successfully"
-                );
-
-                Allure.step(
-                        "Executed Engagement Letter uploaded successfully"
-                );
-
-                // ==============================
-                // SCREENSHOT
-                // ==============================
-                SceenshotUtil.takeScreenshot(driver, "Executed_Engagement_Letter_Uploaded");
-
-
-            } catch (Exception e) {
-
-                SceenshotUtil.takeScreenshot(driver, "Executed_Engagement_Letter_Upload_Failed");
-
-                throw e;
-            }
-        });
-
-        // STEP : Upload W9 Form
-        Allure.step("Uploading W9 Form", () -> {
-
-            try {
-
-                // ================= CLICK UPLOAD BUTTON =================
-                WebElement uploadButton2 = wait.until(
-                        ExpectedConditions.elementToBeClickable(uploadW9Button)
-                );
-
-                ((JavascriptExecutor) driver).executeScript(
-                        "arguments[0].scrollIntoView({block:'center'});",
-                        uploadButton2
-                );
-
-                Thread.sleep(1000);
-
-                try {
-
-                    uploadButton2.click();
-
-                } catch (Exception clickException) {
-
-                    ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].click();", uploadButton2);
-                }
-
-                System.out.println("✅ Upload button clicked successfully");
-
-                // ================= WAIT FOR FILE INPUT =================
-                WebElement uploadFileInput = wait.until(
-                        ExpectedConditions.presenceOfElementLocated(
-                                By.xpath("//input[@type='file']")
-                        )
-                );
-
-                // ================= BUILD FILE PATH =================
-                String filePath = Paths.get(
-                        System.getProperty("user.dir"),
-                        "src",
-                        "main",
-                        "resources",
-                        "Form_W9_Trimont_Sample.pdf"
-                ).toAbsolutePath().toString();
-
-                System.out.println("📂 FILE PATH => " + filePath);
-
-                // ================= VALIDATE FILE EXISTS =================
-                File file = new File(filePath);
-
-                if (!file.exists()) {
-
-                    SceenshotUtil.takeScreenshot(driver, "W9_FILE_NOT_FOUND");
-
-                    throw new RuntimeException(
-                            "❌ W9 File NOT found at path: " + filePath
-                    );
-                }
-
-                System.out.println("✅ File exists");
-
-                // ================= UPLOAD FILE =================
-                uploadFileInput.sendKeys(file.getAbsolutePath());
-
-                System.out.println("✅ File path sent to input");
-
-                // ================= WAIT FOR SUCCESS =================
-                wait.until(ExpectedConditions.or(
-
-                        ExpectedConditions.visibilityOfElementLocated(
-                                By.xpath("//*[contains(text(),'Form_W9_Trimont_Sample.pdf')]")
-                        ),
-
-                        ExpectedConditions.visibilityOfElementLocated(
-                                By.xpath("//*[contains(text(),'uploaded')]")
-                        ),
-
-                        ExpectedConditions.invisibilityOf(uploadFileInput)
-                ));
-
-                System.out.println("✅ W9 Form uploaded successfully");
-
-                Allure.step("W9 Form uploaded successfully");
-
-                // ================= SCREENSHOT =================
-                SceenshotUtil.takeScreenshot(driver, "W9_Form_Uploaded");
-
-                // ================= OPTIONAL FINAL UPLOAD BUTTON =================
-                try {
-
-                    WebElement finalUploadButton = wait.until(
-                            ExpectedConditions.elementToBeClickable(
-                                    By.xpath(
-                                            "//div[contains(@class,'Modal') or contains(@class,'modal') or contains(@class,'Dialog')]" +
-                                                    "//button[.//span[normalize-space()='Upload']]"
-                                    )
-                            )
-                    );
-
-                    ((JavascriptExecutor) driver).executeScript(
-                            "arguments[0].scrollIntoView({block:'center'});",
-                            finalUploadButton
-                    );
-
-                    Thread.sleep(1000);
-
-                    try {
-
-                        finalUploadButton.click();
-
-                    } catch (Exception e) {
-
-                        ((JavascriptExecutor) driver)
-                                .executeScript("arguments[0].click();", finalUploadButton);
-                    }
-
-                    System.out.println("✅ Final Upload button clicked");
-
-                    SceenshotUtil.takeScreenshot(driver, "FINAL_W9_UPLOAD_CLICKED");
-
-                } catch (TimeoutException e) {
-
-                    System.out.println("ℹ️ Final Upload button not present. Upload auto-completed.");
-
-                    Allure.step("W9 upload auto-completed without final Upload button");
-                }
-
-                // ================= CLOSE UPLOAD MODAL / POPUP =================
-                try {
-
-                    boolean closed = false;
-
-                    // ================= WAIT FOR MODAL ROOT =================
-                    WebElement modalRoot = null;
-
-                    try {
-
-                        modalRoot = wait.until(
-                                ExpectedConditions.visibilityOfElementLocated(
-                                        By.xpath(
-                                                "//div[contains(@class,'Modal') or contains(@class,'modal') or contains(@class,'Dialog')]"
-                                        )
-                                )
-                        );
-
-                        System.out.println("✅ Upload modal detected");
-
-                    } catch (Exception ignored) {
-
-                        System.out.println("ℹ️ Modal root not detected");
-                    }
-
-                    // ================= 1. TRY MODAL CANCEL BUTTON =================
-                    if (modalRoot != null) {
-
-                        try {
-
-                            WebElement cancelBtn = modalRoot.findElement(
-                                    By.xpath(".//button[normalize-space()='Cancel']")
-                            );
-
-                            wait.until(ExpectedConditions.elementToBeClickable(cancelBtn));
-
-                            ((JavascriptExecutor) driver).executeScript(
-                                    "arguments[0].scrollIntoView({block:'center'});",
-                                    cancelBtn
-                            );
-
-                            Thread.sleep(500);
-
-                            try {
-
-                                cancelBtn.click();
-
-                            } catch (Exception e) {
-
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", cancelBtn);
-                            }
-
-                            System.out.println("✅ Upload popup closed using MODAL Cancel button");
-
-                            closed = true;
-
-                        } catch (Exception ignored) {
-
-                            System.out.println("ℹ️ Modal Cancel button not found");
-                        }
-                    }
-
-                    // ================= 2. TRY CLOSE ICON (X) =================
-                    if (!closed && modalRoot != null) {
-
-                        try {
-
-                            WebElement closeIcon = modalRoot.findElement(
-                                    By.xpath(
-                                            ".//*[self::button or self::span or self::a]" +
-                                                    "[@aria-label='Close' or @title='Close' or contains(@class,'close')]"
-                                    )
-                            );
-
-                            wait.until(ExpectedConditions.elementToBeClickable(closeIcon));
-
-                            ((JavascriptExecutor) driver).executeScript(
-                                    "arguments[0].scrollIntoView({block:'center'});",
-                                    closeIcon
-                            );
-
-                            Thread.sleep(500);
-
-                            try {
-
-                                closeIcon.click();
-
-                            } catch (Exception e) {
-
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", closeIcon);
-                            }
-
-                            System.out.println("✅ Upload popup closed using X icon");
-
-                            closed = true;
-
-                        } catch (Exception ignored) {
-
-                            System.out.println("ℹ️ Modal X icon not found");
-                        }
-                    }
-
-                    // ================= 3. ESCAPE FALLBACK =================
-                    if (!closed) {
-
-                        new Actions(driver).sendKeys(Keys.ESCAPE).perform();
-
-                        System.out.println("ℹ️ Upload popup closed using ESC key");
-                    }
-
-                    // ================= 4. WAIT FOR MODAL FULLY CLOSED =================
-                    try {
-
-                        wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                                By.xpath(
-                                        "//div[contains(@class,'Modal') or contains(@class,'modal') or contains(@class,'Dialog')]"
-                                )
-                        ));
-
-                    } catch (Exception ignored) {
-                    }
-
-                    // ================= WAIT FOR BACKDROP REMOVAL =================
-                    try {
-
-                        wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                                By.xpath(
-                                        "//div[contains(@class,'ModalDialogManager') or contains(@class,'modal_backdrop')]"
-                                )
-                        ));
-
-                    } catch (Exception ignored) {
-                    }
-
-                    // ================= WAIT FOR FILE INPUT TO DISAPPEAR =================
-                    try {
-
-                        wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                                By.xpath("//input[@type='file']")
-                        ));
-
-                    } catch (Exception ignored) {
-                    }
-
-                    // ================= ENSURE PAGE IS CLICKABLE AGAIN =================
-                    wait.until(ExpectedConditions.elementToBeClickable(
-                            By.xpath("//button[.//span[text()='Submit']]")
-                    ));
-
-                    System.out.println("✅ Upload modal fully closed");
-
-                    SceenshotUtil.takeScreenshot(driver, "W9_UPLOAD_MODAL_CLOSED");
-
-                } catch (Exception e) {
-
-                    System.out.println("ℹ️ Upload modal did not require manual close");
-                }
-
-            } catch (Exception e) {
-
-                System.out.println("❌ W9 Form upload failed");
-
-                SceenshotUtil.takeScreenshot(driver, "W9_Form_Upload_Failed");
-
-                throw e;
-            }
-
-        }); */
-        // STEP : Upload Executed Engagement Letters
-        Allure.step("Uploading Executed Engagement Letters", () -> {
-
-            // ---------------- CLICK UPLOAD BUTTON ----------------
-//            WebElement uploadButton1 = wait.until(
-//                    ExpectedConditions.elementToBeClickable(uploadExecutedEngagementLettersButton)
-//            );
-//            driver.findElement(By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")).sendKeys();
-//
-//            ((JavascriptExecutor) driver)
-//                    .executeScript("arguments[0].scrollIntoView(true);", uploadButton1);
-//
-//            Thread.sleep(1000);
-//
-//            ((JavascriptExecutor) driver)
-//                    .executeScript("arguments[0].click();", uploadButton1);
 
             Thread.sleep(4000);
 
             System.out.println("✅ Upload button clicked successfully");
 
-            // ---------------- FILE UPLOAD ----------------
-//            WebElement uploadFileInput = driver.findElement(
-//                    By.xpath("//input[@type='file']")
-//            );
+
             WebElement uploadFileInput = driver.findElement(
                     By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")
             );
@@ -786,8 +338,33 @@ public class ExecuteAndUploadELPageOld {
 
             System.out.println("✅ Executed Engagement Letter uploaded successfully");
             Allure.step("Executed Engagement Letter uploaded successfully");
+            SceenshotUtil.takeScreenshot(driver, "Executed Engagement Letter uploaded successfully");
         });
 
+        // STEP : Upload W9 Form
+        Allure.step("Uploading W9 Form", () -> {
+            Thread.sleep(4000);
+
+            System.out.println("✅ Upload button clicked successfully");
+
+
+            WebElement uploadFileInput = driver.findElement(
+                    By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")
+            );
+
+            String user_dir_path = System.getProperty("user.dir");
+            System.out.println(user_dir_path);
+
+            uploadFileInput.sendKeys(
+                    user_dir_path + "/src/main/resources/Form_W9_Trimont_Sample.pdf");
+
+            Thread.sleep(4000);
+
+            System.out.println("✅ W9 Form uploaded successfully");
+            Allure.step("W9 Form uploaded successfully");
+            SceenshotUtil.takeScreenshot(driver, "W9 Form uploaded successfully");
+
+        });
         // Click Submit
         Allure.step("Click Submit button to complete task", () -> {
 
@@ -928,10 +505,14 @@ public class ExecuteAndUploadELPageOld {
                         System.out.println("➡️ Engagement Document Found: " + engagementDoc.getText());
                     }
 
+                    driver.findElement((documentsTabLocator)).click();
+                    Thread.sleep(2000);
+
+
                     // =====================================================
                     // STEP 3: OPEN W9 FORM SECTION + VALIDATE
                     // =====================================================
-                    WebElement w9Link = wait.until(
+                    /*WebElement w9Link = wait.until(
                             ExpectedConditions.elementToBeClickable(W9FormLink));
 
                     w9Link.click();
@@ -946,6 +527,62 @@ public class ExecuteAndUploadELPageOld {
 
                     if (w9Doc.isDisplayed()) {
                         w9Found = true;
+                        System.out.println("➡️ W9 Document Found: " + w9Doc.getText());
+                    } */
+                    // =====================================================
+// STEP 3: OPEN W9 SECTION + VALIDATE DOCUMENT
+// =====================================================
+
+// ===== WAIT FOR W9 LINK PRESENCE =====
+                    WebElement w9Link = wait.until(
+                            ExpectedConditions.presenceOfElementLocated(W9FormLink)
+                    );
+
+// ===== ENSURE VISIBLE =====
+                    wait.until(ExpectedConditions.visibilityOf(w9Link));
+
+// ===== SCROLL TO ELEMENT =====
+                    ((JavascriptExecutor) driver).executeScript(
+                            "arguments[0].scrollIntoView({block:'center'});",
+                            w9Link
+                    );
+
+                    Thread.sleep(1000);
+
+// ===== CLICK W9 SECTION =====
+                    try {
+
+                        w9Link.click();
+
+                    } catch (Exception e) {
+
+                        System.out.println("⚠️ Normal click failed on W9 Form section");
+
+                        ((JavascriptExecutor) driver)
+                                .executeScript("arguments[0].click();", w9Link);
+                    }
+
+                    System.out.println("✅ W9 Form section opened");
+
+// ===== WAIT FOR SECTION EXPANSION =====
+                    Thread.sleep(3000);
+
+// ===== VALIDATE W9 DOCUMENT =====
+                    WebElement w9Doc = wait.until(
+                            ExpectedConditions.visibilityOfElementLocated(
+                                    By.xpath("//*[contains(text(),'" + expectedDocument2 + "')]")
+                            )
+                    );
+
+                    ((JavascriptExecutor) driver).executeScript(
+                            "arguments[0].scrollIntoView({block:'center'});",
+                            w9Doc
+                    );
+
+                    if (w9Doc.isDisplayed()) {
+
+                        w9Found = true;
+
                         System.out.println("➡️ W9 Document Found: " + w9Doc.getText());
                     }
 
@@ -966,7 +603,7 @@ public class ExecuteAndUploadELPageOld {
 
                     System.out.println("✅ Both uploaded documents verified successfully");
 
-                    SceenshotUtil.takeScreenshot(driver, "Documents Verified");
+                    SceenshotUtil.takeScreenshot(driver, "Documents Verified for Engagement Letter");
 
                     documentsVerified = true;
                     break;
@@ -994,7 +631,7 @@ public class ExecuteAndUploadELPageOld {
 
             System.out.println("✅ Uploaded documents successfully verified");
 
-            SceenshotUtil.takeScreenshot(driver, "Documents Final Verified");
+            SceenshotUtil.takeScreenshot(driver, "Documents Verified for W9 Form");
 
         });
     }
