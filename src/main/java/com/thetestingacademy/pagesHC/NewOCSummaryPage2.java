@@ -12,9 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NewOCSummaryPage extends CommonUIActions {
+public class NewOCSummaryPage2 extends CommonUIActions {
 
-    public NewOCSummaryPage(WebDriver driver) {
+    public NewOCSummaryPage2(WebDriver driver) {
         super(driver);
     }
 

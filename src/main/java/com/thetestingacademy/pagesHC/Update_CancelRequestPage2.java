@@ -12,9 +12,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
 
-public class Update_CancelRequestPage extends CommonUIActions {
+public class Update_CancelRequestPage2 extends CommonUIActions {
 
-    public Update_CancelRequestPage(WebDriver driver) {
+    public Update_CancelRequestPage2(WebDriver driver) {
         super(driver);
     }
 

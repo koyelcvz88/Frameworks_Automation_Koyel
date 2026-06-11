@@ -11,9 +11,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
-public class NewOC_Team_RequestPage extends CommonUIActions {
+public class NewOC_Team_RequestPage2 extends CommonUIActions {
 
-    public NewOC_Team_RequestPage(WebDriver driver) {
+    public NewOC_Team_RequestPage2(WebDriver driver) {
         super(driver);
     }
 
