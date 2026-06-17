@@ -1,6 +1,8 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.model.DataModel;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
@@ -9,22 +11,34 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import java.time.Duration;
+public class New_OC_Request_NavigatorPage extends CommonUIActions {
 
-public class New_OC_Request_NavigatorPage {
+    private final DataModel testData;
 
-    WebDriver driver;
-    WebDriverWait wait;
-    JavascriptExecutor js;
-
-    public New_OC_Request_NavigatorPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-        this.js = (JavascriptExecutor) driver;
+    public New_OC_Request_NavigatorPage(WebDriver driver, DataModel testData) {
+        super(driver);
+        this.testData = testData;
     }
+
+    // =====================================================
+    // LOCATORS
+    // =====================================================
+
+    private final By claimButton =
+            By.xpath("//span[normalize-space()='Claim']");
+
+    private final By taskTable =
+            By.xpath("//table | //div[contains(@class,'Table')]");
+
+    private final By loadingSpinner =
+            By.xpath("//*[contains(@class,'loading') or contains(@class,'spinner')]");
+
+    // =====================================================
+    // STORED VALUES
+    // =====================================================
+    protected String targetRequest;
 
     // =========================================================
     // SINGLE BUSINESS FLOW METHOD (RECOMMENDED)
@@ -50,79 +64,131 @@ public class New_OC_Request_NavigatorPage {
 
             SceenshotUtil.takeScreenshot(driver, "Home Page Loaded");
 
-            // -------------------------------
-            // STEP 2: Open Latest NEW OC Request
-            // -------------------------------
+            // ==========================================
+            // STEP 2: Get Request Number
+            // ==========================================
 
-            String targetRequest = TestData.newOCRequestNumber;
+            Allure.step("Fetch NEW OC Request Number", () -> {
 
-            if (targetRequest == null || targetRequest.isEmpty()) {
-                throw new RuntimeException("❌ NEW OC Request number missing in TestData");
-            }
+                targetRequest = TestData.newOCRequestNumber;
 
-            // 🔥 IMPORTANT FIX → Remove '#'
-            targetRequest = targetRequest.replace("#", "").trim();
+                if (targetRequest == null || targetRequest.isEmpty()) {
 
-            System.out.println("Processed Target Request: " + targetRequest);
+                    throw new RuntimeException(
+                            "NEW OC Request Number missing in TestData"
+                    );
+                }
+                //  Remove '#'
+                targetRequest = targetRequest.replace("#", "").trim();
 
-            // 🔥 Direct dynamic XPath (NO LOOP NEEDED)
-            By requestLink = By.xpath(
-                    "//a[contains(@class,'LinkedItem') and contains(text(),'" + targetRequest + "')]"
-            );
+                System.out.println("Processed Target Request : " + targetRequest);
 
-            try {
-                WebElement request = wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(requestLink)
-                );
+                Allure.step("Target Request : " + targetRequest);
+            });
 
-                js.executeScript("arguments[0].scrollIntoView({block:'center'});", request);
+            // ==========================================
+            // STEP 3: Open Request
+            // ==========================================
 
-                wait.until(ExpectedConditions.elementToBeClickable(request));
+            Allure.step("Open New OC Request", () -> {
 
-                request.click();
-
-                System.out.println("✅ Clicked NEW OC Request: " + targetRequest);
-                SceenshotUtil.takeScreenshot(driver, "Clicked NEW OC Request");
-
-                // =========================================================
-                // 🔥 POST CLICK STABILIZATION (TASK GRID LOAD FIX)
-                // =========================================================
-
-                // wait for DOM ready state
-                wait.until(driver ->
-                        ((JavascriptExecutor) driver)
-                                .executeScript("return document.readyState")
-                                .equals("complete")
-                );
-
-                // wait for either Claim button OR task grid to appear
-                By claimButton = By.xpath("//span[normalize-space()='Claim']");
-                By taskTable = By.xpath("//table | //div[contains(@class,'Table')]");
-
-                wait.until(ExpectedConditions.or(
-                        ExpectedConditions.presenceOfElementLocated(claimButton),
-                        ExpectedConditions.presenceOfElementLocated(taskTable)
-                ));
-
-                // optional: wait for loading spinner to disappear (if present)
-                By loadingSpinner = By.xpath(
-                        "//*[contains(@class,'loading') or contains(@class,'spinner')]"
+                By requestLink = By.xpath(
+                        "//a[contains(@class,'LinkedItem') and contains(text(),'"
+                                + targetRequest + "')]"
                 );
 
                 try {
-                    wait.until(ExpectedConditions.invisibilityOfElementLocated(loadingSpinner));
+
+                    /* WebElement request = wait.until(
+                            ExpectedConditions.visibilityOfElementLocated(
+                                    requestLink
+                            )
+                    );
+
+                    ((JavascriptExecutor) driver).executeScript(
+                            "arguments[0].scrollIntoView({block:'center'});",
+                            request
+                    );
+
+                    wait.until(
+                            ExpectedConditions.elementToBeClickable(
+                                    request
+                            )
+                    ); */
+
+                    waitForVisible(requestLink);
+
+                    WebElement request = driver.findElement(requestLink);
+
+                    scrollToElement(request);
+
+                    waitForClickable(requestLink);
+
+                    request.click();
+
+                    System.out.println("Clicked NEW OC Request : " + targetRequest);
+
+                    SceenshotUtil.takeScreenshot(driver, "Clicked NEW OC Request");
+
+                } catch (Exception e) {
+
+                    SceenshotUtil.takeScreenshot(driver, "NEW OC Request Not Found");
+
+                    throw new RuntimeException("NEW OC Request not found on Home Page : " + targetRequest);
+                }
+            });
+
+            // ==========================================
+            // STEP 4: Wait For Task Grid Load - POST CLICK STABILIZATION
+            // ==========================================
+
+            Allure.step("Wait For Task Grid To Load", () -> {
+
+                /*wait.until(driver ->
+                        ((JavascriptExecutor) driver)
+                                .executeScript("return document.readyState")
+                                .equals("complete")
+                ); */
+                waitForPageLoad();
+
+                wait.until(
+                        ExpectedConditions.or(
+                                ExpectedConditions.presenceOfElementLocated(
+                                        claimButton
+                                ),
+                                ExpectedConditions.presenceOfElementLocated(
+                                        taskTable
+                                )
+                        )
+                );
+
+                try {
+
+                    wait.until(
+                            ExpectedConditions.invisibilityOfElementLocated(
+                                    loadingSpinner
+                            )
+                    );
+
                 } catch (Exception ignored) {
-                    // spinner may not exist in some renders
+
+                    System.out.println("Loading spinner not present");
                 }
 
-                System.out.println("✅ Task grid fully loaded after request open");
+                System.out.println("Task grid fully loaded after request open");
 
-            } catch (Exception e) {
-                SceenshotUtil.takeScreenshot(driver, "Request Not Found");
-                throw new RuntimeException(
-                        "❌ NEW OC Request not found on Home Page: " + targetRequest
-                );
-            }
+                SceenshotUtil.takeScreenshot(driver, "Task Grid Loaded");
+            });
+
+            // ==========================================
+            // FINAL STEP
+            // ==========================================
+
+            Allure.step("NEW OC Request Opened Successfully", () -> {
+
+                SceenshotUtil.takeScreenshot(driver, "NEW OC Request Opened Successfully");
+
+            });
         });
     }
 }

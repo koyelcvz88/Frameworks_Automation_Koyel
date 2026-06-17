@@ -4,22 +4,16 @@ import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
+import com.thetestingacademy.actions.CommonUIActions;
 
 import java.time.Duration;
 import java.util.List;
-
-public class Update_CancelRequestPage {
-
-    private WebDriver driver;
-    private WebDriverWait wait;
+public class Update_CancelRequestPage extends CommonUIActions {
 
     public Update_CancelRequestPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(25));
+        super(driver);
     }
 
     // ================= LOCATORS =================
@@ -56,390 +50,339 @@ public class Update_CancelRequestPage {
         // CLICK UPDATE REQUEST
         // =========================================================
 
+
         Allure.step("Update Request Flow", () -> {
-            /*Allure.step("Click Update Request button", () -> {
 
-                WebElement updateBtn = wait.until(
-                        ExpectedConditions.elementToBeClickable(UpdateRequestBtn)
-                );
-
-                updateBtn.click();
-
-                // ✅ HARD ASSERT: modal must actually appear (not just DOM text)
-                wait.until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//div[@role='dialog' or contains(@class,'Modal') or contains(@class,'Dialog')]")
-                ));
-
-                // extra stability: ensure modal is really rendered
-                wait.until(driver -> {
-                    List<WebElement> modals =
-                            driver.findElements(By.xpath("//div[@role='dialog' or contains(@class,'Modal') or contains(@class,'Dialog')]"));
-                    return modals.stream().anyMatch(WebElement::isDisplayed);
-                });
-                System.out.println("✅ Update Request button is clicked");
-                Allure.step("Update Request button is clicked");
-
-                SceenshotUtil.takeScreenshot(driver, "Update Request button is clicked");
-            }); */
             Allure.step("Click Update Request button", () -> {
 
-                // Wait for full page load
-                wait.until(driver ->
-                        ((JavascriptExecutor) driver)
-                                .executeScript("return document.readyState")
-                                .equals("complete")
-                );
+                // STEP 1: Ensure page is stable
+                waitForPageLoad();
 
-                // Wait for Appian loaders/spinners to disappear
+                // STEP 2: Wait for Appian loaders/spinners to disappear (safe fallback)
                 try {
-
                     wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                            By.xpath(
-                                    "//div[contains(@class,'loading') " +
-                                            "or contains(@class,'spinner') " +
-                                            "or contains(@class,'appian-spinner')]"
-                            )
+                            By.xpath("//div[contains(@class,'loading') or contains(@class,'spinner') or contains(@class,'appian-spinner')]")
                     ));
+                } catch (Exception ignored) {}
 
-                } catch (Exception ignored) {
+                // STEP 3: Wait for button
+                waitForVisible(UpdateRequestBtn);
+                waitForClickable(UpdateRequestBtn);
 
-                }
+                WebElement updateBtn = driver.findElement(UpdateRequestBtn);
 
-                // Wait for button presence
-                WebElement updateBtn = wait.until(
-                        ExpectedConditions.presenceOfElementLocated(UpdateRequestBtn)
-                );
+                // STEP 4: Scroll using framework
+                scrollToElement(updateBtn);
 
-                // Scroll to element
-                ((JavascriptExecutor) driver)
-                        .executeScript(
-                                "arguments[0].scrollIntoView({block:'center'});",
-                                updateBtn
-                        );
-
-                // Wait until clickable
-                wait.until(ExpectedConditions.elementToBeClickable(updateBtn));
-
-                // Debugging logs
+                // Debug logs
                 System.out.println("Button displayed: " + updateBtn.isDisplayed());
                 System.out.println("Button enabled: " + updateBtn.isEnabled());
 
-                // Safe click
-                try {
+                // STEP 5: Click using CommonUIActions (NO JS, NO DIRECT CLICK)
+                click(updateBtn);
 
-                    updateBtn.click();
+                // STEP 6: Validate modal/dialog appears
+                By modalLocator = By.xpath(
+                        "//div[@role='dialog' or contains(@class,'Modal') or contains(@class,'Dialog')]"
+                );
 
-                } catch (Exception e) {
+                waitForVisible(modalLocator);
 
-                    System.out.println("Normal click failed. Using JS click.");
-
-                    ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].click();", updateBtn);
-                }
-
-                // HARD ASSERT → modal/dialog must appear
-                wait.until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath(
-                                "//div[@role='dialog' " +
-                                        "or contains(@class,'Modal') " +
-                                        "or contains(@class,'Dialog')]"
-                        )
-                ));
-
-                // Extra stability for Appian rendering
-                wait.until(driver -> {
-
-                    List<WebElement> modals =
-                            driver.findElements(
-                                    By.xpath(
-                                            "//div[@role='dialog' " +
-                                                    "or contains(@class,'Modal') " +
-                                                    "or contains(@class,'Dialog')]"
-                                    )
-                            );
-
-                    return modals.stream().anyMatch(WebElement::isDisplayed);
-                });
+                // STEP 7: Ensure at least one modal is visible
+                wait.until(driver ->
+                        driver.findElements(modalLocator)
+                                .stream()
+                                .anyMatch(WebElement::isDisplayed)
+                );
 
                 System.out.println("✅ Update Request button is clicked");
 
                 Allure.step("Update Request button is clicked");
 
-                SceenshotUtil.takeScreenshot(
-                        driver,
-                        "Update_Request_Button_Clicked"
-                );
+                SceenshotUtil.takeScreenshot(driver, "Update_Request_Button_Clicked");
             });
-
-
-            // =========================
-            // 2. ENTER DESCRIPTION
-            // =========================
+                // =========================
+                // 2. ENTER DESCRIPTION
+                // =========================
             Allure.step("Enter Description", () -> {
 
-                By descLocator = DescriptionBox;
+                String description = ConfigReader.getData("existing.desc");
 
                 WebElement desc = wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(descLocator)
+                        ExpectedConditions.visibilityOfElementLocated(DescriptionBox)
                 );
 
-                wait.until(ExpectedConditions.elementToBeClickable(descLocator));
+                waitForClickable(DescriptionBox);
 
-                desc.click();
+                scrollToElement(desc);
+
+                click(desc);
+
                 desc.clear();
 
-                desc.sendKeys(ConfigReader.getData("existing.desc"));
+                desc.sendKeys(description);
 
                 // optional: validate input is actually set
                 wait.until(driver ->
                         desc.getAttribute("value") != null &&
                                 !desc.getAttribute("value").isEmpty()
                 );
+
                 System.out.println("✅ Description entered");
+
                 Allure.step("Description entered");
 
                 SceenshotUtil.takeScreenshot(driver, "Description entered");
             });
-
-            // =========================
-            // 3. CLICK SUBMIT
-            // =========================
+                // =========================
+                // 3. CLICK SUBMIT
+                // =========================
             Allure.step("Click Submit", () -> {
 
-                By submitLocator = SubmitBtn;
+                // Wait for button to be ready
+                waitForVisible(SubmitBtn);
+                waitForClickable(SubmitBtn);
 
-                WebElement submit = wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(submitLocator)
+                WebElement submit = driver.findElement(SubmitBtn);
+
+                scrollToElement(submit);
+
+                // CommonUIActions click (safe fallback included)
+                click(submit);
+
+                // IMPORTANT: wait for modal/dialog to close
+                By modalLocator = By.xpath(
+                        "//div[@role='dialog' or contains(@class,'Modal') or contains(@class,'Dialog')]"
                 );
 
-                wait.until(ExpectedConditions.elementToBeClickable(submitLocator));
+                wait.until(ExpectedConditions.invisibilityOfElementLocated(modalLocator));
 
-                submit.click();
-
-                // ✅ IMPORTANT: wait for modal to close (prevents silent failure)
-                wait.until(ExpectedConditions.invisibilityOfElementLocated(
-                        By.xpath("//div[@role='dialog' or contains(@class,'Modal') or contains(@class,'Dialog')]")
-                ));
                 System.out.println("✅ Submit button is clicked");
+
                 Allure.step("Submit button is clicked");
 
                 SceenshotUtil.takeScreenshot(driver, "Submit button is clicked");
             });
 
-            // ================================
-            // 4. VALIDATE DESCRIPTION (READ ONLY)
-            // ================================
-            Allure.step("Validate Description", () -> {
+                // ================================
+                // 4. VALIDATE DESCRIPTION
+                // ================================
+                Allure.step("Validate Description", () -> {
 
-                // ✅ Wait for element to be visible using YOUR locator
-                WebElement descValue = wait.until(
-                        ExpectedConditions.visibilityOfElementLocated(DescriptionReadOnly)
-                );
+                    WebElement descValue = wait.until(
+                            ExpectedConditions.visibilityOfElementLocated(
+                                    DescriptionReadOnly
+                            )
+                    );
 
-                // ✅ Get stable text
-                String description = descValue.getText().trim();
+                    String description =
+                            descValue.getText().trim();
 
-                System.out.println("Description Value = " + description);
-                System.out.println("RAW TEXT = [" + description + "]");
-                //System.out.println("TAG NAME = " + descValue.getTagName());
+                    System.out.println("Description Value = " + description);
+                    System.out.println("RAW TEXT = [" + description + "]");
 
-                // 🔥 HARD ASSERT (this is what you were missing)
-                assert description != null;
-                assert !description.equals("-");
-                assert !description.isEmpty();
-
+                    assert description != null;
+                    assert !description.equals("-");
+                    assert !description.isEmpty();
+                });
             });
-        });
-    }
+        }
 
     // ================= CANCEL FLOW =================
 
     public void handleEnterCancelRequestFields() {
 
-            Allure.step("Cancel Request Flow", () -> {
+        Allure.step("Cancel Request Flow", () -> {
 
-                // =====================================================
-                // CLICK CANCEL REQUEST BUTTON
-                // =====================================================
+            // =====================================================
+            // CLICK CANCEL REQUEST BUTTON
+            // =====================================================
 
-                WebElement cancelBtn = wait.until(
-                        ExpectedConditions.elementToBeClickable(
-                                CancelRequestBtn));
+            WebElement cancelBtn = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            CancelRequestBtn));
 
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();",
-                                cancelBtn);
+            /*((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].click();",
+                            cancelBtn); */
+            jsClick(cancelBtn);
 
-                System.out.println("✅ Cancel Request button clicked");
+            System.out.println("✅ Cancel Request button clicked");
+
+            SceenshotUtil.takeScreenshot(driver,
+                    "Cancel_Request_Button_Clicked");
+
+            Thread.sleep(3000);
+
+            // =====================================================
+            // ENTER JUSTIFICATION
+            // =====================================================
+            Allure.step("Enter Justification", () -> {
+
+                String justification =
+                        ConfigReader.getData("existing.jus");
+
+                WebElement justificationField = wait.until(
+                        ExpectedConditions.visibilityOfElementLocated(
+                                JustificationBox));
+
+                /*((JavascriptExecutor) driver)
+                        .executeScript(
+                                "arguments[0].scrollIntoView({block:'center'});",
+                                justificationField); */
+
+                scrollToElement(justificationField);
+
+                Thread.sleep(2000);
+
+                justificationField.click();
+
+                Thread.sleep(1000);
+
+                // CLEAR USING CTRL+A
+                justificationField.sendKeys(Keys.CONTROL + "a");
+                justificationField.sendKeys(Keys.DELETE);
+
+                Thread.sleep(1000);
+
+                // APPPIAN SAFE INPUT
+                ((JavascriptExecutor) driver).executeScript(
+                        "arguments[0].value=arguments[1];",
+                        justificationField,
+                        justification);
+
+                // TRIGGER EVENTS
+                /*((JavascriptExecutor) driver).executeScript(
+                        "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));",
+                        justificationField);
+
+                ((JavascriptExecutor) driver).executeScript(
+                        "arguments[0].dispatchEvent(new Event('change', {bubbles:true}));",
+                        justificationField); */
+                triggerInputAndChangeEvents(justificationField);
+
+                Thread.sleep(1000);
+
+                // IMPORTANT FOR APPIAN
+                justificationField.sendKeys(Keys.TAB);
+
+                Thread.sleep(2000);
+
+                String enteredValue =
+                        justificationField.getAttribute("value");
+
+                System.out.println("Entered Justification = "
+                        + enteredValue);
+
+                if (enteredValue == null ||
+                        enteredValue.trim().isEmpty()) {
+
+                    throw new RuntimeException(
+                            "❌ Justification value NOT retained");
+                }
+
+                System.out.println("✅ Justification retained successfully");
 
                 SceenshotUtil.takeScreenshot(driver,
-                        "Cancel_Request_Button_Clicked");
-
-                Thread.sleep(3000);
-
-                // =====================================================
-                // ENTER JUSTIFICATION
-                // =====================================================
-                Allure.step("Enter Justification", () -> {
-
-                    String justification =
-                            ConfigReader.getData("existing.jus");
-
-                    WebElement justificationField = wait.until(
-                            ExpectedConditions.visibilityOfElementLocated(
-                                    JustificationBox));
-
-                    ((JavascriptExecutor) driver)
-                            .executeScript(
-                                    "arguments[0].scrollIntoView({block:'center'});",
-                                    justificationField);
-
-                    Thread.sleep(2000);
-
-                    justificationField.click();
-
-                    Thread.sleep(1000);
-
-                    // CLEAR USING CTRL+A
-                    justificationField.sendKeys(Keys.CONTROL + "a");
-                    justificationField.sendKeys(Keys.DELETE);
-
-                    Thread.sleep(1000);
-
-                    // APPPIAN SAFE INPUT
-                    ((JavascriptExecutor) driver).executeScript(
-                            "arguments[0].value=arguments[1];",
-                            justificationField,
-                            justification);
-
-                    // TRIGGER EVENTS
-                    ((JavascriptExecutor) driver).executeScript(
-                            "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));",
-                            justificationField);
-
-                    ((JavascriptExecutor) driver).executeScript(
-                            "arguments[0].dispatchEvent(new Event('change', {bubbles:true}));",
-                            justificationField);
-
-                    Thread.sleep(1000);
-
-                    // IMPORTANT FOR APPIAN
-                    justificationField.sendKeys(Keys.TAB);
-
-                    Thread.sleep(2000);
-
-                    String enteredValue =
-                            justificationField.getAttribute("value");
-
-                    System.out.println("Entered Justification = "
-                            + enteredValue);
-
-                    if (enteredValue == null ||
-                            enteredValue.trim().isEmpty()) {
-
-                        throw new RuntimeException(
-                                "❌ Justification value NOT retained");
-                    }
-
-                    System.out.println("✅ Justification retained successfully");
-
-                    SceenshotUtil.takeScreenshot(driver,
-                            "Justification_Entered");
-                });
-                // =====================================================
-                // CLICK MODAL CANCEL REQUEST
-                // =====================================================
-
-                Allure.step("Click Cancel Request button", () -> {
-
-                    List<WebElement> cancelButtons =
-                            wait.until(ExpectedConditions
-                                    .visibilityOfAllElementsLocatedBy(CancelRequestModalBtn));
-
-                    // SECOND BUTTON = MODAL BUTTON
-                    WebElement modalCancelBtn = cancelButtons.get(1);
-
-                    ((JavascriptExecutor) driver)
-                            .executeScript(
-                                    "arguments[0].scrollIntoView({block:'center'});",
-                                    modalCancelBtn);
-
-                    Thread.sleep(2000);
-
-                    wait.until(ExpectedConditions.elementToBeClickable(
-                            modalCancelBtn));
-
-                    // NORMAL CLICK FIRST
-                    try {
-                        modalCancelBtn.click();
-                    } catch (Exception e) {
-
-                        // JS FALLBACK
-                        ((JavascriptExecutor) driver)
-                                .executeScript("arguments[0].click();",
-                                        modalCancelBtn);
-                    }
-
-                    System.out.println("✅ Clicked Cancel Request button");
-
-                    Thread.sleep(4000);
-
-                    // VALIDATE NO REQUIRED ERROR
-                    List<WebElement> validationErrors =
-                            driver.findElements(By.xpath(
-                                    "//*[contains(text(),'A value is required')]"));
-
-                    if (!validationErrors.isEmpty()) {
-
-                        throw new RuntimeException(
-                                "❌ Justification validation still displayed");
-                    }
-
-                    // VALIDATE MODAL CLOSED
-                    wait.until(ExpectedConditions.invisibilityOf(
-                            modalCancelBtn));
-
-                    System.out.println("✅ Cancel Request modal closed");
-
-                    SceenshotUtil.takeScreenshot(driver,
-                            "Cancel_Request_Completed");
-                });
-                // ===============================
-                // VALIDATE STATUS = CANCELLED
-                // ===============================
-
-                Allure.step("Validate Request Status is Cancelled", () -> {
-
-                    WebElement cancelledStatus = wait.until(
-                            ExpectedConditions.visibilityOfElementLocated(
-                                    CancelledStatus));
-
-                    // SCROLL TO STATUS
-                    ((JavascriptExecutor) driver)
-                            .executeScript(
-                                    "arguments[0].scrollIntoView({block:'center'});",
-                                    cancelledStatus);
-
-                    Thread.sleep(2000);
-
-                    String actualStatus =
-                            cancelledStatus.getText().trim();
-
-                    System.out.println("Request Status = "
-                            + actualStatus);
-
-                    // HARD ASSERT
-                    if (!actualStatus.equalsIgnoreCase("Cancelled")) {
-
-                        throw new RuntimeException(
-                                "❌ Request status NOT updated to Cancelled");
-                    }
-
-                    System.out.println("✅ Request status successfully updated to Cancelled");
-
-                    SceenshotUtil.takeScreenshot(driver,
-                            "Request_Status_Cancelled");
-                });
+                        "Justification_Entered");
             });
+            // =====================================================
+            // CLICK MODAL CANCEL REQUEST
+            // =====================================================
+
+            Allure.step("Click Cancel Request button", () -> {
+
+                List<WebElement> cancelButtons =
+                        wait.until(ExpectedConditions
+                                .visibilityOfAllElementsLocatedBy(CancelRequestModalBtn));
+
+                // SECOND BUTTON = MODAL BUTTON
+                WebElement modalCancelBtn = cancelButtons.get(1);
+
+                /*((JavascriptExecutor) driver)
+                        .executeScript(
+                                "arguments[0].scrollIntoView({block:'center'});",
+                                modalCancelBtn); */
+                scrollToElement(modalCancelBtn);
+
+                Thread.sleep(2000);
+
+                //wait.until(ExpectedConditions.elementToBeClickable(modalCancelBtn));
+                waitForClickable(modalCancelBtn);
+
+                // NORMAL CLICK FIRST
+                try {
+                    modalCancelBtn.click();
+                } catch (Exception e) {
+
+                    // JS FALLBACK
+                    /*((JavascriptExecutor) driver)
+                            .executeScript("arguments[0].click();",
+                                    modalCancelBtn); */
+                    jsClick(modalCancelBtn);
+                }
+
+                System.out.println("✅ Clicked Cancel Request button");
+
+                Thread.sleep(4000);
+
+                // VALIDATE NO REQUIRED ERROR
+                List<WebElement> validationErrors =
+                        driver.findElements(By.xpath(
+                                "//*[contains(text(),'A value is required')]"));
+
+                if (!validationErrors.isEmpty()) {
+
+                    throw new RuntimeException(
+                            "❌ Justification validation still displayed");
+                }
+
+                // VALIDATE MODAL CLOSED
+                //wait.until(ExpectedConditions.invisibilityOf(modalCancelBtn));
+                waitForInvisibility(modalCancelBtn);
+
+                System.out.println("✅ Cancel Request modal closed");
+
+                SceenshotUtil.takeScreenshot(driver,
+                        "Cancel_Request_Completed");
+            });
+            // ===============================
+            // VALIDATE STATUS = CANCELLED
+            // ===============================
+
+            Allure.step("Validate Request Status is Cancelled", () -> {
+
+                WebElement cancelledStatus = wait.until(
+                        ExpectedConditions.visibilityOfElementLocated(
+                                CancelledStatus));
+
+                // SCROLL TO STATUS
+                /*((JavascriptExecutor) driver)
+                        .executeScript(
+                                "arguments[0].scrollIntoView({block:'center'});",
+                                cancelledStatus); */
+                scrollToElement(cancelledStatus);
+
+                Thread.sleep(2000);
+
+                String actualStatus =
+                        cancelledStatus.getText().trim();
+
+                System.out.println("Request Status = "
+                        + actualStatus);
+
+                // HARD ASSERT
+                if (!actualStatus.equalsIgnoreCase("Cancelled")) {
+
+                    throw new RuntimeException(
+                            "❌ Request status NOT updated to Cancelled");
+                }
+
+                System.out.println("✅ Request status successfully updated to Cancelled");
+
+                SceenshotUtil.takeScreenshot(driver,
+                        "Request_Status_Cancelled");
+            });
+        });
     }
 }

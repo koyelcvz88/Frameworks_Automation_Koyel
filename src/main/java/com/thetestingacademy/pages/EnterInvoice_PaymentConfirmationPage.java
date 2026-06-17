@@ -1,26 +1,25 @@
 package com.thetestingacademy.pages;
 
-import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.actions.CommonUIActions;
+import com.thetestingacademy.model.DataModel;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 
 import java.time.Duration;
-import java.time.format.TextStyle;
 import java.util.List;
 
 
-public class EnterInvoice_PaymentConfirmationPage {
+public class EnterInvoice_PaymentConfirmationPage extends CommonUIActions {
 
-    private WebDriver driver;
-    private WebDriverWait wait;
+    private final DataModel testData;
 
-    public EnterInvoice_PaymentConfirmationPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    public EnterInvoice_PaymentConfirmationPage(WebDriver driver,
+                                                DataModel testData) {
+        super(driver);
+        this.testData = testData;
     }
 
     // =========================================================
@@ -53,126 +52,151 @@ public class EnterInvoice_PaymentConfirmationPage {
     // Navigation TASK 1
     // =========================================================
     public void openAndEnterInvoicepaymentConfirmationTask() {
-        Allure.step("Open Enter Invoice and Payment Confirmation task",()-> {
+        Allure.step("Open Enter Invoice and Payment Confirmation task", () -> {
 
-        boolean taskOpened = false;
+            boolean taskOpened = false;
 
-        for (int attempt = 1; attempt <= 10; attempt++) {
+            for (int attempt = 1; attempt <= 10; attempt++) {
 
-            System.out.println("🔄 Searching for Task 2 - Attempt: " + attempt);
+                System.out.println("🔄 Searching for Task 2 - Attempt: " + attempt);
 
-            try {
+                try {
 
-                wait.until(ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//table//tbody//tr")));
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(
+                            By.xpath("//table//tbody//tr")));
+                    //waitForVisible(By.xpath("//table//tbody//tr"));
 
-                List<WebElement> rows = driver.findElements(
-                        By.xpath("//table//tbody//tr"));
+                    List<WebElement> rows = driver.findElements(
+                            By.xpath("//table//tbody//tr"));
 
-                System.out.println("Rows found: " + rows.size());
+                    System.out.println("Rows found: " + rows.size());
 
-                for (int i = 0; i < rows.size(); i++) {
+                    for (int i = 0; i < rows.size(); i++) {
 
-                    try {
+                        try {
 
-                        rows = driver.findElements(By.xpath("//table//tbody//tr"));
-                        WebElement row = rows.get(i);
+                            rows = driver.findElements(By.xpath("//table//tbody//tr"));
+                            WebElement row = rows.get(i);
 
-                        String rowText = row.getText();
+                            String rowText = row.getText();
 
-                        System.out.println("ROW => " + rowText);
+                            System.out.println("ROW => " + rowText);
 
-                        if (rowText.contains("Enter Invoice and Payment Confirmation")
-                                && rowText.contains("To Do")) {
+                            if (rowText.contains("Enter Invoice and Payment Confirmation")
+                                    && rowText.contains("To Do")) {
 
-                            System.out.println("✅ Task 2 row located");
+                                System.out.println("✅ Task 2 row located");
 
-                            // ==============================
-                            // SELECT CHECKBOX
-                            // ==============================
+                                // ==============================
+                                // SELECT CHECKBOX (COMMON UI)
+                                // ==============================
 
-                            WebElement chckbx = row.findElement(checkbox);
+                                WebElement chckbx = row.findElement(checkbox);
+                                click(chckbx);
 
-                            ((JavascriptExecutor) driver)
-                                    .executeScript("arguments[0].click();", chckbx);
+                                System.out.println("✅ Checkbox selected");
 
-                            System.out.println("✅ Checkbox selected");
+                                // ==============================
+                                // CLAIM BUTTON
+                                // ==============================
 
-                            // WAIT FOR CLAIM BUTTON
-                            WebElement claimBtn = wait.until(
-                                    ExpectedConditions.elementToBeClickable(claimButton));
+                                 /*WebElement claimBtn = wait.until(
+                                        ExpectedConditions.elementToBeClickable(claimButton)
+                                );
+                                 //waitForClickable(claimButton);
 
-                            ((JavascriptExecutor) driver)
-                                    .executeScript("arguments[0].click();", claimBtn);
+                                //WebElement claimBtn = driver.findElement(claimButton);
+                                click(claimButton);
 
-                            System.out.println("✅ Claim button clicked");
+                                System.out.println("✅ Claim button clicked"); */
+                                List<WebElement> buttons = driver.findElements(claimButton);
 
-                            // WAIT FOR TASK LINK
-                            WebElement task = wait.until(
-                                    ExpectedConditions.elementToBeClickable(task2Link));
+                                if (!buttons.isEmpty()) {
 
-                            ((JavascriptExecutor) driver)
-                                    .executeScript("arguments[0].click();", task);
+                                    try {
 
-                            System.out.println("✅ Task opened");
+                                        WebElement claimBtn = wait.until(
+                                                ExpectedConditions.elementToBeClickable(claimButton)
+                                        );
 
-                            /* =====  VALIDATION ===== */
+                                        claimBtn.click();
 
-                            wait.until(ExpectedConditions.or(
+                                        System.out.println("✅ Claim button clicked");
 
-                                    // Appian task page URL
-                                    ExpectedConditions.urlContains("start-process"),
+                                    } catch (TimeoutException e) {
 
+                                        System.out.println("ℹ️ Claim button present but not clickable. Skipping.");
 
-                                    ExpectedConditions.urlContains("task"),
+                                    }
 
-                                    //  validation -> page fully loaded with Close Request button
-                                    ExpectedConditions.visibilityOfElementLocated(closeRequest)
+                                } else {
 
-                            ));
+                                    System.out.println("ℹ️ Claim button not present. Skipping.");
 
-                            System.out.println("✅ Task URL verified: "
-                                    + driver.getCurrentUrl());
+                                }
 
-                            taskOpened = true;
+                                // ==============================
+                                // TASK LINK
+                                // ==============================
 
-                            break;
+                                WebElement task = wait.until(
+                                        ExpectedConditions.elementToBeClickable(task2Link)
+                                );
+                                click(task);
 
+                                System.out.println("✅ Task opened");
+
+                                /* =====  VALIDATION ===== */
+
+                                wait.until(ExpectedConditions.or(
+
+                                        ExpectedConditions.urlContains("start-process"),
+                                        ExpectedConditions.urlContains("task"),
+                                        ExpectedConditions.visibilityOfElementLocated(closeRequest)
+                                ));
+
+                                System.out.println("✅ Task URL verified: "
+                                        + driver.getCurrentUrl());
+
+                                taskOpened = true;
+
+                                break;
+                            }
+
+                        } catch (StaleElementReferenceException e) {
+                            System.out.println("⚠ Row became stale, retrying row...");
                         }
-
-                    } catch (StaleElementReferenceException e) {
-
-                        System.out.println("⚠ Row became stale, retrying row...");
                     }
+
+                    if (taskOpened) {
+                        break;
+                    }
+
+                    driver.navigate().refresh();
+
+                    System.out.println("🔄 Page refreshed");
+
+                    Thread.sleep(3000);
+
+                } catch (Exception e) {
+
+                    System.out.println("❌ Attempt failed: " + e.getMessage());
+
+                    driver.navigate().refresh();
+
+                    Thread.sleep(3000);
                 }
-
-                if (taskOpened) {
-                    break;
-                }
-
-                driver.navigate().refresh();
-
-                System.out.println("🔄 Page refreshed");
-
-                Thread.sleep(3000);
-
-            } catch (Exception e) {
-
-                System.out.println("❌ Attempt failed: " + e.getMessage());
-
-                driver.navigate().refresh();
-
-                Thread.sleep(3000);
             }
-        }
 
-        if (!taskOpened) {
-            throw new RuntimeException(
-                    "❌ Task 2 could not be opened after retries");
-        }
+            if (!taskOpened) {
+                throw new RuntimeException(
+                        "❌ Task 2 could not be opened after retries");
+            }
+
             System.out.println("✅ Task opened");
-            SceenshotUtil.takeScreenshot(driver, "Task Opened - Enter invoice and payment confirmation");
-    });
+            SceenshotUtil.takeScreenshot(driver,
+                    "Task Opened - Enter invoice and payment confirmation");
+        });
     }
     // =========================================================
     // Task UI - Fields
@@ -187,21 +211,19 @@ public class EnterInvoice_PaymentConfirmationPage {
                     ExpectedConditions.presenceOfElementLocated(outsideCounselFeesPaidCheckbox)
             );
 
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block:'center'});", checkbox);
+            scrollToElement(outsideCounselFeesPaidCheckbox);
 
             Thread.sleep(1000);
 
             try {
 
-                checkbox.click();
+                click(checkbox);
 
             } catch (Exception e) {
 
                 System.out.println("⚠️ Normal click failed, using JS click");
 
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", checkbox);
+                jsClick(checkbox);
             }
 
             System.out.println("✅ 'Are Outside Counsel Fees Paid?' checkbox selected");
@@ -222,18 +244,16 @@ public class EnterInvoice_PaymentConfirmationPage {
             );
 
             // 🔥 FIX 2: scroll into view (Appian UI often blocks clicks otherwise)
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", closeBtn);
+            scrollToElement(closeRequest);
 
             // 🔥 FIX 3: wait for stability before click (no Thread.sleep dependency)
             wait.until(ExpectedConditions.elementToBeClickable(closeBtn));
 
-            closeBtn.click();
+            click(closeBtn);
 
             System.out.println("✅ Close Request button clicked");
 
             // 🔥 FIX 4: WAIT FOR POST-CLOSE REQUEST STATE CHANGE
-            // Option A: URL change
             boolean urlChanged = wait.until(driver ->
                     !driver.getCurrentUrl().contains("start-process")
             );
@@ -253,6 +273,7 @@ public class EnterInvoice_PaymentConfirmationPage {
 
             SceenshotUtil.takeScreenshot(driver, "Task Submitted");
         });
+
         Allure.step("Validate Audit History tab", () -> {
 
             try {
@@ -264,26 +285,28 @@ public class EnterInvoice_PaymentConfirmationPage {
                 );
 
                 // wait till audit tab visible
-                WebElement auditTabElement = wait.until(
+                /*WebElement auditTabElement = wait.until(
                         ExpectedConditions.visibilityOfElementLocated(auditlink)
-                );
+                ); */
 
-                // scroll to audit tab
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].scrollIntoView(true);", auditTabElement);
+                waitForVisible(auditlink);
+                WebElement auditTabElement = driver.findElement(auditlink);
+
+                // scroll to audit tab (Common UI replacement)
+                scrollToElement(auditlink);
 
                 Thread.sleep(1000);
 
-                // js click audit tab
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].click();", auditTabElement);
+                // click audit tab (replaces JS click)
+                click(auditTabElement);
 
                 SceenshotUtil.takeScreenshot(driver, "Audit_Tab_Clicked");
 
                 System.out.println("✅ Audit History tab clicked");
 
                 // wait for audit logs
-                wait.until(ExpectedConditions.visibilityOfElementLocated(auditLogsBy));
+                //wait.until(ExpectedConditions.visibilityOfElementLocated(auditLogsBy));
+                waitForVisible(auditLogsBy);
 
                 List<WebElement> auditLogs = driver.findElements(auditLogsBy);
 

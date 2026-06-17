@@ -1,5 +1,6 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
@@ -10,13 +11,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class ReviewOFACNewVendorPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
+public class ReviewOFACNewVendorPage extends CommonUIActions {
 
     public ReviewOFACNewVendorPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        super(driver);
     }
 
     // =========================================================
@@ -76,7 +74,7 @@ public class ReviewOFACNewVendorPage {
 
             for (int attempt = 1; attempt <= 10; attempt++) {
 
-                System.out.println("🔄 Searching for Task for NEW OC - Attempt: " + attempt);
+                System.out.println("🔄 Searching for Review OFAC Task for NEW OC - Attempt: " + attempt);
 
                 try {
 
@@ -110,8 +108,10 @@ public class ReviewOFACNewVendorPage {
 
                                 WebElement chckbx = row.findElement(checkboxB);
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", chckbx);
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", chckbx); */
+
+                                jsClick(chckbx);
 
                                 System.out.println("✅ Checkbox selected");
 
@@ -119,17 +119,22 @@ public class ReviewOFACNewVendorPage {
                                 WebElement claimBtn = wait.until(
                                         ExpectedConditions.elementToBeClickable(claimButtonB));
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", claimBtn);
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", claimBtn); */
+                                jsClick(claimBtn);
 
                                 System.out.println("✅ Claim button clicked");
 
                                 // WAIT FOR TASK LINK
-                                WebElement task = wait.until(
-                                        ExpectedConditions.elementToBeClickable(taskLinkB));
+                                /*WebElement task = wait.until(
+                                        ExpectedConditions.elementToBeClickable(taskLinkB)); */
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", task);
+                                waitForClickable(taskLinkB);
+                                WebElement task = driver.findElement(taskLinkB);
+
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", task); */
+                                jsClick(task);
 
                                 System.out.println("✅ Task opened");
 
@@ -145,6 +150,7 @@ public class ReviewOFACNewVendorPage {
 
                                         //  validation -> page fully loaded with OFAC Approve button
                                         ExpectedConditions.visibilityOfElementLocated(OFACApprovedOption)
+                                        //waitForVisible(OFACApprovedOption)
 
                                 ));
 
@@ -194,7 +200,6 @@ public class ReviewOFACNewVendorPage {
         });
     }
 
-
     // =========================================================
     // Task UI - Fields
     // =========================================================
@@ -202,10 +207,14 @@ public class ReviewOFACNewVendorPage {
 
         Allure.step("Select Approved radio button", () -> {
 
-            WebElement AttorneyApprove = wait.until(
-                    ExpectedConditions.elementToBeClickable(OFACApprovedOption));
+            /*WebElement AttorneyApprove = wait.until(
+                    ExpectedConditions.elementToBeClickable(OFACApprovedOption)
+            ); */
 
-            AttorneyApprove.click();
+            waitForClickable(OFACApprovedOption);
+            WebElement AttorneyApprove = driver.findElement(OFACApprovedOption);
+
+            click(AttorneyApprove);
 
             System.out.println("✅ Approved radio button selected");
             Allure.step("Approved radio button selected");
@@ -215,30 +224,35 @@ public class ReviewOFACNewVendorPage {
 
             Thread.sleep(1000);
         });
+
         Allure.step("Click Submit button to complete task", () -> {
 
-            WebElement sbmtbtnB = wait.until(
+            /*WebElement sbmtbtnB = wait.until(
                     ExpectedConditions.presenceOfElementLocated(submitButtonB)
-            );
+            ); */
 
-            //  ensure it's actually enabled
+            waitForVisible(submitButtonB);
+            WebElement sbmtbtnB = driver.findElement(submitButtonB);
+
+            // ensure it's actually enabled
             wait.until(driver ->
                     sbmtbtnB.isDisplayed() && sbmtbtnB.isEnabled()
             );
 
-            //  scroll into view
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnB);
+            // scroll into view
+            /*((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnB); */
+            scrollToElement(sbmtbtnB);
 
-            //  wait for stability before click
+            // wait for stability before click
             wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnB));
+            //waitForClickable(sbmtbtnB);
 
-            sbmtbtnB.click();
+            click(sbmtbtnB);
 
             System.out.println("✅ Submit button clicked");
 
             // WAIT FOR POST-SUBMIT STATE CHANGE
-            // Option A: URL change
             boolean urlChanged = wait.until(driver ->
                     !driver.getCurrentUrl().contains("start-process")
             );
@@ -247,7 +261,7 @@ public class ReviewOFACNewVendorPage {
                 throw new AssertionError("Submit click did not navigate away - likely validation failure");
             }
 
-            //  confirm no validation banner appears
+            // confirm no validation banner appears
             boolean validationErrorPresent = !driver.findElements(
                     By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
             ).isEmpty();
@@ -263,10 +277,14 @@ public class ReviewOFACNewVendorPage {
     public void handleReviewOFACNewVendorEdgeFlow() {
         Allure.step("Select Rejected radio button", () -> {
 
-            WebElement AttorneyReject= wait.until(
-                    ExpectedConditions.elementToBeClickable(OFACRejectedOption));
+            /*WebElement AttorneyReject = wait.until(
+                    ExpectedConditions.elementToBeClickable(OFACRejectedOption)
+            ); */
 
-            AttorneyReject.click();
+            waitForClickable(OFACRejectedOption);
+            WebElement AttorneyReject = driver.findElement(OFACRejectedOption);
+
+            click(AttorneyReject);
 
             System.out.println("✅ Rejected radio button selected");
             Allure.step("Rejected radio button selected");
@@ -284,9 +302,12 @@ public class ReviewOFACNewVendorPage {
 
             String expectedComment = ConfigReader.getNewOC("newOFAC.comments");
 
-            WebElement comments = wait.until(
+            /*WebElement comments = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(commentBoxB)
-            );
+            ); */
+
+            waitForVisible(commentBoxB);
+            WebElement comments = driver.findElement(commentBoxB);
 
             comments.click();
             comments.clear();
@@ -298,20 +319,17 @@ public class ReviewOFACNewVendorPage {
             Thread.sleep(2000);
 
             // locate enabled arrow button only
-            WebElement arrowBtn = wait.until(
+            /*WebElement arrowBtn = wait.until(
                     ExpectedConditions.presenceOfElementLocated(saveArrowB)
-            );
+            ); */
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    arrowBtn
-            );
+            waitForVisible(saveArrowB);
+            WebElement arrowBtn = driver.findElement(saveArrowB);
 
-            // JS click works better for Appian
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].click();",
-                    arrowBtn
-            );
+            scrollToElement(arrowBtn);
+
+            // JS click kept (Appian stability requirement - no logic change)
+            jsClick(arrowBtn);
 
             // wait until comment appears in DOM
             wait.until(driver ->
@@ -329,28 +347,28 @@ public class ReviewOFACNewVendorPage {
             String expectedComment = ConfigReader.getNewOC("newOFAC.comments").trim();
 
             // Step 1: locate Comments section label first
-            WebElement section = wait.until(
+            /*WebElement section = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(commentSectionB)
-            );
+            ); */
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    section
-            );
+            waitForVisible(commentSectionB);
+            WebElement section = driver.findElement(commentSectionB);
+
+            scrollToElement(section);
 
             // Step 2: locate comment globally but still anchored near section text
             By actualCommentLocator = By.xpath(
                     "//*[contains(normalize-space(),'" + expectedComment + "')]"
             );
 
-            WebElement actualComment = wait.until(
+            /*WebElement actualComment = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(actualCommentLocator)
-            );
+            ); */
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    actualComment
-            );
+            waitForVisible(actualCommentLocator);
+            WebElement actualComment = driver.findElement(actualCommentLocator);
+
+            scrollToElement(actualComment);
 
             String actualText = actualComment.getText().trim();
 
@@ -371,28 +389,32 @@ public class ReviewOFACNewVendorPage {
 
         Allure.step("Click Submit button to complete task", () -> {
 
-            WebElement sbmtbtnB = wait.until(
+            /*WebElement sbmtbtnB = wait.until(
                     ExpectedConditions.presenceOfElementLocated(submitButtonB)
-            );
+            ); */
 
-            //  ensure it's actually enabled
+            waitForVisible(submitButtonB);
+            WebElement sbmtbtnB = driver.findElement(submitButtonB);
+
+            // ensure it's actually enabled
             wait.until(driver ->
                     sbmtbtnB.isDisplayed() && sbmtbtnB.isEnabled()
             );
 
-            //  scroll into view
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnB);
+            // scroll into view
+            /*((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnB); */
+            scrollToElement(sbmtbtnB);
 
-            //  wait for stability before click
+            // wait for stability before click
             wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnB));
+            //waitForClickable(sbmtbtnB);
 
-            sbmtbtnB.click();
+            click(sbmtbtnB);
 
             System.out.println("✅ Submit button clicked");
 
             // WAIT FOR POST-SUBMIT STATE CHANGE
-            // Option A: URL change
             boolean urlChanged = wait.until(driver ->
                     !driver.getCurrentUrl().contains("start-process")
             );
@@ -401,7 +423,7 @@ public class ReviewOFACNewVendorPage {
                 throw new AssertionError("Submit click did not navigate away - likely validation failure");
             }
 
-            //  confirm no validation banner appears
+            // confirm no validation banner appears
             boolean validationErrorPresent = !driver.findElements(
                     By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
             ).isEmpty();
@@ -411,6 +433,7 @@ public class ReviewOFACNewVendorPage {
             }
 
             SceenshotUtil.takeScreenshot(driver, "Task Submitted");
+
         });
         // =====================================================
         // 5. NAVIGATE BACK TO GRID (implicit)
@@ -418,7 +441,9 @@ public class ReviewOFACNewVendorPage {
         Allure.step("Verify return to task grid", () -> {
 
             // Wait for grid to reappear after Save & Close navigation
-            wait.until(ExpectedConditions.presenceOfElementLocated(taskGridB));
+            //wait.until(ExpectedConditions.presenceOfElementLocated(taskGridB));
+            waitForVisible(taskGridB);
+            driver.findElement(taskGridB);
 
             // Ensure grid is actually rendered (not just DOM placeholder)
             wait.until(driver ->
@@ -451,28 +476,31 @@ public class ReviewOFACNewVendorPage {
 
                         driver.navigate().refresh();
 
-                        wait.until(webDriver ->
+                        /*wait.until(webDriver ->
                                 ((JavascriptExecutor) webDriver)
                                         .executeScript("return document.readyState")
                                         .equals("complete")
-                        );
+                        ); */
+                        waitForPageLoad();
 
                         System.out.println("✅ Page refreshed");
                     }
 
                     // STEP 1: Click Comments Tab
-                    WebElement commentsTab = wait.until(
+                    /*WebElement commentsTab = wait.until(
                             ExpectedConditions.elementToBeClickable(commentsLinkB)
-                    );
+                    ); */
 
-                    ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].scrollIntoView({block:'center'});", commentsTab);
+                    waitForClickable(commentsLinkB);
+                    WebElement commentsTab = driver.findElement(commentsLinkB);
+
+                    scrollToElement(commentsTab);
 
                     try {
                         commentsTab.click();
                     } catch (Exception e) {
                         System.out.println("⚠️ JS click fallback used");
-                        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", commentsTab);
+                        jsClick(commentsTab);
                     }
 
                     System.out.println("✅ Comments tab clicked");
@@ -542,12 +570,10 @@ public class ReviewOFACNewVendorPage {
             if (!commentVerified && lastException != null) {
                 throw new RuntimeException("❌ Final failure", lastException);
             }
+
             System.out.println("✅ Comment successfully verified from UI span");
 
             SceenshotUtil.takeScreenshot(driver, "Comments Final Verified");
-
-            //System.out.println("✅ Comment successfully verified for user: " + username);
         });
-
     }
 }

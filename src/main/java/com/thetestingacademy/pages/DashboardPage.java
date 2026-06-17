@@ -1,32 +1,23 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-public class DashboardPage {
-
-    WebDriver driver;
-    WebDriverWait wait;
-
-    // -------------------------
-    // Locators
-    // -------------------------
-    // Update this if your app has a better stable identifier
-    private By dashboardHeader = By.xpath("//span[contains(text(),'Hello')]");
-
-    // Optional: Example user label or menu (more stable than greeting text)
-    private By userProfileIcon = By.id("userProfile");
+public class DashboardPage extends CommonUIActions {
 
     public DashboardPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        super(driver);
     }
+
+    private final By dashboardHeader =
+            By.xpath("//span[contains(text(),'Hello')]");
+
+    private final By userProfileIcon =
+            By.id("userProfile");
 
     // -------------------------
     // Validate Dashboard Loaded
@@ -35,10 +26,14 @@ public class DashboardPage {
 
         return Allure.step("Verify Dashboard is loaded", () -> {
             try {
-                WebElement element = wait.until(
+                /*WebElement element = wait.until(
                         ExpectedConditions.visibilityOfElementLocated(dashboardHeader)
                 );
-                return element.isDisplayed();
+                return element.isDisplayed(); */
+
+                waitForVisible(dashboardHeader);
+
+                return driver.findElement(dashboardHeader).isDisplayed();
 
             } catch (Exception e) {
                 Allure.addAttachment(
@@ -51,20 +46,19 @@ public class DashboardPage {
     }
 
     // -------------------------
-    // Example: Get logged-in user text
+    // Get logged-in user
     // -------------------------
     public String getLoggedInUser() {
 
         return Allure.step("Fetch logged in user name", () -> {
-            WebElement element = wait.until(
+            return wait.until(
                     ExpectedConditions.visibilityOfElementLocated(dashboardHeader)
-            );
-            return element.getText();
+            ).getText();
         });
     }
 
     // -------------------------
-    // Example: Check user profile icon
+    // Profile visibility
     // -------------------------
     public boolean isUserProfileVisible() {
 
@@ -80,14 +74,12 @@ public class DashboardPage {
     }
 
     // -------------------------
-    // Optional: Logout action (if available in app)
+    // Logout
     // -------------------------
     public void logout() {
 
         Allure.step("Logout from application", () -> {
-            driver.findElement(userProfileIcon).click();
-            // Add logout locator if available
-            // driver.findElement(By.id("logout")).click();
+            click(userProfileIcon);
         });
     }
 }

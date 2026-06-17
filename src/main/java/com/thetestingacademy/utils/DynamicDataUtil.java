@@ -1,10 +1,16 @@
 package com.thetestingacademy.utils;
 
+import com.thetestingacademy.config.ConfigReader;
+
 import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class DynamicDataUtil {
 
     private static final String COUNTER_FILE = "counter.txt";
+    private static final Random random = new Random();
 
     // Reads + increments persistent counter
     public static synchronized int getNextCounter() {
@@ -14,7 +20,6 @@ public class DynamicDataUtil {
         try {
             File file = new File(COUNTER_FILE);
 
-            // Read existing value
             if (file.exists()) {
 
                 BufferedReader br = new BufferedReader(new FileReader(file));
@@ -26,10 +31,8 @@ public class DynamicDataUtil {
                 }
             }
 
-            // Increment counter
             counter++;
 
-            // Write back updated value
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
             bw.write(String.valueOf(counter));
             bw.close();
@@ -41,31 +44,60 @@ public class DynamicDataUtil {
         return counter;
     }
 
-    // Shared counter per test execution
     public static int getSharedCounter() {
         return getNextCounter();
     }
 
-    // OC Firm Name → Auto New OC Firm n - test n
+    // =========================
+    // OC FIRM HELPERS
+    // =========================
     public static String getOCFirmName(String baseValue, int count) {
         return baseValue + " " + count;
     }
 
-    // OC Email → autouser@mail.com n - test n
     public static String getOCEmail(String email, int count) {
 
         String[] parts = email.split("@");
-
         return parts[0] + count + "@" + parts[1];
     }
 
-    // OC Justification → Auto justification added by automation for Firm n - test n
     public static String getOCJustification(String baseValue, int count) {
         return baseValue + " " + count;
     }
 
-    // OC Attorney → Auto Attorney n - test n
     public static String getOCAttorney(String baseValue, int count) {
         return baseValue + " " + count;
+    }
+
+    // =========================
+    // 🔥 NEW: OC CITY HANDLING
+    // =========================
+
+    // RANDOM CITY PICKER (recommended)
+    public static String getOCCityRandom() {
+
+        String raw = ConfigReader.getNewOC("ocCities");
+
+        if (raw == null || raw.trim().isEmpty()) {
+            throw new RuntimeException("❌ ocCities not found in properties file");
+        }
+
+        List<String> cities = Arrays.asList(raw.split("\\s*,\\s*"));
+
+        return cities.get(random.nextInt(cities.size()));
+    }
+
+    // SEQUENTIAL CITY PICKER (optional for regression stability)
+    public static String getOCCitySequential(int index) {
+
+        String raw = ConfigReader.getNewOC("ocCities");
+
+        if (raw == null || raw.trim().isEmpty()) {
+            throw new RuntimeException("❌ ocCities not found in properties file");
+        }
+
+        List<String> cities = Arrays.asList(raw.split("\\s*,\\s*"));
+
+        return cities.get(index % cities.size());
     }
 }

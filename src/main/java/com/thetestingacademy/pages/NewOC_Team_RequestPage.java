@@ -1,46 +1,30 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.openqa.selenium.JavascriptExecutor;
 
-import java.time.Duration;
+public class NewOC_Team_RequestPage extends CommonUIActions {
 
-public class NewOC_Team_RequestPage {
-
-   WebDriver driver;
-   WebDriverWait wait;
-    JavascriptExecutor js;
-
-   public NewOC_Team_RequestPage(WebDriver driver) {
-
-       this.driver = driver;
-
-       this.wait = new WebDriverWait(driver,
-               Duration.ofSeconds(30));
-       this.js = (JavascriptExecutor) driver;
-   }
+    public NewOC_Team_RequestPage(WebDriver driver) {
+        super(driver);
+    }
 
    // =========================
    // LOCATORS
    // =========================
 
-   // HOME PAGE VALIDATION
-  /* private final By homePageContainer = By.xpath(
-           "//div[contains(@class,'HeaderLayout---header')]");
-
-    // SEARCH BOX
-    private By SearchBox = By.xpath(
-            "//input[@placeholder='Search Legal Matter requests']");
-    private By searchBtn = By.xpath("//button[.//span[text()='Search']]"); */
+    /*private By teamTab = By.xpath(
+            "//a[contains(normalize-space(.),\"MY TEAM'S LEGAL MATTER REQUESTS\")]"); */
     private By teamTab = By.xpath(
-            "//a[contains(normalize-space(.),\"MY TEAM'S LEGAL MATTER REQUESTS\")]");
+            "//div[normalize-space(text())=\"My Team's Legal Matter Requests\"]");
 
     // DYNAMIC REQUEST LINK
     private By requestLink(String requestNumber) {
@@ -81,9 +65,13 @@ public class NewOC_Team_RequestPage {
 
         Allure.step("Open Team Requests Tab", () -> {
 
-            WebElement tab = wait.until(
+            /*WebElement tab = wait.until(
                     ExpectedConditions.elementToBeClickable(teamTab)
-            );
+            ); */
+
+            waitForClickable(teamTab);
+
+            //WebElement tab = driver.findElement(teamTab);
 
             //tab.click();
             driver.findElement(teamTab).click();
@@ -92,36 +80,11 @@ public class NewOC_Team_RequestPage {
                     By.xpath("//div[contains(@class,'Table') or contains(@class,'Grid')]")
             ));
 
+            //waitForVisible(By.xpath("//div[contains(@class,'Table') or contains(@class,'Grid')]"));
+
             System.out.println("Team Requests tab opened");
 
         });
-
-       /*Allure.step("Search Generated Request", () -> {
-
-            // remove #
-            String cleanRequestNumber = requestNumber.replace("#", "").trim();
-
-            WebElement search = wait.until(
-                    ExpectedConditions.elementToBeClickable(SearchBox));
-
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    search);
-
-            search.click();
-
-            search.clear();
-
-            search.sendKeys(cleanRequestNumber);
-
-            System.out.println(
-                    "Searching Request: " + cleanRequestNumber);
-
-            // click search button
-            WebElement searchButton = wait.until(
-                    ExpectedConditions.elementToBeClickable(searchBtn));
-            searchButton.click();
-        }); */
 
         // -------------------------------
         // STEP 3: Open Latest NEW OC Request
@@ -138,77 +101,100 @@ public class NewOC_Team_RequestPage {
 
         System.out.println("Processed Target Request: " + targetRequest);
 
-
         By requestLink = By.xpath(
                 "//a[contains(@class,'LinkedItem') and contains(.,'" + targetRequest + " |')]"
         );
+
         // wait for presence first (not visibility)
         WebElement request = wait.until(
                 ExpectedConditions.presenceOfElementLocated(requestLink)
         );
 
-        // scroll + JS fallback click (important for Appian grids)
-        js.executeScript("arguments[0].scrollIntoView({block:'center'});", request);
+        //waitForVisible(requestLink);
 
+        //WebElement request = driver.findElement(requestLink);
+
+        // =========================================================
+        // SCROLL (via CommonUIActions - NO JS)
+        // =========================================================
+        scrollToElement(request);
+
+        // ensure clickable
         wait.until(ExpectedConditions.elementToBeClickable(request));
+
+        // =========================================================
+        // SAFE CLICK WITH FALLBACK
+        // =========================================================
         try {
-
-            // =========================================================
-            // 🔥 RE-LOCATE ELEMENT (avoid stale / timing issues)
-            // =========================================================
-
-            js.executeScript("arguments[0].scrollIntoView({block:'center'});", request);
-
-            wait.until(ExpectedConditions.elementToBeClickable(request));
-
-            // =========================================================
-            // 🔥 SAFE CLICK (STANDARD + FALLBACK)
-            // =========================================================
-
-            try {
-                request.click();
-            } catch (Exception e) {
-                js.executeScript("arguments[0].click();", request);
-            }
-
-            System.out.println("✅ Clicked NEW OC Request: " + targetRequest);
-            SceenshotUtil.takeScreenshot(driver, "Clicked NEW OC Request");
-
-            // =========================================================
-            // 🔥 POST CLICK STABILIZATION (TASK GRID LOAD FIX)
-            // =========================================================
-
-            wait.until(driver ->
-                    ((JavascriptExecutor) driver)
-                            .executeScript("return document.readyState")
-                            .equals("complete")
-            );
-
-            By claimButton = By.xpath("//span[normalize-space()='Claim']");
-            By taskTable = By.xpath("//table | //div[contains(@class,'Table')]");
-
-            wait.until(ExpectedConditions.or(
-                    ExpectedConditions.presenceOfElementLocated(claimButton),
-                    ExpectedConditions.presenceOfElementLocated(taskTable)
-            ));
-
-            By loadingSpinner = By.xpath(
-                    "//*[contains(@class,'loading') or contains(@class,'spinner')]"
-            );
-
-            try {
-                wait.until(ExpectedConditions.invisibilityOfElementLocated(loadingSpinner));
-            } catch (Exception ignored) {
-                // spinner may not exist
-            }
-
-            System.out.println("✅ Task grid fully loaded after request open");
-
+            click(request);
         } catch (Exception e) {
-            SceenshotUtil.takeScreenshot(driver, "Request Not Found");
-            throw new RuntimeException(
-                    "❌ NEW OC Request not found on Home Page: " + targetRequest
-            );
+            System.out.println("⚠️ Normal click failed → JS click fallback");
+            jsClick(request);
         }
+
+        System.out.println("✅ Clicked NEW OC Request: " + targetRequest);
+        SceenshotUtil.takeScreenshot(driver, "Clicked NEW OC Request");
+
+        // =========================================================
+        // POST CLICK STABILIZATION (TASK GRID LOAD FIX)
+        // =========================================================
+
+        // UI render wait (Appian/React stability layer)
+        waitForUIRender();
+
+        // GRID VALIDATION
+        By claimButton = By.xpath("//span[normalize-space()='Claim']");
+        By taskTable = By.xpath("//table | //div[contains(@class,'Table')]");
+
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.presenceOfElementLocated(claimButton),
+                ExpectedConditions.presenceOfElementLocated(taskTable)
+        ));
+
+        // SPINNER HANDLING
+        By loadingSpinner = By.xpath(
+                "//*[contains(@class,'loading') or contains(@class,'spinner')]"
+        );
+
+        try {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(loadingSpinner));
+        } catch (Exception ignored) {
+            // spinner may not exist
+        }
+
+        System.out.println("✅ Task grid fully loaded after request open");
+
+        System.out.println("✅ Clicked NEW OC Request: " + targetRequest);
+        SceenshotUtil.takeScreenshot(driver, "Clicked NEW OC Request");
+
+// =========================================================
+// VERIFY RECORD PAGE OPENED
+// =========================================================
+
+        /*wait.until(ExpectedConditions.or(
+                ExpectedConditions.urlContains("/record/"),
+                ExpectedConditions.urlContains("/view/summary")
+        ));
+
+        System.out.println("Current URL : " + driver.getCurrentUrl());
+
+// spinner handling
+        By loadingSpinner = By.xpath(
+                "//*[contains(@class,'loading') or contains(@class,'spinner')]"
+        );
+
+        try {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(loadingSpinner));
+        } catch (Exception ignored) {
+        }
+
+// verify Tasks tab exists on summary page
+        By tasksTab = By.xpath(
+                "//a[contains(.,'Tasks')] | //span[contains(.,'Tasks')]"
+        );
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(tasksTab));
+
+        System.out.println("✅ Summary page opened successfully"); */
     }
 }

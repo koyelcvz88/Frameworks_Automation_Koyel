@@ -1,6 +1,8 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.model.DataModel;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
@@ -13,16 +15,14 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
 
-public class ExecuteAndUploadELPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
-    private Actions actions;
+public class ExecuteAndUploadELPage extends CommonUIActions {
+    private final DataModel testData;
 
-    public ExecuteAndUploadELPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        this.actions = new Actions(driver);
+    public ExecuteAndUploadELPage(WebDriver driver, DataModel testData) {
+        super(driver);
+        this.testData = testData;
     }
+
 
     // =========================================================
     // GRID LOCATORS (TASK LIST)
@@ -104,8 +104,9 @@ public class ExecuteAndUploadELPage {
 
                                 WebElement chckbx = row.findElement(checkboxD);
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", chckbx);
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", chckbx); */
+                                jsClick(chckbx);
 
                                 System.out.println("✅ Checkbox selected");
 
@@ -122,8 +123,9 @@ public class ExecuteAndUploadELPage {
                                 WebElement task = wait.until(
                                         ExpectedConditions.elementToBeClickable(taskLinkD));
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", task);
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", task); */
+                                jsClick(task);
 
                                 System.out.println("✅ Task opened");
 
@@ -209,9 +211,10 @@ public class ExecuteAndUploadELPage {
 
                 try {
 
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    /*wait.until(ExpectedConditions.visibilityOfElementLocated(
                             By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]")
-                    ));
+                    )); */
+                    waitForVisible(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
 
                     List<WebElement> rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
 
@@ -237,10 +240,11 @@ public class ExecuteAndUploadELPage {
                                 // ==============================
                                 WebElement checkbox = row.findElement(executeEngagementLettersCheckbox);
 
-                                ((JavascriptExecutor) driver).executeScript(
+                                /*((JavascriptExecutor) driver).executeScript(
                                         "arguments[0].scrollIntoView({block:'center'});",
                                         checkbox
-                                );
+                                ); */
+                                scrollToElement(checkbox);
 
                                 Thread.sleep(800);
 
@@ -248,8 +252,9 @@ public class ExecuteAndUploadELPage {
                                     checkbox.click();
                                 } catch (Exception e) {
 
-                                    ((JavascriptExecutor) driver)
-                                            .executeScript("arguments[0].click();", checkbox);
+                                    /*((JavascriptExecutor) driver)
+                                            .executeScript("arguments[0].click();", checkbox); */
+                                    jsClick(checkbox);
                                 }
 
                                 System.out.println("✅ Checkbox clicked");
@@ -263,10 +268,11 @@ public class ExecuteAndUploadELPage {
                                 rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
                                 row = rows.get(i);
 
-                                ((JavascriptExecutor) driver).executeScript(
+                                /*((JavascriptExecutor) driver).executeScript(
                                         "arguments[0].scrollIntoView({block:'center'});",
                                         row
-                                );
+                                ); */
+                                scrollToElement(row);
 
                                 Thread.sleep(800);
 
@@ -276,8 +282,9 @@ public class ExecuteAndUploadELPage {
                                 try {
                                     row.click();
                                 } catch (Exception e) {
-                                    ((JavascriptExecutor) driver)
-                                            .executeScript("arguments[0].click();", row);
+                                    /*((JavascriptExecutor) driver)
+                                            .executeScript("arguments[0].click();", row); */
+                                    click(row);
                                 }
 
                                 System.out.println("✅ Row clicked for expansion");
@@ -319,7 +326,7 @@ public class ExecuteAndUploadELPage {
         });
 
         // STEP : Upload Engagement Letter
-         Allure.step("Uploading Executed Engagement Letters", () -> {
+         /*Allure.step("Uploading Executed Engagement Letters", () -> {
 
 
             Thread.sleep(4000);
@@ -327,7 +334,7 @@ public class ExecuteAndUploadELPage {
             System.out.println("✅ Upload button clicked successfully");
 
 
-            WebElement uploadFileInput = driver.findElement(
+            /*WebElement uploadFileInput = driver.findElement(
                     By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")
             );
 
@@ -335,23 +342,61 @@ public class ExecuteAndUploadELPage {
             System.out.println(user_dir_path);
 
             uploadFileInput.sendKeys(
-                    user_dir_path + "/src/main/resources/Legal_Engagement_Letter_Trimont.pdf");
+                    user_dir_path + "/src/main/resources/Legal_Engagement_Letter_Trimont.pdf"); */
+
+             /*By uploadFileInput = By.xpath(
+                     "(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]"
+             );
+
+             String filePath = System.getProperty("user.dir")
+                     + "/src/main/resources/Legal_Engagement_Letter_Trimont.pdf";
+
+             uploadFile(uploadFileInput, filePath);
 
             Thread.sleep(4000);
 
             System.out.println("✅ Executed Engagement Letter uploaded successfully");
             Allure.step("Executed Engagement Letter uploaded successfully");
             SceenshotUtil.takeScreenshot(driver, "Executed Engagement Letter uploaded successfully");
+        }); */
+
+        Allure.step("Uploading Executed Engagement Letters", () -> {
+
+            Thread.sleep(4000);
+
+            System.out.println("✅ Upload button clicked successfully");
+
+            By uploadFileInput = By.xpath(
+                    "(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]"
+            );
+
+            String filePath = System.getProperty("user.dir")
+                    + "/src/main/resources/Legal_Engagement_Letter_Trimont.pdf";
+
+            System.out.println("📁 File Path: " + filePath);
+
+            uploadFileUsingPresence(uploadFileInput, filePath);
+
+            Thread.sleep(4000);
+
+            System.out.println("✅ Executed Engagement Letter uploaded successfully");
+
+            Allure.step("Executed Engagement Letter uploaded successfully");
+
+            SceenshotUtil.takeScreenshot(
+                    driver,
+                    "Executed Engagement Letter uploaded successfully"
+            );
         });
 
         // STEP : Upload W9 Form
-        Allure.step("Uploading W9 Form", () -> {
+        /*Allure.step("Uploading W9 Form", () -> {
             Thread.sleep(4000);
 
             System.out.println("✅ Upload button clicked successfully");
 
 
-            WebElement uploadFileInput = driver.findElement(
+            /*WebElement uploadFileInput = driver.findElement(
                     By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")
             );
 
@@ -359,7 +404,15 @@ public class ExecuteAndUploadELPage {
             System.out.println(user_dir_path);
 
             uploadFileInput.sendKeys(
-                    user_dir_path + "/src/main/resources/Form_W9_Trimont_Sample.pdf");
+                    user_dir_path + "/src/main/resources/Form_W9_Trimont_Sample.pdf"); */
+            /*By uploadFileInput = By.xpath(
+                    "(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]"
+            );
+
+            String filePath = System.getProperty("user.dir")
+                    + "/src/main/resources/Form_W9_Trimont_Sample.pdf";
+
+            uploadFile(uploadFileInput, filePath);
 
             Thread.sleep(4000);
 
@@ -367,13 +420,46 @@ public class ExecuteAndUploadELPage {
             Allure.step("W9 Form uploaded successfully");
             SceenshotUtil.takeScreenshot(driver, "W9 Form uploaded successfully");
 
+        }); */
+        Allure.step("Uploading W9 Form", () -> {
+
+            Thread.sleep(4000);
+
+            System.out.println("✅ Upload button clicked successfully");
+
+            By uploadFileInput = By.xpath(
+                    "(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]"
+            );
+
+            String filePath = System.getProperty("user.dir")
+                    + "/src/main/resources/Form_W9_Trimont_Sample.pdf";
+
+            System.out.println("📁 File Path: " + filePath);
+
+            uploadFileUsingPresence(uploadFileInput, filePath);
+
+            Thread.sleep(4000);
+
+            System.out.println("✅ W9 Form uploaded successfully");
+
+            Allure.step("W9 Form uploaded successfully");
+
+            SceenshotUtil.takeScreenshot(
+                    driver,
+                    "W9 Form uploaded successfully"
+            );
+
         });
         // Click Submit
         Allure.step("Click Submit button to complete task", () -> {
 
-            WebElement sbmtbtnC = wait.until(
+            /*WebElement sbmtbtnC = wait.until(
                     ExpectedConditions.presenceOfElementLocated(submitButtonC)
-            );
+            ); */
+
+            waitForVisible(submitButtonC);
+            WebElement sbmtbtnC = driver.findElement(submitButtonC);
+
 
             //  ensure it's actually enabled
             wait.until(driver ->
@@ -381,11 +467,13 @@ public class ExecuteAndUploadELPage {
             );
 
             //  scroll into view
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnC);
+            /*((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnC); */
+            scrollToElement(sbmtbtnC);
 
             //  wait for stability before click
-            wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnC));
+            //wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnC));
+            waitForClickable(sbmtbtnC);
 
             sbmtbtnC.click();
 
@@ -419,7 +507,9 @@ public class ExecuteAndUploadELPage {
         Allure.step("Verify return to task grid", () -> {
 
             // Wait for grid to reappear after Save & Close navigation
-            wait.until(ExpectedConditions.presenceOfElementLocated(taskGridC));
+            //wait.until(ExpectedConditions.presenceOfElementLocated(taskGridC));
+            waitForVisible(taskGridC);
+            driver.findElement(taskGridC);
 
             // Ensure grid is actually rendered (not just DOM placeholder)
             wait.until(driver ->
@@ -453,22 +543,29 @@ public class ExecuteAndUploadELPage {
 
                         driver.navigate().refresh();
 
-                        wait.until(webDriver ->
+                        /*wait.until(webDriver ->
                                 ((JavascriptExecutor) webDriver)
                                         .executeScript("return document.readyState")
                                         .equals("complete")
-                        );
+
+                        ); */
+                        waitForPageLoad();
 
                         System.out.println("✅ Page refreshed");
                     }
 
                     // STEP 1: Click Documents Tab
-                    WebElement documentsTab = wait.until(
+                    /*WebElement documentsTab = wait.until(
                             ExpectedConditions.elementToBeClickable(documentsTabLocator)
                     );
 
                     ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].scrollIntoView({block:'center'});", documentsTab);
+                            .executeScript("arguments[0].scrollIntoView({block:'center'});", documentsTab); */
+
+                    waitForClickable(documentsTabLocator);
+                    WebElement documentsTab = driver.findElement(documentsTabLocator);
+
+                    scrollToElement(documentsTab);
 
                     try {
                         documentsTab.click();
@@ -476,8 +573,9 @@ public class ExecuteAndUploadELPage {
 
                         System.out.println("⚠️ JS click fallback used");
 
-                        ((JavascriptExecutor) driver)
-                                .executeScript("arguments[0].click();", documentsTab);
+                        /*((JavascriptExecutor) driver)
+                                .executeScript("arguments[0].click();", documentsTab); */
+                        jsClick(documentsTab);
                     }
 
                     System.out.println("✅ Documents tab clicked");
@@ -515,44 +613,28 @@ public class ExecuteAndUploadELPage {
                     // =====================================================
                     // STEP 3: OPEN W9 FORM SECTION + VALIDATE
                     // =====================================================
+
+                    // ===== WAIT FOR W9 LINK PRESENCE =====
                     /*WebElement w9Link = wait.until(
-                            ExpectedConditions.elementToBeClickable(W9FormLink));
-
-                    w9Link.click();
-
-                    System.out.println("✅ W9 Form section opened");
-
-                    WebElement w9Doc = wait.until(
-                            ExpectedConditions.visibilityOfElementLocated(
-                                    By.xpath("//*[contains(text(),'" + expectedDocument2 + "')]")
-                            )
-                    );
-
-                    if (w9Doc.isDisplayed()) {
-                        w9Found = true;
-                        System.out.println("➡️ W9 Document Found: " + w9Doc.getText());
-                    } */
-                    // =====================================================
-// STEP 3: OPEN W9 SECTION + VALIDATE DOCUMENT
-// =====================================================
-
-// ===== WAIT FOR W9 LINK PRESENCE =====
-                    WebElement w9Link = wait.until(
                             ExpectedConditions.presenceOfElementLocated(W9FormLink)
-                    );
+                    ); */
 
-// ===== ENSURE VISIBLE =====
+                    waitForVisible(W9FormLink);
+                    WebElement w9Link = driver.findElement(W9FormLink);
+
+                    // ===== ENSURE VISIBLE =====
                     wait.until(ExpectedConditions.visibilityOf(w9Link));
 
-// ===== SCROLL TO ELEMENT =====
-                    ((JavascriptExecutor) driver).executeScript(
+                    // ===== SCROLL TO ELEMENT =====
+                    /*((JavascriptExecutor) driver).executeScript(
                             "arguments[0].scrollIntoView({block:'center'});",
                             w9Link
-                    );
+                    ); */
+                    scrollToElement(w9Link);
 
                     Thread.sleep(1000);
 
-// ===== CLICK W9 SECTION =====
+                    // ===== CLICK W9 SECTION =====
                     try {
 
                         w9Link.click();
@@ -561,26 +643,28 @@ public class ExecuteAndUploadELPage {
 
                         System.out.println("⚠️ Normal click failed on W9 Form section");
 
-                        ((JavascriptExecutor) driver)
-                                .executeScript("arguments[0].click();", w9Link);
+                        /*((JavascriptExecutor) driver)
+                                .executeScript("arguments[0].click();", w9Link); */
+                        jsClick(w9Link);
                     }
 
                     System.out.println("✅ W9 Form section opened");
 
-// ===== WAIT FOR SECTION EXPANSION =====
+                    // ===== WAIT FOR SECTION EXPANSION =====
                     Thread.sleep(3000);
 
-// ===== VALIDATE W9 DOCUMENT =====
+                    // ===== VALIDATE W9 DOCUMENT =====
                     WebElement w9Doc = wait.until(
                             ExpectedConditions.visibilityOfElementLocated(
                                     By.xpath("//*[contains(text(),'" + expectedDocument2 + "')]")
                             )
                     );
 
-                    ((JavascriptExecutor) driver).executeScript(
+                    /*((JavascriptExecutor) driver).executeScript(
                             "arguments[0].scrollIntoView({block:'center'});",
                             w9Doc
-                    );
+                    ); */
+                    scrollToElement(w9Doc);
 
                     if (w9Doc.isDisplayed()) {
 

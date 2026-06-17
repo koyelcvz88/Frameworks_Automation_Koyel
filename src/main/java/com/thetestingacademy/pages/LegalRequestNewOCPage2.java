@@ -1,134 +1,152 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.model.DataModel;
 import com.thetestingacademy.utils.DynamicDataUtil;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.time.Duration;
-import java.util.List;
+public class LegalRequestNewOCPage2 extends CommonUIActions {
 
-//import static com.thetestingacademy.utils.TestData.newOCRequestNumber;
+    private final DataModel testData;
 
-public class LegalRequestNewOCPage2 {
-    WebDriver driver;
-    WebDriverWait wait;
-    Actions actions;
-    JavascriptExecutor js;
-
-    public LegalRequestNewOCPage2(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-        this.actions = new Actions(driver);
-        this.js = (JavascriptExecutor) driver;
+    public LegalRequestNewOCPage2(WebDriver driver, DataModel testData) {
+        super(driver);
+        this.testData = testData;
     }
 
-    // Stored values
-    protected String requestMatterNew;
-    protected String selectedOCFirmNew;
-    int count = DynamicDataUtil.getSharedCounter();
-    protected String ocFirmName;
-    protected String ocJustification;
-    protected String attorneyName;
-    protected String phoneNumber;
-    protected String emailAddress;
-    protected String city;
-    protected String state;
+    // ================= LOCATORS =================
 
-    public void fillNewOCRequest() throws InterruptedException {
+    private final By requestMatter =
+            By.xpath("//label[contains(.,'Request/Matter Name')]/following::input[1]");
+
+    private final By ocFirmDropdown =
+            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., '---Select Outside Counsel Firm Name---')]");
+
+    private final By ocFirmNameInput =
+            By.xpath("//strong[contains(text(),'OC Firm Name')]/following::input[1]");
+
+    private final By justificationInput =
+            By.xpath("//strong[contains(text(),'New Outside Counsel Justification')]/following::textarea[1]");
+
+    private final By attorneyInput =
+            By.xpath("//strong[contains(text(),'Attorney Name')]/following::input[1]");
+
+    private final By phoneInput =
+            By.xpath("//strong[contains(text(),'Phone')]/following::input[1]");
+
+    private final By emailInput =
+            By.xpath("//strong[contains(text(),'Email')]/following::input[1]");
+
+    private final By cityInput =
+            By.xpath("//strong[contains(text(),'Address')]/following::input[1]");
+
+    private final By stateDropdown =
+            By.xpath("(//strong[normalize-space()='Address']/following::div[contains(@class,'DropdownWidget---dropdown_value')])[1]");
+
+    private final By submitBtn =
+            By.xpath("//button[.//span[text()='Submit']]");
+
+    private final By dropdownOptions =
+            By.xpath("//div[@role='option']");
+
+    // ================= DATA =================
+
+    int count = DynamicDataUtil.getSharedCounter();
+
+    //String requestMatterNew;
+    String ocFirmName;
+    String selectedOCFirmNew;
+    String ocJustification;
+    String attorneyName;
+    String phoneNumber;
+    String emailAddress;
+    String city;
+    String state;
+
+    // ================= SAFE DROPDOWN HANDLER =================
+
+    private void selectOption(String value) {
+
+        if (value == null || value.trim().isEmpty()) {
+            throw new RuntimeException("Dropdown value is NULL/EMPTY");
+        }
+
+        value = value.trim();
+
+        WebDriverWait w = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        w.until(ExpectedConditions.presenceOfAllElementsLocatedBy(dropdownOptions));
+
+        for (WebElement opt : driver.findElements(dropdownOptions)) {
+
+            String text = opt.getText() == null ? "" : opt.getText().trim();
+
+            if (text.equalsIgnoreCase(value)) {
+                w.until(ExpectedConditions.elementToBeClickable(opt)).click();
+                return;
+            }
+        }
+
+        throw new RuntimeException("Option not found in dropdown: " + value);
+    }
+
+
+    // ================= MAIN FLOW =================
+
+    public void fillNewOCRequest() {
 
         // STEP 1: Request Matter
         Allure.step("Entering Request Matter", () -> {
 
-            /* WebElement field = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//label[contains(text(),'Request/Matter Name')]/following::input[1]")
-                    )
-            ); */
+            String requestMatterEx = ConfigReader.getData("exOC.requestmatter");
+            String requestMatterNew = ConfigReader.getData("newOC.requestmatter");
 
-            By inputLocator = By.xpath("//label[contains(.,'Request/Matter Name')]/following::input[1]");
+            scrollToElement(requestMatter);
 
-            WebElement field = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(inputLocator)
-            );
-
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block: 'center'});", field
-            );
-
-            wait.until(ExpectedConditions.elementToBeClickable(field));
-
-
-            Thread.sleep(1000);
-            field.click();
-
-            requestMatterNew = "New_OC_New_Legal_Request";
-            field.sendKeys(requestMatterNew);
+            type(requestMatter, requestMatterNew);
 
             System.out.println("Request Matter entered: " + requestMatterNew);
             Allure.step("Request Matter entered: " + requestMatterNew);
         });
 
         // STEP 2: Select OC Firm
-        Allure.step("Selecting Outside Counsel Firm", () -> {
+        Allure.step("Select Outside Counsel Firm", () -> {
 
-            WebElement dropdown = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., '---Select Outside Counsel Firm Name---')]")
-                    )
-            );
+            selectedOCFirmNew = testData.getOutsideCounselFirm();
 
-            Thread.sleep(1000);
-            dropdown.click();
-            Thread.sleep(1000);
-
-            wait.until(ExpectedConditions.attributeContains(dropdown, "aria-expanded", "true"));
-            dropdown.sendKeys(Keys.END, Keys.ENTER);
-
-            selectedOCFirmNew = "Request New";
+            click(ocFirmDropdown);
+            selectFromDynamicList(selectedOCFirmNew);
 
             System.out.println("Outside Counsel Firm selected: " + selectedOCFirmNew);
             Allure.step("Outside Counsel Firm selected: " + selectedOCFirmNew);
         });
 
-        //"Step 2.5: Confirm Outside Counsel selection applied"
-// STEP 2.5 FIXED: Force Appian UI refresh properly
 
-        Thread.sleep(500);
+        // STEP 2.5 Confirm Outside Counsel selection applied"
+        Allure.step("Confirm Outside Counsel selection applied", () -> {
 
-        WebElement dropdown1 = wait.until(
-                ExpectedConditions.presenceOfElementLocated(
-                        By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., 'Request New')]")
-                )
-        );
+            By selectedValue = By.xpath(
+                    "//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., 'Request New')]"
+            );
 
-        ((JavascriptExecutor) driver).executeScript(
-                "arguments[0].scrollIntoView({block:'center'});",
-                dropdown1
-        );
+            scrollToElement(selectedValue);
 
-// 🔥 Click instead of dispatchEvent (IMPORTANT for Appian)
-        try {
-            dropdown1.click();
-        } catch (Exception e) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", dropdown1);
-        }
+            WebElement dropdown1 = wait.until(
+                    ExpectedConditions.visibilityOfElementLocated(selectedValue)
+            );
 
-// 🔥 Force blur to trigger Appian backend refresh
-        ((JavascriptExecutor) driver).executeScript("document.activeElement.blur();");
+            click(dropdown1);
 
-        Thread.sleep(1500);
-
-        System.out.println("Step 2.5: Outside Counsel selection confirmed successfully");
-            //Allure.step("Appian change event triggered successfully");
-        //});
+            jsBlur();
+        });
 
         // STEP 3: OC Firm Name
         Allure.step("Enter OC Firm Name", () -> {
@@ -136,71 +154,26 @@ public class LegalRequestNewOCPage2 {
             ocFirmName = DynamicDataUtil.getOCFirmName(
                     ConfigReader.getNewOC("ocFirmName"), count);
 
-            By ocFirmLocator = By.xpath(
+            /* By ocFirmLocator = By.xpath(
                     "//strong[contains(text(),'OC Firm Name')]/following::input[1]"
-//                    "//input[contains(@aria-label,'OC Firm Name') or contains(@placeholder,'OC Firm Name')]"
             );
+
             WebElement field = wait.until(
                     ExpectedConditions.elementToBeClickable(ocFirmLocator)
-            );
-            field.sendKeys(ocFirmName);
-           /* WebElement field = null;
+            ); */
+            WebElement field = driver.findElement(ocFirmNameInput);
 
-            // 🔥 Retry mechanism for Appian re-render issues
-            for (int i = 0; i < 5; i++) {
-                try {
-                    field = wait.until(ExpectedConditions.presenceOfElementLocated(ocFirmLocator));
+            waitForClickable(ocFirmNameInput);
 
-                    // Ensure element is attached & usable
-                    if (field.isDisplayed() && field.isEnabled()) {
-                        break;
-                    }
+            scrollToElement(ocFirmNameInput);
 
-                } catch (Exception e) {
-                    Thread.sleep(1000); // wait for re-render
-                }
-            }
+            click(field);
 
-            if (field == null) {
-                throw new RuntimeException("❌ OC Firm Name field not found after retries");
-           }
+            type(ocFirmNameInput, ocFirmName);
 
-            // Scroll into view
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});", field
-            );
-
-            // Click safely (Appian sometimes blocks normal click)
-           try {
-                field.click();
-            } catch (Exception e) {
-                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", field);
-           }
-
-            // 🔥 Clear + Set value (IMPORTANT for Appian inputs)
-           ((JavascriptExecutor) driver).executeScript(
-                    "let el = arguments[0];" +
-                           "el.value = '';" +
-                            "el.dispatchEvent(new Event('input', {bubbles:true}));",
-                    field
-            );
-
-           // Set value using React-safe setter
-            ((JavascriptExecutor) driver).executeScript(
-                    "let el = arguments[0];" +
-                           "let value = arguments[1];" +
-                           "let setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;" +
-                            "setter.call(el, value);" +
-                            "el.dispatchEvent(new Event('input',{bubbles:true}));" +
-                            "el.dispatchEvent(new Event('change',{bubbles:true}));" +
-                            "el.blur();",
-                    field, ocFirmName
-           ); */
-
-            // 🔥 Final stable verification
             String actual = wait.until(d -> {
                 try {
-                    String val = d.findElement(ocFirmLocator).getAttribute("value");
+                    String val = d.findElement(ocFirmNameInput).getAttribute("value");
                     return (val != null && !val.trim().isEmpty()) ? val : null;
                 } catch (Exception e) {
                     return null;
@@ -220,53 +193,30 @@ public class LegalRequestNewOCPage2 {
         // STEP 4: Justification
         Allure.step("Entering Justification", () -> {
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-
             ocJustification = DynamicDataUtil.getOCJustification(
                     ConfigReader.getNewOC("justificationText"), count);
 
-            By ocJusLocator = By.xpath(
-                    //"//strong[contains(text(),'New Outside Counsel Justification')]/following::input[1]"
-            "//strong[contains(text(),'New Outside Counsel Justification')]/following::textarea[1]");
+            /* By ocJusLocator = By.xpath(
+                    "//strong[contains(text(),'New Outside Counsel Justification')]/following::textarea[1]"
+            );
 
             WebElement field = wait.until(
                     ExpectedConditions.elementToBeClickable(ocJusLocator)
-            );
-            field.sendKeys(ocJustification);
+            ); */
 
-            /*// FIX: Stable Appian-safe locator ()
-            By textareaLocator = By.xpath(
-                    "//textarea[contains(@aria-label,'Justification') or contains(@placeholder,'Justification')]"
-            );
+            waitForClickable(justificationInput);
 
-            WebElement textarea = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(textareaLocator)
-            );
+            WebElement field = driver.findElement(justificationInput);
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    textarea
-            );
+            scrollToElement(justificationInput);
 
-            wait.until(ExpectedConditions.elementToBeClickable(textarea));
+            click(field);
 
-            try {
-                textarea.click();
-            } catch (Exception e) {
-                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", textarea);
-            }
+            type(justificationInput, ocJustification);
 
-            textarea.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-            textarea.sendKeys(Keys.DELETE);
-
-            String justificationText = "Auto justification added by automation";
-            textarea.sendKeys(justificationText);
-
-            textarea.sendKeys(Keys.TAB); */
-            // 🔥 Final stable verification
             String actual = wait.until(d -> {
                 try {
-                    String val = d.findElement(ocJusLocator).getAttribute("value");
+                    String val = d.findElement(justificationInput).getAttribute("value");
                     return (val != null && !val.trim().isEmpty()) ? val : null;
                 } catch (Exception e) {
                     return null;
@@ -275,7 +225,8 @@ public class LegalRequestNewOCPage2 {
 
             if (!ocJustification.equals(actual)) {
                 throw new RuntimeException(
-                        "❌ OC Justification mismatch. Expected: " + ocJustification + " | Got: " + actual
+                        "❌ OC Justification mismatch. Expected: "
+                                + ocJustification + " | Got: " + actual
                 );
             }
 
@@ -283,24 +234,23 @@ public class LegalRequestNewOCPage2 {
             Allure.step("Justification entered: " + actual);
         });
 
-    // STEP 5: Attorney Name
+            // STEP 5: Attorney Name
         Allure.step("Entering Attorney Name", () -> {
 
             attorneyName = DynamicDataUtil.getOCAttorney(
                     ConfigReader.getNewOC("ocAttorney"), count);
 
-            By ocAttLocator = By.xpath(
+            /*By ocAttLocator = By.xpath(
                     "//strong[contains(text(),'Attorney Name')]/following::input[1]"
-            );
-            WebElement field = wait.until(
-                    ExpectedConditions.elementToBeClickable(ocAttLocator)
-            );
-            field.sendKeys(attorneyName);
+
+            ); */
+
+            type(attorneyInput, attorneyName);
 
             // 🔥 Final stable verification
             String actual = wait.until(d -> {
                 try {
-                    String val = d.findElement(ocAttLocator).getAttribute("value");
+                    String val = d.findElement(attorneyInput).getAttribute("value");
                     return (val != null && !val.trim().isEmpty()) ? val : null;
                 } catch (Exception e) {
                     return null;
@@ -309,30 +259,31 @@ public class LegalRequestNewOCPage2 {
 
             if (!attorneyName.equals(actual)) {
                 throw new RuntimeException(
-                        "❌ OC Attorney mismatch. Expected: " + attorneyName + " | Got: " + actual
+                        "❌ OC Attorney mismatch. Expected: "
+                                + attorneyName + " | Got: " + actual
                 );
             }
+
             System.out.println("Attorney Name entered: " + actual);
             Allure.step("Attorney Name entered: " + actual);
         });
+
 
         // STEP 6: Phone
         Allure.step("Entering Phone", () -> {
 
             phoneNumber = ConfigReader.getNewOC("ocPhone");
 
-            By ocPhLocator = By.xpath(
+            /*By ocPhLocator = By.xpath(
                     "//strong[contains(text(),'Phone')]/following::input[1]"
-            );
-            WebElement field = wait.until(
-                    ExpectedConditions.elementToBeClickable(ocPhLocator)
-            );
-            field.sendKeys(phoneNumber);
+            ); */
+
+            type(phoneInput, phoneNumber);
 
             // 🔥 Final stable verification
             String actual = wait.until(d -> {
                 try {
-                    String val = d.findElement(ocPhLocator).getAttribute("value");
+                    String val = d.findElement(phoneInput).getAttribute("value");
                     return (val != null && !val.trim().isEmpty()) ? val : null;
                 } catch (Exception e) {
                     return null;
@@ -341,7 +292,8 @@ public class LegalRequestNewOCPage2 {
 
             if (!phoneNumber.equals(actual)) {
                 throw new RuntimeException(
-                        "❌ OC Attorney mismatch. Expected: " + phoneNumber + " | Got: " + actual
+                        "❌ Phone mismatch. Expected: "
+                                + phoneNumber + " | Got: " + actual
                 );
             }
 
@@ -373,21 +325,19 @@ public class LegalRequestNewOCPage2 {
         // STEP 8: Email
         Allure.step("Entering Email", () -> {
 
-            emailAddress =  DynamicDataUtil.getOCEmail(
+            emailAddress = DynamicDataUtil.getOCEmail(
                     ConfigReader.getNewOC("ocEmail"), count);
 
-            By ocEmLocator = By.xpath(
+            /*By ocEmLocator = By.xpath(
                     "//strong[contains(text(),'Email')]/following::input[1]"
-            );
-            WebElement field = wait.until(
-                    ExpectedConditions.elementToBeClickable(ocEmLocator)
-            );
-            field.sendKeys(emailAddress);
+            ); */
+
+            type(emailInput, emailAddress);
 
             // 🔥 Final stable verification
             String actual = wait.until(d -> {
                 try {
-                    String val = d.findElement(ocEmLocator).getAttribute("value");
+                    String val = d.findElement(emailInput).getAttribute("value");
                     return (val != null && !val.trim().isEmpty()) ? val : null;
                 } catch (Exception e) {
                     return null;
@@ -396,7 +346,8 @@ public class LegalRequestNewOCPage2 {
 
             if (!emailAddress.equals(actual)) {
                 throw new RuntimeException(
-                        "❌ OC Attorney mismatch. Expected: " + emailAddress + " | Got: " + actual
+                        "❌ Email mismatch. Expected: "
+                                + emailAddress + " | Got: " + actual
                 );
             }
 
@@ -407,41 +358,30 @@ public class LegalRequestNewOCPage2 {
         // STEP 9: Validate Email
         Allure.step("Validate Email", () -> {
 
-            try {
-                WebElement emailField = driver.switchTo().activeElement();
-                String value = emailField.getAttribute("value");
+            String value = driver.switchTo()
+                    .activeElement()
+                    .getAttribute("value");
 
-                Thread.sleep(2500);
-
-                Assert.assertTrue(value.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"));
-
-                System.out.println("Email validated successfully: " + value);
-                Allure.step("Validation PASSED: Email is valid");
-                SceenshotUtil.takeScreenshot(driver, "Email Validated");
-
-            } catch (Exception e) {
-                SceenshotUtil.takeScreenshot(driver, "Email Validation Failed");
-                throw new RuntimeException(e);
-            }
+            Assert.assertTrue(
+                    value.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+            );
         });
 
         // STEP 10: City
         Allure.step("Entering City", () -> {
 
-            city = ConfigReader.getNewOC("ocCity");
+            city = DynamicDataUtil.getOCCityRandom();
 
-            By ocCTLocator = By.xpath(
+            /*By ocCTLocator = By.xpath(
                     "//strong[contains(text(),'Address')]/following::input[1]"
-            );
-            WebElement field = wait.until(
-                    ExpectedConditions.elementToBeClickable(ocCTLocator)
-            );
-            field.sendKeys(city);
+            ); */
+
+            type(cityInput, city);
 
             // 🔥 Final stable verification
             String actual = wait.until(d -> {
                 try {
-                    String val = d.findElement(ocCTLocator).getAttribute("value");
+                    String val = d.findElement(cityInput).getAttribute("value");
                     return (val != null && !val.trim().isEmpty()) ? val : null;
                 } catch (Exception e) {
                     return null;
@@ -450,9 +390,11 @@ public class LegalRequestNewOCPage2 {
 
             if (!city.equals(actual)) {
                 throw new RuntimeException(
-                        "❌ OC Attorney mismatch. Expected: " + city + " | Got: " + actual
+                        "❌ City mismatch. Expected: "
+                                + city + " | Got: " + actual
                 );
             }
+
             System.out.println("City entered: " + actual);
             Allure.step("City entered: " + actual);
         });
@@ -460,19 +402,12 @@ public class LegalRequestNewOCPage2 {
         // STEP 11: State
         Allure.step("Selecting State", () -> {
 
-            WebElement dropdown = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            By.xpath("(//strong[normalize-space()='Address']/following::div[contains(@class,'DropdownWidget---dropdown_value')])[1]")
-                    )
-            );
+            state = testData.getState();
 
-            Thread.sleep(1000);
+            click(stateDropdown);
 
-            dropdown.click();
-            dropdown.sendKeys("AL");
-            dropdown.sendKeys(Keys.ENTER);
-
-            state = "AL";
+            //selectOption(state);
+            selectFromDynamicList(state);
 
             System.out.println("State selected: " + state);
             Allure.step("State selected: " + state);
@@ -481,39 +416,30 @@ public class LegalRequestNewOCPage2 {
         // STEP 12: Submit
         Allure.step("Click Submit button to create the Legal Request", () -> {
 
-            WebElement submitBtn = driver.findElement(
-                    By.xpath("//button[.//span[text()='Submit']]")
-            );
+            click(submitBtn);
 
-            submitBtn.click();
-
-            Thread.sleep(2000);
-
-            System.out.println("Submit button clicked successfully.");
+            System.out.println("Submit button clicked");
             Allure.step("Submit button clicked successfully.");
         });
 
-         // STEP 13: Capture Request Number (Post Submit Confirmation Screen)
+        // STEP 13: Capture Request Number (Post Submit Confirmation Screen)
         Allure.step("Capture NEWOC Request Number from confirmation screen", () -> {
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-
-            String newOCRequestNumber = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
+            /*String newOCRequestNumber =
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(
                             By.xpath("//span[contains(text(),'Legal Matter Request Initiated')]/following::span//strong")
-                    )
-            ).getText().trim();
+                    )).getText().trim(); */
+
+            By requestNumberLocator = By.xpath("//span[contains(text(),'Legal Matter Request Initiated')]/following::span//strong");
+
+            waitForVisible(requestNumberLocator);
+
+            String newOCRequestNumber = driver.findElement(requestNumberLocator).getText().trim();
 
             TestData.newOCRequestNumber = newOCRequestNumber;
+            System.out.println("NEW OC Request Number : " + newOCRequestNumber);
 
-            System.out.println("NEWOC Request Number: " + newOCRequestNumber);
-
-            Allure.step("NEWOC Request Number captured: " + newOCRequestNumber);
-            Allure.addAttachment("NewOC Request Number", newOCRequestNumber);
-            //return newOCRequestNumber;
-
-            // store if needed for later steps
-            //this.newOCRequestNumber = newOCRequestNumber;
+            Allure.addAttachment("NEW OC Request Number", newOCRequestNumber);
         });
 
         // STEP 14: Completion

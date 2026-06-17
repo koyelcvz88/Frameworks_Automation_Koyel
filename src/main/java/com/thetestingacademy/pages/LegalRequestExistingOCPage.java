@@ -1,214 +1,249 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
+import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.model.DataModel;
+import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.Allure;
-import com.thetestingacademy.utils.SceenshotUtil;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class LegalRequestExistingOCPage {
+public class LegalRequestExistingOCPage extends CommonUIActions {
 
+    private final DataModel testData;
 
-    WebDriver driver;
-    WebDriverWait wait;
-    Actions actions;
-    JavascriptExecutor js;
-
-    public LegalRequestExistingOCPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-        this.actions = new Actions(driver);
-        this.js = (JavascriptExecutor) driver;
+    public LegalRequestExistingOCPage(WebDriver driver, DataModel testData) {
+        super(driver);
+        this.testData = testData;
     }
+    // =====================================================
+    // LOCATORS
+    // =====================================================
 
-    // Stored values for validation
-    protected String requestMatterEx;
-    public String selectedOCFirm;
-    public String selectedAttorney;
+    private final By requestMatterTextbox =
+            By.xpath("//label[contains(.,'Request/Matter Name')]/following::input[1]");
+
+    private final By ocFirmDropdown =
+            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., '---Select Outside Counsel Firm Name---')]");
+
+    private final By attorneyDropdown =
+            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., '---Select Contact Attorney---')]");
+
+    private final By ocConflictedDropdown =
+            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value')][.//span[text()='---Select Yes/No---']]");
+
+    private final By submitButton =
+            By.xpath("//button[.//span[text()='Submit']]");
+
+    // =====================================================
+    // STORED VALUES
+    // =====================================================
+
+    //protected String requestMatterEx;
+    protected String selectedOCFirm;
+    protected String selectedAttorney;
     protected String isOCConflicted;
 
+    // =====================================================
+    // MAIN METHOD
+    // =====================================================
 
     public void fillExistingOCRequest() {
 
+        // ==========================================
         // STEP 1: Request Matter
+        // ==========================================
+
         Allure.step("Entering Request Matter", () -> {
 
-            /*WebElement requestMatterExTxtBox = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//label[contains(text(),'Request/Matter Name')]/following::input[1]")
-                    )
-            ); */
-            By inputLocator = By.xpath("//label[contains(.,'Request/Matter Name')]/following::input[1]");
+            String requestMatterEx = ConfigReader.getData("exOC.requestmatter");
 
-            WebElement requestMatterExTxtBox = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(inputLocator)
-            );
+            scrollToElement(requestMatterTextbox);
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block: 'center'});", requestMatterExTxtBox
-            );
-
-            wait.until(ExpectedConditions.elementToBeClickable(requestMatterExTxtBox));
-
-            requestMatterExTxtBox.click();
-
-            requestMatterEx = "Ex_OC_New_Legal_Request";
-            requestMatterExTxtBox.sendKeys(requestMatterEx);
+            type(requestMatterTextbox, requestMatterEx);
 
             System.out.println("Request Matter entered: " + requestMatterEx);
+
             Allure.step("Request Matter entered: " + requestMatterEx);
         });
 
-        // STEP 2: Select OC Firm
-        Allure.step("Selecting Outside Counsel Firm", () -> {
+        // ==========================================
+        // STEP 2: Outside Counsel Firm
+        // ==========================================
 
-            WebElement dropdown = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., '---Select Outside Counsel Firm Name---')]")
-                    )
-            );
+        Allure.step("Select Outside Counsel Firm", () -> {
 
-            dropdown.click();
+            selectedOCFirm = testData.getOutsideCounselFirm();
 
-            wait.until(ExpectedConditions.attributeContains(dropdown, "aria-expanded", "true"));
-            dropdown.sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
+            click(ocFirmDropdown);
 
-            selectedOCFirm = "Alston & Bird";
+            selectFromDynamicList(selectedOCFirm);
 
             System.out.println("Outside Counsel Firm selected: " + selectedOCFirm);
             Allure.step("Outside Counsel Firm selected: " + selectedOCFirm);
         });
 
+        // ==========================================
         // STEP 3: Validate OC Firm
-        Allure.step("Validate OC Firm Name", () -> {
+        // ==========================================
+
+        Allure.step("Validate OC Firm", () -> {
 
             try {
-                WebElement firmValue = wait.until(
+
+                /*WebElement firmValue = wait.until(
                         ExpectedConditions.visibilityOfElementLocated(
                                 By.xpath("//strong[normalize-space()='OC Firm Name']/following::em[contains(@class,'EmphasisText')][1]")
                         )
+                ); */
+                By firmValue = By.xpath(
+                        "//strong[normalize-space()='OC Firm Name']/following::em[contains(@class,'EmphasisText')][1]"
                 );
 
-                String actualFirm = firmValue.getText().trim();
+                waitForVisible(firmValue);
 
-                Assert.assertEquals(actualFirm, selectedOCFirm,
-                        "OC Firm mismatch. Expected: " + selectedOCFirm + " but found: " + actualFirm);
+                //String actualFirm = firmValue.getText().trim();
+                String actualFirm = driver.findElement(firmValue).getText().trim();
 
-                Allure.step("Validation PASSED: OC Firm matches");
+                Assert.assertEquals(
+                        actualFirm,
+                        selectedOCFirm,
+                        "OC Firm mismatch"
+                );
+
                 SceenshotUtil.takeScreenshot(driver, "OC Firm Validated");
 
             } catch (Exception e) {
+
                 SceenshotUtil.takeScreenshot(driver, "OC Firm Validation Failed");
                 throw new RuntimeException(e);
             }
         });
 
+        // ==========================================
         // STEP 4: Select Attorney
-        Allure.step("Selecting first Contact Attorney", () -> {
+        // ==========================================
+        Allure.step("Select Contact Attorney", () -> {
 
-            WebElement dropdown = wait.until(
-                    ExpectedConditions.elementToBeClickable(
-                            By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value') and contains(., '---Select Contact Attorney---')]")
-                    )
-            );
+            selectedAttorney = testData.getContactAttorney();
 
-            dropdown.click();
+            click(attorneyDropdown);
+            selectFromDynamicList(selectedAttorney);
 
-            wait.until(ExpectedConditions.attributeContains(dropdown, "aria-expanded", "true"));
-            dropdown.sendKeys(Keys.ARROW_DOWN, Keys.ENTER);
-
-            selectedAttorney = "Elizabeth Murphy";
-
-            System.out.println("Contact Attorney selected: " + selectedAttorney);
+            System.out.println("Attorney selected: " + selectedAttorney);
             Allure.step("Contact Attorney selected: " + selectedAttorney);
         });
 
+        // ==========================================
         // STEP 5: Validate Attorney
+        // ==========================================
+
         Allure.step("Validate Attorney", () -> {
 
             try {
-                WebElement attorneyValue = wait.until(
+
+                /*WebElement attorneyValue = wait.until(
                         ExpectedConditions.visibilityOfElementLocated(
                                 By.xpath("//em[normalize-space()='" + selectedAttorney + "']")
                         )
+                ); */
+
+                By attorneyValue = By.xpath("//em[normalize-space()='" + selectedAttorney + "']");
+
+                waitForVisible(attorneyValue);
+
+                //String actualAttorney = attorneyValue.getText().trim();
+                String actualAttorney = driver.findElement(attorneyValue).getText().trim();
+
+                Assert.assertEquals(
+                        actualAttorney,
+                        selectedAttorney,
+                        "Attorney mismatch"
                 );
 
-                String actualAttorney = attorneyValue.getText().trim();
-
-                Assert.assertEquals(actualAttorney, selectedAttorney,
-                        "Attorney mismatch. Expected: " + selectedAttorney + " but found: " + actualAttorney);
-
-                Allure.step("Validation PASSED: Attorney matches");
                 SceenshotUtil.takeScreenshot(driver, "Attorney Validated");
 
             } catch (Exception e) {
+
                 SceenshotUtil.takeScreenshot(driver, "Attorney Validation Failed");
                 throw new RuntimeException(e);
             }
         });
 
-        // STEP 6: OC Conflicted
-        Allure.step("Selecting second option for 'Is OC Conflicted?'", () -> {
+        // ==========================================
+        // STEP 6: Is OC Conflicted
+        // ==========================================
 
-            WebElement dropdown = driver.findElement(
-                    By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value')][.//span[text()='---Select Yes/No---']]")
-            );
+        Allure.step("Select Is OC Conflicted", () -> {
 
-            dropdown.click();
+            isOCConflicted = testData.getIsOcConflicted();
 
-            actions.sendKeys(Keys.ARROW_DOWN).perform();
-            actions.sendKeys(Keys.ARROW_DOWN).perform();
-            actions.sendKeys(Keys.ENTER).perform();
+            click(ocConflictedDropdown);
 
-            isOCConflicted = dropdown.findElement(By.tagName("span")).getText();
+            /*WebElement option = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//*[normalize-space()='" + isOCConflicted + "']")
+                    )
+            ); */
+            By option = By.xpath("//*[normalize-space()='" + isOCConflicted + "']");
 
-            System.out.println("'Is OC Conflicted?' selected value: " + isOCConflicted);
+            waitForVisible(option);
+
+            click(option);
+
+            System.out.println("Is OC Conflicted: " + isOCConflicted);
+
             Allure.step("'Is OC Conflicted?' selected value: " + isOCConflicted);
         });
 
+        // ==========================================
         // STEP 7: Submit
-        Allure.step("Click Submit button to create the Legal Request", () -> {
+        // ==========================================
 
-            WebElement submitBtn = driver.findElement(
-                    By.xpath("//button[.//span[text()='Submit']]")
-            );
+        Allure.step("Submit Legal Request", () -> {
 
-            submitBtn.click();
+            click(submitButton);
 
-            System.out.println("Submit button clicked successfully.");
+            System.out.println("Submit button clicked");
             Allure.step("Submit button clicked successfully.");
         });
 
-        // STEP 8: Capture Request Number (Post Submit Confirmation Screen)
+        // ==========================================
+        // STEP 8: Capture Request Number
+        // ==========================================
+
         Allure.step("Capture EXOC Request Number from confirmation screen", () -> {
 
-            // WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
-
-            String exOCRequestNumber = wait.until(
+            /*String requestNumber = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(
                             By.xpath("//span[contains(text(),'Legal Matter Request Initiated')]/following::span//strong")
                     )
-            ).getText().trim();
+            ).getText().trim(); */
 
-            TestData.exOCRequestNumber = exOCRequestNumber;
+            By requestNumberLocator = By.xpath("//span[contains(text(),'Legal Matter Request Initiated')]/following::span//strong");
 
-            System.out.println("EXOC Request Number: " + exOCRequestNumber);
+            waitForVisible(requestNumberLocator);
 
-            Allure.step("EXOC Request Number captured: " + exOCRequestNumber);
-            Allure.addAttachment("EXOC Request Number", exOCRequestNumber);
-            //return exOCRequestNumber;
+            String requestNumber = driver.findElement(requestNumberLocator).getText().trim();
 
-            // store if needed for later steps
-            //this.exOCRequestNumber = exOCRequestNumber;
+            TestData.exOCRequestNumber = requestNumber;
+
+            System.out.println("EX OC Request Number : " + requestNumber);
+
+            Allure.addAttachment("EX OC Request Number", requestNumber);
         });
 
+        // ==========================================
+        // FINAL STEP
+        // ==========================================
+
         Allure.step("Existing OC Request Completed Successfully");
+
         SceenshotUtil.takeScreenshot(driver, "Existing OC Request Completed Successfully");
     }
 }

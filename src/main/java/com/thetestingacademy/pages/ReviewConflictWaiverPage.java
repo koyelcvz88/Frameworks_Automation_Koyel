@@ -1,27 +1,27 @@
 package com.thetestingacademy.pages;
 
+import com.thetestingacademy.actions.CommonUIActions;
 import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.model.DataModel;
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
 
-public class ReviewConflictWaiverPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
-    private Actions actions;
+public class ReviewConflictWaiverPage extends CommonUIActions {
 
-    public ReviewConflictWaiverPage(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        this.actions = new Actions(driver);
+    private final DataModel testData;
+
+    public ReviewConflictWaiverPage(WebDriver driver, DataModel testData) {
+        super(driver);
+        this.testData = testData;
+        System.out.println("===== PAGE RECEIVED DATA =====");
+        System.out.println(testData);
     }
-
     // =========================================================
     // GRID LOCATORS (TASK LIST)
     // =========================================================
@@ -34,9 +34,12 @@ public class ReviewConflictWaiverPage {
     // =========================================================
     // TASK PAGE LOCATORS (UI)
     // =========================================================
-    //private By isOCConflictedWaiver = By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value')][.//span[text()='---Select Yes/No---']]");
-    private String isOCConflictedWaiver;
-    private By conflictJus = By.xpath("//strong[contains(text(),'Conflict Waiver Justification')]/following::textarea[1]");
+
+
+    //private By isOCConflictedWaiverDropdown = By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value')][.//span[text()='---Select Yes/No/Previously Waived---']]");
+    private By isOCConflictedWaiverDropdown = By.xpath("//div[@role=\"combobox\" and .//span[normalize-space(.)=\"---Select Yes/No/Previously Waived---\"]]");
+    //private By conflictJus = By.xpath("//strong[contains(text(),'Conflict Waiver Justification')]/following::textarea[1]");
+    private By conflictJus = By.xpath("//label[normalize-space(.)=\"Conflict Waiver Justification\"]/following::textarea[1]");
     private By conflictApprovedOption = By.xpath(
             "//label[normalize-space()='Conflict Waiver Approved']");
     private By submitButtonC = By.xpath("//button[.//span[text()='Submit']]");
@@ -53,19 +56,31 @@ public class ReviewConflictWaiverPage {
     );
     private By commentSectionC = By.xpath(
             "//*[normalize-space()='Comments']/ancestor::div[1]");
-    /*private By processingIndicatorB = By.xpath(
-            "//*[contains(@class,'loading') or contains(@class,'spinner') or @aria-busy='true']"
-    ); */
-    //private By saveCloseB = By.xpath("//span[normalize-space()='Save & Close']");
     private By taskGridC = By.xpath("//table//tbody//tr");
     private By commentsLinkC = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
     private By commentSpanLocatorC = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
+
+    // =====================================================
+    // STORED VALUES
+    // =====================================================
+    protected String isOCConflicted;
 
     // =========================================================
     // UTILITY METHOD (ADDED)
     // =========================================================
     public String getCurrentUrl() {
         return driver.getCurrentUrl();
+    }
+
+    // =====================================================
+    // SAFE HELPER
+    // =====================================================
+    private String safe(String value, String field) {
+        if (value == null || value.trim().isEmpty()) {
+            System.out.println("⚠️ Skipping " + field + " (NULL/EMPTY)");
+            return null;
+        }
+        return value.trim();
     }
 
     // =========================================================
@@ -75,12 +90,20 @@ public class ReviewConflictWaiverPage {
 
         Allure.step("TASK- Review Conflict Waiver: Full navigation flow", () -> {
 
-            // STEP 1: Refresh Task Grid
+           /* openTaskFromGrid(
+                    By.xpath("//table//tbody//tr"),
+                    checkboxC,
+                    claimButtonC,
+                    taskLinkC,
+                    conflictApprovedOption,
+                    "Review Conflict Waiver",
+                    "To Do"
+            ); */
             boolean taskOpened = false;
 
             for (int attempt = 1; attempt <= 10; attempt++) {
 
-                System.out.println("🔄 Searching for Task for NEW OC - Attempt: " + attempt);
+                System.out.println("🔄 Searching for Review Conflict Waiver Task for NEW OC - Attempt: " + attempt);
 
                 try {
 
@@ -114,8 +137,10 @@ public class ReviewConflictWaiverPage {
 
                                 WebElement chckbx = row.findElement(checkboxC);
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", chckbx);
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", chckbx); */
+
+                                jsClick(chckbx);
 
                                 System.out.println("✅ Checkbox selected");
 
@@ -123,17 +148,22 @@ public class ReviewConflictWaiverPage {
                                 WebElement claimBtn = wait.until(
                                         ExpectedConditions.elementToBeClickable(claimButtonC));
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", claimBtn);
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", claimBtn); */
+                                jsClick(claimBtn);
 
                                 System.out.println("✅ Claim button clicked");
 
                                 // WAIT FOR TASK LINK
-                                WebElement task = wait.until(
-                                        ExpectedConditions.elementToBeClickable(taskLinkC));
+                                /*WebElement task = wait.until(
+                                        ExpectedConditions.elementToBeClickable(taskLinkB)); */
 
-                                ((JavascriptExecutor) driver)
-                                        .executeScript("arguments[0].click();", task);
+                                waitForClickable(taskLinkC);
+                                WebElement task = driver.findElement(taskLinkC);
+
+                                /*((JavascriptExecutor) driver)
+                                        .executeScript("arguments[0].click();", task); */
+                                jsClick(task);
 
                                 System.out.println("✅ Task opened");
 
@@ -147,8 +177,9 @@ public class ReviewConflictWaiverPage {
 
                                         ExpectedConditions.urlContains("task"),
 
-                                        //  validation -> page fully loaded with Conflict Waiver button
-                                        ExpectedConditions.visibilityOfElementLocated(conflictApprovedOption)
+                                        //  validation -> page fully loaded with Conflict Waiver dropdown
+                                        ExpectedConditions.visibilityOfElementLocated(isOCConflictedWaiverDropdown)
+                                        //waitForVisible(OFACApprovedOption)
 
                                 ));
 
@@ -197,45 +228,37 @@ public class ReviewConflictWaiverPage {
             SceenshotUtil.takeScreenshot(driver, "Task Opened - Review Conflict Waiver");
         });
     }
-
-
     // =========================================================
     // Task UI - Fields
     // =========================================================
     public void handleReviewConflictWaiverFields() {
 
         // STEP 1: OC Conflicted
-        Allure.step("Selecting second option for 'Is OC Conflicted?'", () -> {
+        Allure.step("Selecting option for 'Is OC Conflicted?'", () -> {
 
-            WebElement dropdown = driver.findElement(
-                    By.xpath("//div[contains(@class,'DropdownWidget---dropdown_value')][.//span[text()='---Select Yes/No/Previously Waived---']]")
-            );
+            String value = safe(testData.getIsOcConflicted(), "Is OC Conflicted?");
+            if (value == null) return;
 
-            dropdown.click();
+            waitForClickable(isOCConflictedWaiverDropdown);
+            click(isOCConflictedWaiverDropdown);
 
-            actions.sendKeys(Keys.ARROW_DOWN).perform();
-            actions.sendKeys(Keys.ARROW_DOWN).perform();
-            actions.sendKeys(Keys.ENTER).perform();
+            waitForUIRender();
 
-            isOCConflictedWaiver = dropdown.findElement(By.tagName("span")).getText();
+            WebElement option = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//*[normalize-space(text())='" + value + "']")
+                    ));
 
-            System.out.println("'Is OC Conflicted?' selected value: " + isOCConflictedWaiver);
-            Allure.step("'Is OC Conflicted?' selected value: " + isOCConflictedWaiver);
+            scrollToElement(option);
+            click(option);
+
+            waitForUIRender();
+
+            isOCConflicted = value;
+
+            System.out.println("'Is OC Conflicted?' selected value: " + isOCConflicted);
+            Allure.step("'Is OC Conflicted?' selected value: " + isOCConflicted);
         });
-
-
-        // STEP 2: Justification
-        /*Allure.step("Entering Justification", () -> {
-
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-
-            String conflictJustification = ConfigReader.getNewOC("conJustificationText");
-
-            WebElement field = wait.until(
-                    ExpectedConditions.elementToBeClickable(conflictJus)
-            );
-            field.sendKeys(conflictJustification);
-        }); */
 
         Allure.step("Entering Justification", () -> {
 
@@ -278,12 +301,14 @@ public class ReviewConflictWaiverPage {
                 );
             }
 
-            ((JavascriptExecutor) driver).executeScript(
+            /*((JavascriptExecutor) driver).executeScript(
                     "arguments[0].scrollIntoView({block:'center'});",
                     targetField
-            );
+            ); */
+            scrollToElement(targetField);
 
             wait.until(ExpectedConditions.visibilityOf(targetField));
+            //waitForVisible(targetField);
 
             wait.until(ExpectedConditions.elementToBeClickable(targetField));
 
@@ -295,79 +320,134 @@ public class ReviewConflictWaiverPage {
                     "Conflict Waiver Justification entered successfully"
             );
         });
-            Allure.step("Select Approved radio button", () -> {
+        Allure.step("Select Approved radio button", () -> {
 
-                WebElement AttorneyApprove = wait.until(
-                        ExpectedConditions.elementToBeClickable(conflictApprovedOption));
+            /*WebElement AttorneyApprove = wait.until(
+                    ExpectedConditions.elementToBeClickable(conflictApprovedOption)); */
+            waitForClickable(conflictApprovedOption);
 
-                AttorneyApprove.click();
+            //AttorneyApprove.click();
+            click(conflictApprovedOption);
 
-                System.out.println("✅ Approved radio button selected");
-                Allure.step("Approved radio button selected");
+            System.out.println("✅ Approved radio button selected");
+            Allure.step("Approved radio button selected");
 
-                SceenshotUtil.takeScreenshot(driver,
-                        "Approved Radio Selected");
+            SceenshotUtil.takeScreenshot(driver,
+                    "Approved Radio Selected");
 
-                Thread.sleep(1000);
-            });
-            Allure.step("Click Submit button to complete task", () -> {
+            Thread.sleep(1000);
+        });
 
-                WebElement sbmtbtnC = wait.until(
-                        ExpectedConditions.presenceOfElementLocated(submitButtonC)
-                );
+        Allure.step("Click Submit button to complete task", () -> {
 
-                //  ensure it's actually enabled
-                wait.until(driver ->
-                        sbmtbtnC.isDisplayed() && sbmtbtnC.isEnabled()
-                );
+            clickSubmitAndValidate(submitButtonC);
 
-                //  scroll into view
-                ((JavascriptExecutor) driver)
-                        .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnC);
+            System.out.println("Submit button clicked");
 
-                //  wait for stability before click
-                wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnC));
-
-                sbmtbtnC.click();
-
-                System.out.println("✅ Submit button clicked");
-
-                // WAIT FOR POST-SUBMIT STATE CHANGE
-                // Option A: URL change
-                boolean urlChanged = wait.until(driver ->
-                        !driver.getCurrentUrl().contains("start-process")
-                );
-
-                if (!urlChanged) {
-                    throw new AssertionError("Submit click did not navigate away - likely validation failure");
-                }
-
-                //  confirm no validation banner appears
-                boolean validationErrorPresent = !driver.findElements(
-                        By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
-                ).isEmpty();
-
-                if (validationErrorPresent) {
-                    throw new AssertionError("Validation error detected after submit");
-                }
-
-                SceenshotUtil.takeScreenshot(driver, "Task Submitted");
-            });
+            SceenshotUtil.takeScreenshot(driver, "Task Submitted");
+        });
     }
 
     public void handleReviewConflictWaiverEdgeFlow() {
+
+        // STEP 1: OC Conflicted
+        Allure.step("Selecting option for 'Is OC Conflicted?'", () -> {
+
+            String value = safe(testData.getIsOcConflicted(), "Is OC Conflicted?");
+            if (value == null) return;
+
+            waitForClickable(isOCConflictedWaiverDropdown);
+            click(isOCConflictedWaiverDropdown);
+
+            waitForUIRender();
+
+            WebElement option = wait.until(
+                    ExpectedConditions.elementToBeClickable(
+                            By.xpath("//*[normalize-space(text())='" + value + "']")
+                    ));
+
+            scrollToElement(option);
+            click(option);
+
+            waitForUIRender();
+
+            isOCConflicted = value;
+
+            System.out.println("'Is OC Conflicted?' selected value: " + isOCConflicted);
+            Allure.step("'Is OC Conflicted?' selected value: " + isOCConflicted);
+        });
+
+        Allure.step("Entering Justification", () -> {
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+
+            String conflictJustification =
+                    ConfigReader.getNewOC("conJustificationText");
+
+            // Wait for Appian refresh completion
+            Thread.sleep(3000);
+
+            // Locate ALL visible textareas after refresh
+            List<WebElement> textAreas = wait.until(
+                    ExpectedConditions.presenceOfAllElementsLocatedBy(
+                            By.tagName("textarea")
+                    )
+            );
+
+            WebElement targetField = null;
+
+            for (WebElement area : textAreas) {
+
+                try {
+
+                    if (area.isDisplayed() && area.isEnabled()) {
+
+                        targetField = area;
+
+                        break;
+                    }
+
+                } catch (Exception ignored) {
+                }
+            }
+
+            if (targetField == null) {
+
+                throw new RuntimeException(
+                        "Conflict Waiver Justification textarea not found"
+                );
+            }
+
+            /*((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    targetField
+            ); */
+            scrollToElement(targetField);
+
+            wait.until(ExpectedConditions.visibilityOf(targetField));
+            //waitForVisible(targetField);
+
+            wait.until(ExpectedConditions.elementToBeClickable(targetField));
+
+            targetField.clear();
+
+            targetField.sendKeys(conflictJustification);
+
+            System.out.println(
+                    "Conflict Waiver Justification entered successfully"
+            );
+        });
+
         Allure.step("Select Rejected radio button", () -> {
 
-            WebElement AttorneyReject= wait.until(
-                    ExpectedConditions.elementToBeClickable(conflictRejectedOption));
-
-            AttorneyReject.click();
+            waitForClickable(conflictRejectedOption);
+            click(conflictRejectedOption);
 
             System.out.println("✅ Rejected radio button selected");
+
             Allure.step("Rejected radio button selected");
 
-            SceenshotUtil.takeScreenshot(driver,
-                    "Rejected Radio Selected");
+            SceenshotUtil.takeScreenshot(driver, "Rejected Radio Selected");
 
             Thread.sleep(1000);
         });
@@ -379,34 +459,23 @@ public class ReviewConflictWaiverPage {
 
             String expectedComment = ConfigReader.getNewOC("newConflict.comments");
 
-            WebElement comments = wait.until(
-                    ExpectedConditions.visibilityOfElementLocated(commentBoxC)
-            );
-
-            comments.click();
-            comments.clear();
-            comments.sendKeys(expectedComment);
+            // type comment using framework
+            type(commentBoxC, expectedComment);
 
             SceenshotUtil.takeScreenshot(driver, "Comments Entered");
 
-            // wait briefly for Appian UI state update
-            Thread.sleep(2000);
+            // wait for Appian UI stabilization (replaces Thread.sleep)
+            waitForPageLoad();
 
-            // locate enabled arrow button only
+            // locate arrow button
             WebElement arrowBtn = wait.until(
                     ExpectedConditions.presenceOfElementLocated(saveArrowC)
             );
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    arrowBtn
-            );
+            scrollToElement(arrowBtn);
 
-            // JS click works better for Appian
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].click();",
-                    arrowBtn
-            );
+            // use framework click (JS fallback already inside)
+            click(arrowBtn);
 
             // wait until comment appears in DOM
             wait.until(driver ->
@@ -423,29 +492,29 @@ public class ReviewConflictWaiverPage {
 
             String expectedComment = ConfigReader.getNewOC("newConflict.comments").trim();
 
-            // Step 1: locate Comments section label first
-            WebElement section = wait.until(
+            // Step 1: wait for section
+            /*WebElement section = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(commentSectionC)
-            );
+            ); */
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    section
-            );
+            waitForVisible(commentSectionC);
+            WebElement section = driver.findElement(commentSectionC);
 
-            // Step 2: locate comment globally but still anchored near section text
+            scrollToElement(section);
+
+            // Step 2: build locator dynamically (same logic preserved)
             By actualCommentLocator = By.xpath(
                     "//*[contains(normalize-space(),'" + expectedComment + "')]"
             );
 
-            WebElement actualComment = wait.until(
+            /*WebElement actualComment = wait.until(
                     ExpectedConditions.visibilityOfElementLocated(actualCommentLocator)
-            );
+            ); */
 
-            ((JavascriptExecutor) driver).executeScript(
-                    "arguments[0].scrollIntoView({block:'center'});",
-                    actualComment
-            );
+            waitForVisible(actualCommentLocator);
+            WebElement actualComment = driver.findElement(actualCommentLocator);
+
+            scrollToElement(actualComment);
 
             String actualText = actualComment.getText().trim();
 
@@ -466,54 +535,20 @@ public class ReviewConflictWaiverPage {
 
         Allure.step("Click Submit button to complete task", () -> {
 
-            WebElement sbmtbtnC = wait.until(
-                    ExpectedConditions.presenceOfElementLocated(submitButtonC)
-            );
+            clickSubmitAndValidate(submitButtonC);
 
-            //  ensure it's actually enabled
-            wait.until(driver ->
-                    sbmtbtnC.isDisplayed() && sbmtbtnC.isEnabled()
-            );
-
-            //  scroll into view
-            ((JavascriptExecutor) driver)
-                    .executeScript("arguments[0].scrollIntoView({block: 'center'});", sbmtbtnC);
-
-            //  wait for stability before click
-            wait.until(ExpectedConditions.elementToBeClickable(sbmtbtnC));
-
-            sbmtbtnC.click();
-
-            System.out.println("✅ Submit button clicked");
-
-            // WAIT FOR POST-SUBMIT STATE CHANGE
-            // Option A: URL change
-            boolean urlChanged = wait.until(driver ->
-                    !driver.getCurrentUrl().contains("start-process")
-            );
-
-            if (!urlChanged) {
-                throw new AssertionError("Submit click did not navigate away - likely validation failure");
-            }
-
-            //  confirm no validation banner appears
-            boolean validationErrorPresent = !driver.findElements(
-                    By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
-            ).isEmpty();
-
-            if (validationErrorPresent) {
-                throw new AssertionError("Validation error detected after submit");
-            }
+            System.out.println("Submit button clicked");
 
             SceenshotUtil.takeScreenshot(driver, "Task Submitted");
         });
+
         // =====================================================
         // 5. NAVIGATE BACK TO GRID (implicit)
         // =====================================================
         Allure.step("Verify return to task grid", () -> {
 
             // Wait for grid to reappear after Save & Close navigation
-            wait.until(ExpectedConditions.presenceOfElementLocated(taskGridC));
+            waitForVisible(taskGridC);
 
             // Ensure grid is actually rendered (not just DOM placeholder)
             wait.until(driver ->
@@ -546,37 +581,35 @@ public class ReviewConflictWaiverPage {
 
                         driver.navigate().refresh();
 
-                        wait.until(webDriver ->
-                                ((JavascriptExecutor) webDriver)
-                                        .executeScript("return document.readyState")
-                                        .equals("complete")
-                        );
+                        waitForPageLoad();
 
                         System.out.println("✅ Page refreshed");
                     }
 
                     // STEP 1: Click Comments Tab
-                    WebElement commentsTab = wait.until(
+                    /*WebElement commentsTab = wait.until(
                             ExpectedConditions.elementToBeClickable(commentsLinkC)
-                    );
+                    ); */
 
-                    ((JavascriptExecutor) driver)
-                            .executeScript("arguments[0].scrollIntoView({block:'center'});", commentsTab);
+                    waitForClickable(commentsLinkC);
+                    WebElement commentsTab = driver.findElement(commentsLinkC);
+
+                    scrollToElement(commentsTab);
 
                     try {
-                        commentsTab.click();
+                        click(commentsTab);
                     } catch (Exception e) {
                         System.out.println("⚠️ JS click fallback used");
-                        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", commentsTab);
+                        jsClick(commentsTab);
                     }
 
                     System.out.println("✅ Comments tab clicked");
 
                     // STEP 2: WAIT FOR COMMENT SPANS
                     List<WebElement> spans = new WebDriverWait(driver, Duration.ofSeconds(20))
-                            .until(driver1 -> {
+                            .until(d -> {
 
-                                List<WebElement> s = driver1.findElements(commentSpanLocatorC);
+                                List<WebElement> s = d.findElements(commentSpanLocatorC);
 
                                 return (s.size() >= 1) ? s : null;
                             });
@@ -602,7 +635,6 @@ public class ReviewConflictWaiverPage {
                     }
 
                     if (!found) {
-
                         throw new RuntimeException(
                                 "❌ Comment not found in UI spans.\nExpected: " + expectedComment
                         );
@@ -625,7 +657,6 @@ public class ReviewConflictWaiverPage {
                     System.out.println("Reason: " + e.getMessage());
 
                     if (attempt == maxAttempts) {
-
                         throw new RuntimeException(
                                 "❌ Comment verification failed after retries",
                                 e
@@ -637,12 +668,10 @@ public class ReviewConflictWaiverPage {
             if (!commentVerified && lastException != null) {
                 throw new RuntimeException("❌ Final failure", lastException);
             }
+
             System.out.println("✅ Comment successfully verified from UI span");
 
             SceenshotUtil.takeScreenshot(driver, "Comments Final Verified");
-
-            //System.out.println("✅ Comment successfully verified for user: " + username);
         });
-
     }
 }

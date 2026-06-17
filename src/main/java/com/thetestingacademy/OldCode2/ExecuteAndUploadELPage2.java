@@ -1,4 +1,5 @@
-package com.thetestingacademy.pagesHC.pages;
+package com.thetestingacademy.OldCode2;
+
 
 import com.thetestingacademy.utils.SceenshotUtil;
 import io.qameta.allure.Allure;
@@ -10,12 +11,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class ExecuteAndUploadELPage {
+public class ExecuteAndUploadELPage2
+{
     private WebDriver driver;
     private WebDriverWait wait;
     private Actions actions;
 
-    public ExecuteAndUploadELPage(WebDriver driver) {
+    public ExecuteAndUploadELPage2(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         this.actions = new Actions(driver);
@@ -33,11 +35,23 @@ public class ExecuteAndUploadELPage {
     // =========================================================
     // TASK PAGE LOCATORS (UI)
     // =========================================================
-    private By executeEngagementLettersCheckbox = By.xpath(".//input[@type='checkbox']");
+    private By executeEngagementLettersCheckbox =
+            //By.xpath("//strong[normalize-space()='Execute Engagement letters']/preceding::input[@type='checkbox'][1]");
+            By.xpath(
+                    "//div[contains(@class,'CheckboxGroup---choice_pair')]//input[@type='checkbox']"
+            );
+    /*private By uploadExecutedEngagementLettersButton = By.xpath(
+            "//span[contains(normalize-space(),'Upload Executed Engagement Letters')]//following::span[text()='Upload'][1]"
+    ); */
     private By uploadExecutedEngagementLettersButton = By.xpath(
-            "(//div[contains(.,'Upload Executed Engagement Letters')]/following::button[.//span[normalize-space()='Upload']])[1]");
-
-    private By uploadW9Button = By.xpath("(//div[contains(.,'Upload W9 Form')]/following::button[.//span[normalize-space()='Upload']])[1]");
+            "(//div[contains(.,'Upload Executed Engagement Letters')]/following::button[.//span[normalize-space()='Upload']])[1]"
+//            "//div[contains(.,'Upload Executed Engagement Letters')]\n" +
+//                    "   //button[.//span[normalize-space()='Upload']]"
+    );
+    //private By uploadW9Button = By.xpath("//span[normalize-space()='Upload W9 Form']/following::span[normalize-space()='Upload'][1]");
+    private By uploadW9Button = By.xpath("(//div[contains(.,'Upload Executed Engagement Letters')]/following::button[.//span[normalize-space()='Upload']])[2]");
+//            "//div[.//span[normalize-space()='Upload W9 Form']]\n" +
+//            "   //button[.//span[normalize-space()='Upload']]");
     private By submitButtonC = By.xpath("//button[.//span[text()='Submit']]");
 
     // =========================================================
@@ -47,6 +61,8 @@ public class ExecuteAndUploadELPage {
     private By taskGridC = By.xpath("//table//tbody//tr");
     private By EngagementLetterLink = By.xpath("//a[normalize-space()='Engagement Letter']");
     private By W9FormLink = By.xpath("//a[normalize-space()='W-9 Form']");
+    private By commentsLinkC = By.xpath("//div[contains(@class,'TabButtonWidget') and text()='Comments']");
+    private By commentSpanLocatorC = By.xpath("//span[contains(@class,'ColorText') and normalize-space()!='']");
 
     // =========================================================
     // UTILITY METHOD (ADDED)
@@ -194,136 +210,170 @@ public class ExecuteAndUploadELPage {
         // STEP : Select Execute Engagement Letters Checkbox
         Allure.step("Selecting 'Execute Engagement letters' checkbox", () -> {
 
-        // ==============================
-        // STEP: FIND ROW + SELECT CHECKBOX + EXPAND ROW (APPIAN SAFE)
-        // ==============================
+            /*WebElement checkboxLabel = wait.until(
+                    ExpectedConditions.presenceOfElementLocated(executeEngagementLettersCheckbox)
+            );
 
-            boolean actionDone = false;
+            ((JavascriptExecutor) driver)
+                    .executeScript("arguments[0].scrollIntoView({block:'center'});", checkboxLabel);
 
-            for (int attempt = 1; attempt <= 10; attempt++) {
+            Thread.sleep(800);
 
-                System.out.println("🔄 Attempt " + attempt + " - locating engagement row");
-
-                try {
-
-                    wait.until(ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]")
-                    ));
-
-                    List<WebElement> rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
-
-                    System.out.println("Rows found: " + rows.size());
-
-                    for (int i = 0; i < rows.size(); i++) {
-
-                        try {
-
-                            // IMPORTANT: re-fetch rows every loop to avoid stale elements
-                            rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
-                            WebElement row = rows.get(i);
-
-                            String rowText = row.getText();
-                            System.out.println("ROW => " + rowText);
-
-                            if (rowText.contains("Execute Engagement letters")) {
-
-                                System.out.println("✅ Target row identified");
-
-                                // ==============================
-                                // STEP 1: CHECKBOX LOCATE FRESH
-                                // ==============================
-                                WebElement checkbox = row.findElement(executeEngagementLettersCheckbox);
-
-                                ((JavascriptExecutor) driver).executeScript(
-                                        "arguments[0].scrollIntoView({block:'center'});",
-                                        checkbox
-                                );
-
-                                Thread.sleep(800);
-
-                                try {
-                                    checkbox.click();
-                                } catch (Exception e) {
-
-                                    ((JavascriptExecutor) driver)
-                                            .executeScript("arguments[0].click();", checkbox);
-                                }
-
-                                System.out.println("✅ Checkbox clicked");
-                                String checked = checkbox.getAttribute("aria-checked");
-
-                                System.out.println("Checkbox state = " + checked);
-
-                                // ==============================
-                                // STEP 2: RE-LOCATE ROW (IMPORTANT)
-                                // ==============================
-                                rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
-                                row = rows.get(i);
-
-                                ((JavascriptExecutor) driver).executeScript(
-                                        "arguments[0].scrollIntoView({block:'center'});",
-                                        row
-                                );
-
-                                Thread.sleep(800);
-
-                                // ==============================
-                                // CLICK ROW (EXPAND)
-                                // ==============================
-                                try {
-                                    row.click();
-                                } catch (Exception e) {
-                                    ((JavascriptExecutor) driver)
-                                            .executeScript("arguments[0].click();", row);
-                                }
-
-                                System.out.println("✅ Row clicked for expansion");
-
-                                actionDone = true;
-                                break;
-                            }
-
-                        } catch (StaleElementReferenceException se) {
-                            System.out.println("⚠ Stale row detected, retrying...");
-                        }
-                    }
-
-                    if (actionDone) break;
-
-                    driver.navigate().refresh();
-                    Thread.sleep(3000);
-
-                } catch (Exception e) {
-
-                    System.out.println("❌ Attempt failed: " + e.getMessage());
-
-                    driver.navigate().refresh();
-                    Thread.sleep(3000);
-                }
+            try {
+                checkboxLabel.click();
+            } catch (Exception e) {
+                System.out.println("⚠️ Normal click failed, using JS click");
+                ((JavascriptExecutor) driver)
+                        .executeScript("arguments[0].click();", checkboxLabel);
             }
 
-           // ==============================
-           // FINAL VALIDATION
-           // ==============================
+            System.out.println("✅ Checkbox selected successfully");
+        }); */
+            // ==============================
+// ==============================
+// FIND TARGET ROW FIRST
+// ==============================
+// ==============================
+// STEP: FIND ROW + SELECT CHECKBOX + EXPAND ROW (APPIAN SAFE)
+// ==============================
+            driver.findElement(By.xpath("//span[contains(text(),'Execution of the Engagement Letter')]")).click();
+            driver.findElement(By.xpath("//span[contains(text(),'Execution of the Engagement Letter')]")).click();
+            WebElement checkboxLabel = wait.until(
+                    ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//label[@class='CheckboxGroup---choice_label']")))
+            );
+            driver.findElement(By.xpath("//label[@class='CheckboxGroup---choice_label']")).click();
+            Thread.sleep(2000);
 
-            if (!actionDone) {
-                throw new RuntimeException("❌ Engagement row selection failed after retries");
-            }
+//            boolean actionDone = false;
+//
+//            for (int attempt = 1; attempt <= 10; attempt++) {
+//
+//                System.out.println("🔄 Attempt " + attempt + " - locating engagement row");
+//
+//                try {
+//
+//                    wait.until(ExpectedConditions.visibilityOfElementLocated(
+//                            By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]")
+//                    ));
+//
+//                    List<WebElement> rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
+//
+//                    System.out.println("Rows found: " + rows.size());
+//
+//                    for (int i = 0; i < rows.size(); i++) {
+//
+//                        try {
+//
+//                            // IMPORTANT: re-fetch rows every loop to avoid stale elements
+//                            rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
+//                            WebElement row = rows.get(i);
+//
+//                            String rowText = row.getText();
+//                            System.out.println("ROW => " + rowText);
+//
+//                            if (rowText.contains("Execute Engagement letters")) {
+//
+//                                System.out.println("✅ Target row identified");
+//
+//                                // ==============================
+//                                // STEP 1: CHECKBOX LOCATE FRESH
+//                                // ==============================
+//                                WebElement checkbox = row.findElement(executeEngagementLettersCheckbox);
+//
+//                                ((JavascriptExecutor) driver).executeScript(
+//                                        "arguments[0].scrollIntoView({block:'center'});",
+//                                        checkbox
+//                                );
+//
+//                                Thread.sleep(800);
+//                                System.out.println("✅ Checkbox selected");
+//
+//                                // ==============================
+//                                // STEP 2: RE-LOCATE ROW (IMPORTANT)
+//                                // ==============================
+//                                rows = driver.findElements(By.xpath("//div[contains(@class,'FieldLayout')][.//strong[normalize-space()='Execute Engagement letters']]"));
+//                                row = rows.get(i);
+//
+//                                ((JavascriptExecutor) driver).executeScript(
+//                                        "arguments[0].scrollIntoView({block:'center'});",
+//                                        row
+//                                );
+//
+//                                Thread.sleep(800);
+//
+//                                // ==============================
+//                                // CLICK ROW (EXPAND)
+//                                // ==============================
+//                                try {
+//                                    row.click();
+//                                } catch (Exception e) {
+//                                    ((JavascriptExecutor) driver)
+//                                            .executeScript("arguments[0].click();", row);
+//                                }
+//
+//                                System.out.println("✅ Row clicked for expansion");
+//
+//                                actionDone = true;
+//                                break;
+//                            }
+//
+//                        } catch (StaleElementReferenceException se) {
+//                            System.out.println("⚠ Stale row detected, retrying...");
+//                        }
+//                    }
+//
+//                    if (actionDone) break;
+//
+//                    driver.navigate().refresh();
+//                    Thread.sleep(3000);
+//
+//                } catch (Exception e) {
+//
+//                    System.out.println("❌ Attempt failed: " + e.getMessage());
+//
+//                    driver.navigate().refresh();
+//                    Thread.sleep(3000);
+//                }
+//            }
+//
+//// ==============================
+//// FINAL VALIDATION
+//// ==============================
+//
+//            if (!actionDone) {
+//                throw new RuntimeException("❌ Engagement row selection failed after retries");
+//            }
 
             System.out.println("✅ Engagement row + checkbox completed successfully");
             System.out.println("✅ Upload section loaded successfully");
-            SceenshotUtil.takeScreenshot(driver, "Execute Engagement Letters Checkbox Selected");
         });
 
-        // STEP : Upload Engagement Letter
-         Allure.step("Uploading Executed Engagement Letters", () -> {
 
+            // STEP : Upload Executed Engagement Letters
+        Allure.step("Uploading Executed Engagement Letters", () -> {
+
+            // ---------------- CLICK UPLOAD BUTTON ----------------
+//            WebElement uploadButton1 = wait.until(
+//                    ExpectedConditions.elementToBeClickable(uploadExecutedEngagementLettersButton)
+//            );
+//            driver.findElement(By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")).sendKeys();
+//
+//            ((JavascriptExecutor) driver)
+//                    .executeScript("arguments[0].scrollIntoView(true);", uploadButton1);
+//
+//            Thread.sleep(1000);
+//
+//            ((JavascriptExecutor) driver)
+//                    .executeScript("arguments[0].click();", uploadButton1);
 
             Thread.sleep(4000);
 
             System.out.println("✅ Upload button clicked successfully");
 
-
+            // ---------------- FILE UPLOAD ----------------
+//            WebElement uploadFileInput = driver.findElement(
+//                    By.xpath("//input[@type='file']")
+//            );
             WebElement uploadFileInput = driver.findElement(
                     By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")
             );
@@ -338,16 +388,33 @@ public class ExecuteAndUploadELPage {
 
             System.out.println("✅ Executed Engagement Letter uploaded successfully");
             Allure.step("Executed Engagement Letter uploaded successfully");
-            SceenshotUtil.takeScreenshot(driver, "Executed Engagement Letter uploaded successfully");
+
         });
 
         // STEP : Upload W9 Form
         Allure.step("Uploading W9 Form", () -> {
-            Thread.sleep(4000);
 
-            System.out.println("✅ Upload button clicked successfully");
+            // ---------------- CLICK UPLOAD BUTTON ----------------
+//            WebElement uploadButton2 = wait.until(
+//                    ExpectedConditions.elementToBeClickable(uploadW9Button)
+//            );
+//
+//            ((JavascriptExecutor) driver)
+//                    .executeScript("arguments[0].scrollIntoView(true);", uploadButton2);
+//
+//            Thread.sleep(1000);
+//
+//            ((JavascriptExecutor) driver)
+//                    .executeScript("arguments[0].click();", uploadButton2);
+//
+//            Thread.sleep(4000);
+//
+//            System.out.println("✅ W9 Upload button clicked successfully");
 
-
+            // ---------------- FILE UPLOAD ----------------
+//            WebElement uploadFileInput = driver.findElement(
+//                    By.xpath("//input[@type='file']")
+//            );
             WebElement uploadFileInput = driver.findElement(
                     By.xpath("(//div[@aria-label='Upload, Drop or paste file here']/following::input)[1]")
             );
@@ -362,9 +429,9 @@ public class ExecuteAndUploadELPage {
 
             System.out.println("✅ W9 Form uploaded successfully");
             Allure.step("W9 Form uploaded successfully");
-            SceenshotUtil.takeScreenshot(driver, "W9 Form uploaded successfully");
 
         });
+
         // Click Submit
         Allure.step("Click Submit button to complete task", () -> {
 
@@ -504,15 +571,13 @@ public class ExecuteAndUploadELPage {
                         engagementFound = true;
                         System.out.println("➡️ Engagement Document Found: " + engagementDoc.getText());
                     }
-
                     driver.findElement((documentsTabLocator)).click();
                     Thread.sleep(2000);
-
 
                     // =====================================================
                     // STEP 3: OPEN W9 FORM SECTION + VALIDATE
                     // =====================================================
-                    /*WebElement w9Link = wait.until(
+                    WebElement w9Link = wait.until(
                             ExpectedConditions.elementToBeClickable(W9FormLink));
 
                     w9Link.click();
@@ -527,62 +592,6 @@ public class ExecuteAndUploadELPage {
 
                     if (w9Doc.isDisplayed()) {
                         w9Found = true;
-                        System.out.println("➡️ W9 Document Found: " + w9Doc.getText());
-                    } */
-                    // =====================================================
-// STEP 3: OPEN W9 SECTION + VALIDATE DOCUMENT
-// =====================================================
-
-// ===== WAIT FOR W9 LINK PRESENCE =====
-                    WebElement w9Link = wait.until(
-                            ExpectedConditions.presenceOfElementLocated(W9FormLink)
-                    );
-
-// ===== ENSURE VISIBLE =====
-                    wait.until(ExpectedConditions.visibilityOf(w9Link));
-
-// ===== SCROLL TO ELEMENT =====
-                    ((JavascriptExecutor) driver).executeScript(
-                            "arguments[0].scrollIntoView({block:'center'});",
-                            w9Link
-                    );
-
-                    Thread.sleep(1000);
-
-// ===== CLICK W9 SECTION =====
-                    try {
-
-                        w9Link.click();
-
-                    } catch (Exception e) {
-
-                        System.out.println("⚠️ Normal click failed on W9 Form section");
-
-                        ((JavascriptExecutor) driver)
-                                .executeScript("arguments[0].click();", w9Link);
-                    }
-
-                    System.out.println("✅ W9 Form section opened");
-
-// ===== WAIT FOR SECTION EXPANSION =====
-                    Thread.sleep(3000);
-
-// ===== VALIDATE W9 DOCUMENT =====
-                    WebElement w9Doc = wait.until(
-                            ExpectedConditions.visibilityOfElementLocated(
-                                    By.xpath("//*[contains(text(),'" + expectedDocument2 + "')]")
-                            )
-                    );
-
-                    ((JavascriptExecutor) driver).executeScript(
-                            "arguments[0].scrollIntoView({block:'center'});",
-                            w9Doc
-                    );
-
-                    if (w9Doc.isDisplayed()) {
-
-                        w9Found = true;
-
                         System.out.println("➡️ W9 Document Found: " + w9Doc.getText());
                     }
 
@@ -603,7 +612,7 @@ public class ExecuteAndUploadELPage {
 
                     System.out.println("✅ Both uploaded documents verified successfully");
 
-                    SceenshotUtil.takeScreenshot(driver, "Documents Verified for Engagement Letter");
+                    SceenshotUtil.takeScreenshot(driver, "Documents Verified");
 
                     documentsVerified = true;
                     break;
@@ -631,7 +640,7 @@ public class ExecuteAndUploadELPage {
 
             System.out.println("✅ Uploaded documents successfully verified");
 
-            SceenshotUtil.takeScreenshot(driver, "Documents Verified for W9 Form");
+            SceenshotUtil.takeScreenshot(driver, "Documents Final Verified");
 
         });
     }
