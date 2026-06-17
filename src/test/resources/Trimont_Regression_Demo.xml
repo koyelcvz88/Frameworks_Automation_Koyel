@@ -21,7 +21,7 @@
 
         <!-- Execute all classes from package -->
         <packages>
-            <package name="com.thetestingacademy.tests.OldSuites"/>
+            <package name="com.thetestingacademy.tests"/>
         </packages>
 
     </test>

@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="Sanity Suite"
+<suite name="Smoke Suite"
        verbose="1"
        parallel="false">
 
@@ -9,19 +9,19 @@
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
     </listeners>
 
-    <!-- Sanity Execution -->
-    <test name="Sanity Tests">
+    <!-- Smoke Execution -->
+    <test name="Smoke Tests">
 
-        <!-- Execute only Sanity group -->
+        <!-- Execute only Smoke group -->
         <groups>
             <run>
-                <include name="Sanity"/>
+                <include name="Smoke"/>
             </run>
         </groups>
 
         <!-- Execute all classes from package -->
         <packages>
-            <package name="com.thetestingacademy.tests.OldSuites"/>
+            <package name="com.thetestingacademy.tests"/>
         </packages>
 
     </test>
