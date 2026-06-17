@@ -1,7 +1,8 @@
-/*package com.thetestingacademy.Removed;
+package com.thetestingacademy.OldCode;
 
 import com.thetestingacademy.config.ConfigReader;
-import com.thetestingacademy.pagesHC.DashboardPage;
+import com.thetestingacademy.model.DataModel;
+import com.thetestingacademy.pages.DashboardPage;
 import com.thetestingacademy.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -14,35 +15,34 @@ import java.time.Duration;
 public class BaseTest {
 
     protected WebDriver driver;
+    protected DataModel dataModel;
 
     @BeforeClass(alwaysRun = true)
     public void setUp() {
 
-        // Read driver path from config
         String driverPath = ConfigReader.getData("edge.driver.path");
 
         if (driverPath == null || driverPath.isEmpty()) {
             throw new RuntimeException("Edge driver path is missing in config file");
         }
 
-        // Validate driver file exists
         File file = new File(driverPath);
         if (!file.exists()) {
             throw new RuntimeException("Edge driver not found at: " + driverPath);
         }
 
-        // Set driver
         System.setProperty("webdriver.edge.driver", driverPath);
 
         driver = new EdgeDriver();
         driver.manage().window().maximize();
 
-        // Add basic wait (prevents flaky demo failures)
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(
                 Integer.parseInt(ConfigReader.getData("implicit.wait"))
         ));
 
-        // Open application automatically
+        // ❗ You can initialize DataModel here (recommended placeholder)
+        //dataModel = new DataModel();
+
         openApplication();
 
         System.out.println("Browser launched successfully");
@@ -59,8 +59,6 @@ public class BaseTest {
         driver.get(url);
     }
 
-    //  REUSABLE LOGIN METHOD
-    // =========================================
     public DashboardPage loginAs(String role) {
 
         LoginPage loginPage = new LoginPage(driver);
@@ -76,6 +74,7 @@ public class BaseTest {
                 .enterPassword(password)
                 .clickSignin();
     }
+
     @AfterClass(alwaysRun = true)
     public void tearDown() {
         if (driver != null) {
@@ -84,4 +83,4 @@ public class BaseTest {
         }
         System.out.println("Browser closed successfully");
     }
-} */
+}

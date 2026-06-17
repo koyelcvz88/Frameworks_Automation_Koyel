@@ -1,4 +1,4 @@
-package com.thetestingacademy.pagesHC.pages;
+package com.thetestingacademy.OldCode;
 
 import com.thetestingacademy.actions.CommonUIActions;
 import io.qameta.allure.Step;
@@ -47,7 +47,7 @@ public class NewOCSummaryPage extends CommonUIActions {
     @Step("Validate user is on Summary page")
     public boolean isSummaryPageLoaded() {
 
-        wait.until(
+        /*wait.until(
                 ExpectedConditions.urlContains("/view/summary")
         );
 
@@ -56,7 +56,39 @@ public class NewOCSummaryPage extends CommonUIActions {
         System.out.println("Current URL : " + currentUrl);
 
         return currentUrl.contains("/record/")
-                && currentUrl.contains("/summary");
+                && currentUrl.contains("/summary"); */
+
+            /*wait.until(ExpectedConditions.or(
+                    ExpectedConditions.urlContains("/record/"),
+                    ExpectedConditions.urlContains("/view/summary"),
+                    ExpectedConditions.visibilityOfElementLocated(tasksTab)
+            ));
+
+            currentUrl = driver.getCurrentUrl();
+
+            System.out.println("Current URL : " + currentUrl);
+
+            return currentUrl.contains("/record/")
+                    || driver.findElements(tasksTab).size() > 0; */
+
+            try {
+                waitForUIRender();
+
+                boolean loaded = wait.until(driver ->
+                        driver.getCurrentUrl().contains("/record/")
+                                && driver.getCurrentUrl().contains("/summary")
+                );
+
+                currentUrl = driver.getCurrentUrl();
+                System.out.println("Current URL : " + currentUrl);
+
+                return loaded;
+
+            } catch (Exception e) {
+
+                System.out.println("⚠️ Summary page not stable yet: " + driver.getCurrentUrl());
+                return false;
+            }
     }
 
     // =====================================================
@@ -66,15 +98,19 @@ public class NewOCSummaryPage extends CommonUIActions {
     @Step("Navigate to Tasks tab")
     public void navigateToTasksTab() {
 
-        WebElement tab = wait.until(
+        /*WebElement tab = wait.until(
                 ExpectedConditions.elementToBeClickable(tasksTab)
-        );
+        ); */
+        waitForClickable(tasksTab);
+
+        WebElement tab = driver.findElement(tasksTab);
 
         tab.click();
 
         wait.until(
                 ExpectedConditions.presenceOfElementLocated(taskTable)
         );
+        //waitForVisible(taskTable);
 
         System.out.println("Tasks tab opened successfully");
     }
@@ -86,14 +122,19 @@ public class NewOCSummaryPage extends CommonUIActions {
     @Step("Open task with name : {taskName}")
     public void openTaskByName(String taskName) {
 
+
         By taskLink = By.xpath(
                 "//table//tbody//tr//td[2]//a[normalize-space()='"
                         + taskName + "']"
         );
 
-        WebElement task = wait.until(
+        /*WebElement task = wait.until(
                 ExpectedConditions.elementToBeClickable(taskLink)
-        );
+        ); */
+
+        waitForClickable(taskLink);
+
+        WebElement task = driver.findElement(taskLink);
 
         task.click();
 
@@ -110,9 +151,13 @@ public class NewOCSummaryPage extends CommonUIActions {
         List<Map<String, String>> tableData =
                 new ArrayList<>();
 
-        WebElement table = wait.until(
+        /*WebElement table = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(taskTable)
-        );
+        ); */
+
+        waitForVisible(taskTable);
+
+        WebElement table = driver.findElement(taskTable);
 
         List<WebElement> headers =
                 table.findElements(taskHeaders);
