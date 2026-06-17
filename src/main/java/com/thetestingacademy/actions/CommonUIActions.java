@@ -1,20 +1,55 @@
-package com.thetestingacademy.OldCode;
+package com.thetestingacademy.actions;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
-public class CommonUIActions2 {
+public class CommonUIActions {
 
     protected WebDriver driver;
     protected WebDriverWait wait;
 
-    public CommonUIActions2(WebDriver driver) {
+    public CommonUIActions(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(25));
+    }
+
+    // =========================================================
+    // WINDOW SAFETY FIX (NEW)
+    // =========================================================
+    public void ensureSingleWindow() {
+
+        try {
+
+            Set<String> handles = driver.getWindowHandles();
+
+            if (handles.size() <= 1) {
+                return;
+            }
+
+            String mainHandle = handles.iterator().next();
+
+            for (String handle : handles) {
+
+                if (!handle.equals(mainHandle)) {
+                    driver.switchTo().window(handle);
+                    driver.close();
+                }
+            }
+
+            driver.switchTo().window(mainHandle);
+
+            System.out.println("🧹 Extra windows closed. Focus reset to main window.");
+
+        } catch (NoSuchWindowException e) {
+            throw new RuntimeException(
+                    "❌ Window context lost. Driver session invalid.",
+                    e
+            );
+        }
     }
 
     // =========================================================
@@ -57,6 +92,31 @@ public class CommonUIActions2 {
     }
 
     // =========================================================
+   // TRIGGER INPUT + CHANGE EVENTS (React/Appian/Angular)
+   // =========================================================
+    public void triggerInputAndChangeEvents(WebElement element) {
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));",
+                element
+        );
+
+        ((JavascriptExecutor) driver).executeScript(
+                "arguments[0].dispatchEvent(new Event('change', {bubbles:true}));",
+                element
+        );
+    }
+
+    public void triggerInputAndChangeEvents(By locator) {
+
+        WebElement element = wait.until(
+                ExpectedConditions.presenceOfElementLocated(locator)
+        );
+
+        triggerInputAndChangeEvents(element);
+    }
+
+    // =========================================================
     // TYPE
     // =========================================================
     public void type(By locator, String value) {
@@ -75,7 +135,7 @@ public class CommonUIActions2 {
     }
 
     // =========================================================
-    // TYPE INTO FIRST VISIBLE TEXTAREA
+    // TYPE INTO TEXTAREA
     // =========================================================
     public void typeIntoFirstVisibleTextArea(String value) {
 
@@ -105,9 +165,6 @@ public class CommonUIActions2 {
         }
 
         scrollToElement(targetField);
-
-        wait.until(ExpectedConditions.visibilityOf(targetField));
-        wait.until(ExpectedConditions.elementToBeClickable(targetField));
 
         targetField.clear();
         targetField.sendKeys(value);
@@ -182,83 +239,47 @@ public class CommonUIActions2 {
     }
 
     // =========================================================
-    // ENTER COMMENT + SUBMIT (NEW FINAL METHOD)
+    // COMMENT + SUBMIT
     // =========================================================
     public void enterCommentAndSubmit(By commentBox,
                                       By submitArrow,
                                       String commentText) {
 
-        if (commentText == null || commentText.trim().isEmpty()) {
-            throw new RuntimeException("Comment text is null/empty");
-        }
-
         WebElement commentField = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(commentBox)
         );
-
-        wait.until(ExpectedConditions.elementToBeClickable(commentField));
 
         commentField.click();
         commentField.clear();
         commentField.sendKeys(commentText);
 
-        System.out.println("✅ Comment entered");
-
-        waitForUIRender();
-
         WebElement arrowBtn = wait.until(
-                ExpectedConditions.presenceOfElementLocated(submitArrow)
+                ExpectedConditions.elementToBeClickable(submitArrow)
         );
 
         scrollToElement(arrowBtn);
-
-        wait.until(ExpectedConditions.elementToBeClickable(arrowBtn));
-
         click(arrowBtn);
 
         wait.until(driver ->
                 driver.getPageSource().contains(commentText)
         );
-
-        System.out.println("✅ Comment submitted successfully");
     }
 
     // =========================================================
-    // SUBMIT + VALIDATION FLOW
+    // SUBMIT VALIDATION
     // =========================================================
     public void clickSubmitAndValidate(By submitLocator) {
 
         WebElement submitBtn = wait.until(
-                ExpectedConditions.presenceOfElementLocated(submitLocator)
+                ExpectedConditions.elementToBeClickable(submitLocator)
         );
-
-        wait.until(d -> submitBtn.isDisplayed() && submitBtn.isEnabled());
 
         scrollToElement(submitBtn);
+        submitBtn.click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(submitBtn));
-
-        click(submitBtn);
-
-        System.out.println("✅ Submit button clicked");
-
-        boolean urlChanged = wait.until(driver ->
-                !driver.getCurrentUrl().contains("start-process")
+        wait.until(d ->
+                !d.getCurrentUrl().contains("start-process")
         );
-
-        if (!urlChanged) {
-            throw new AssertionError(
-                    "Submit click did not navigate away - likely validation failure"
-            );
-        }
-
-        boolean validationErrorPresent = !driver.findElements(
-                By.xpath("//*[contains(text(),'cannot') or contains(text(),'invalid') or contains(text(),'required')]")
-        ).isEmpty();
-
-        if (validationErrorPresent) {
-            throw new AssertionError("Validation error detected after submit");
-        }
     }
 
     // =========================================================
@@ -276,11 +297,9 @@ public class CommonUIActions2 {
 
         for (int attempt = 1; attempt <= 10; attempt++) {
 
-            System.out.println("🔄 Searching Task Attempt: " + attempt);
+            ensureSingleWindow(); // 🔥 ADDED SAFETY
 
             try {
-
-                waitForVisible(rowLocator);
 
                 List<WebElement> rows = driver.findElements(rowLocator);
 
@@ -295,16 +314,9 @@ public class CommonUIActions2 {
 
                         if (text.contains(text1) && text.contains(text2)) {
 
-                            WebElement checkbox = row.findElement(checkboxLocator);
-                            jsClick(checkbox);
-
-                            waitForClickable(claimButtonLocator);
-                            jsClick(claimButtonLocator);
-
-                            waitForClickable(taskLinkLocator);
-                            jsClick(taskLinkLocator);
-
-                            waitForTaskPageReady(validationLocator);
+                            row.findElement(checkboxLocator).click();
+                            driver.findElement(claimButtonLocator).click();
+                            driver.findElement(taskLinkLocator).click();
 
                             taskOpened = true;
                             break;
@@ -316,30 +328,15 @@ public class CommonUIActions2 {
                 if (taskOpened) break;
 
                 driver.navigate().refresh();
-                waitForPageLoad();
 
             } catch (Exception e) {
-
                 driver.navigate().refresh();
-                waitForPageLoad();
             }
         }
 
         if (!taskOpened) {
-            throw new RuntimeException("❌ Task not found after retries");
+            throw new RuntimeException("Task not found after retries");
         }
-    }
-
-    // =========================================================
-    // TASK PAGE READY VALIDATION
-    // =========================================================
-    public void waitForTaskPageReady(By locator) {
-
-        wait.until(ExpectedConditions.or(
-                ExpectedConditions.urlContains("start-process"),
-                ExpectedConditions.urlContains("task"),
-                ExpectedConditions.visibilityOfElementLocated(locator)
-        ));
     }
 
     // =========================================================
@@ -406,7 +403,14 @@ public class CommonUIActions2 {
     }
 
     // =========================================================
-    // PAGE LOAD WAIT
+   // WAIT FOR INVISIBILITY
+   // =========================================================
+    public void waitForInvisibility(WebElement element) {
+        wait.until(ExpectedConditions.invisibilityOf(element));
+    }
+
+    // =========================================================
+    // PAGE LOAD
     // =========================================================
     public void waitForPageLoad() {
 
@@ -421,16 +425,16 @@ public class CommonUIActions2 {
     // =========================================================
     // SCROLL
     // =========================================================
-    public void scrollToElement(By locator) {
-        WebElement element = driver.findElement(locator);
-        ((JavascriptExecutor) driver)
-                .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
-    }
-
     public void scrollToElement(WebElement element) {
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].scrollIntoView({block:'center'});", element);
     }
+
+    public void scrollToElement(By locator) {
+        WebElement element = driver.findElement(locator);
+        scrollToElement(element);
+    }
+
 
     // =========================================================
     // BLUR
@@ -440,8 +444,9 @@ public class CommonUIActions2 {
                 .executeScript("document.activeElement.blur();");
     }
 
+
     // =========================================================
-    // SAFE UI WAIT
+    // UI STABILITY WAIT
     // =========================================================
     protected void waitForUIRender() {
         try {

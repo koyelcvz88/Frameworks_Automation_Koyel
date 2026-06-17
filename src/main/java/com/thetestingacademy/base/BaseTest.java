@@ -1,6 +1,7 @@
 package com.thetestingacademy.base;
 
 import com.thetestingacademy.config.ConfigReader;
+import com.thetestingacademy.model.DataModel;
 import com.thetestingacademy.pages.DashboardPage;
 import com.thetestingacademy.pages.LoginPage;
 import org.openqa.selenium.WebDriver;
@@ -15,34 +16,32 @@ public class BaseTest {
 
     protected WebDriver driver;
 
+    // ✅ FIX: shared test state object
+    protected DataModel dataModel;
+
     @BeforeClass(alwaysRun = true)
     public void setUp() {
 
-        // Read driver path from config
         String driverPath = ConfigReader.getData("edge.driver.path");
 
         if (driverPath == null || driverPath.isEmpty()) {
             throw new RuntimeException("Edge driver path is missing in config file");
         }
 
-        // Validate driver file exists
         File file = new File(driverPath);
         if (!file.exists()) {
             throw new RuntimeException("Edge driver not found at: " + driverPath);
         }
 
-        // Set driver
         System.setProperty("webdriver.edge.driver", driverPath);
 
         driver = new EdgeDriver();
         driver.manage().window().maximize();
 
-        // Add basic wait (prevents flaky demo failures)
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(
                 Integer.parseInt(ConfigReader.getData("implicit.wait"))
         ));
 
-        // Open application automatically
         openApplication();
 
         System.out.println("Browser launched successfully");
@@ -55,12 +54,9 @@ public class BaseTest {
             throw new RuntimeException("Base URL is missing in config file");
         }
 
-        System.out.println("BASE URL = [" + url + "]");
         driver.get(url);
     }
 
-    //  REUSABLE LOGIN METHOD
-    // =========================================
     public DashboardPage loginAs(String role) {
 
         LoginPage loginPage = new LoginPage(driver);
@@ -76,6 +72,7 @@ public class BaseTest {
                 .enterPassword(password)
                 .clickSignin();
     }
+
     @AfterClass(alwaysRun = true)
     public void tearDown() {
         if (driver != null) {
