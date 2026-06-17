@@ -1,9 +1,13 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
+import com.thetestingacademy.Removed.BaseTest;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.pages.*;
-import com.thetestingacademy.utils.SceenshotUtil;
+import com.thetestingacademy.pagesHC.*;
+import com.thetestingacademy.pagesHC.LegalRequestExistingOCPage;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
+import com.thetestingacademy.pagesHC.LoginPage;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
 import org.testng.Assert;
@@ -29,7 +33,7 @@ public class exOCTaskTest extends BaseTest {
 
         /*navigateToSummaryAndTasks();
         executeTask1();
-        executeTask2(); */
+        executeTask2();
         relatedAction();
 
         Allure.step("SANITY FLOW COMPLETED SUCCESSFULLY");
@@ -74,7 +78,7 @@ public class exOCTaskTest extends BaseTest {
         //}
 
         Allure.step("REGRESSION FLOW COMPLETED SUCCESSFULLY");
-    } */
+    }
 
     // =========================================================
     // COMMON FLOW
@@ -224,7 +228,7 @@ public class exOCTaskTest extends BaseTest {
             Allure.step("Task 2 - Validating and selecting fields", () -> {
 
                 task2Page.handleEnterInvoiceandPaymentConfirmationFields();
-            }); */
+            });
     // =========================================================
     // Update and Cancel Request
     // =========================================================
@@ -261,7 +265,7 @@ public class exOCTaskTest extends BaseTest {
                         "❌ Task URL not opened correctly. Current URL: " + currentUrl);
 
                 System.out.println("✅ Task URL verified: " + currentUrl);
-            }); */
+            });
         });
     }
-}
+} */

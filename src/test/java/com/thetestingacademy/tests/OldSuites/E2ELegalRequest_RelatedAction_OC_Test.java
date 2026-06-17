@@ -1,7 +1,13 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
-import com.thetestingacademy.pages.*;
+import com.thetestingacademy.Removed.BaseTest;
+import com.thetestingacademy.pages.DashboardPage;
+import com.thetestingacademy.pagesHC.ExOCSummaryPage;
+import com.thetestingacademy.pagesHC.Ex_OC_Request_NavigatorPage;
+import com.thetestingacademy.pagesHC.Update_CancelRequestPage;
+import com.thetestingacademy.pagesHC.LegalRequestExistingOCPage;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
@@ -160,4 +166,4 @@ public class E2ELegalRequest_RelatedAction_OC_Test extends BaseTest {
                     "Cancel Request Related Action Flow Completed");
         });
     }
-}
+} */

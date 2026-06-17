@@ -1,8 +1,12 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
+import com.thetestingacademy.Removed.BaseTest;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.pages.*;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
+import com.thetestingacademy.pagesHC.LegalRequestNewOCPage2;
+import com.thetestingacademy.pagesHC.LoginPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
@@ -120,7 +124,7 @@ public class newOCTaskTest extends BaseTest {
     executeTask2();
     relatedAction();*/
 
-        Allure.step("SANITY FLOW COMPLETED SUCCESSFULLY");
+        /* Allure.step("SANITY FLOW COMPLETED SUCCESSFULLY");
     }
     // =========================================================
     // COMMON FLOW
@@ -292,7 +296,7 @@ public class newOCTaskTest extends BaseTest {
     // =========================================================
     // REVIEW NEW VENDOR REJECT FLOW TASK EXECUTION
     // =========================================================
-    private void executeTaskNewVendorEdge() {
+   /* private void executeTaskNewVendorEdge() {
 
         ReviewNewVendorPage VendorPage =
                 new ReviewNewVendorPage(driver);
@@ -636,5 +640,5 @@ public class newOCTaskTest extends BaseTest {
                 System.out.println("✅ Task URL verified: " + currentUrl);
             });
         });
-    } */
-}
+    }
+} */

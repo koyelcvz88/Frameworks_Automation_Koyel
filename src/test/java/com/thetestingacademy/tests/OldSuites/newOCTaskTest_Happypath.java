@@ -1,8 +1,12 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
+import com.thetestingacademy.Removed.BaseTest;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.pages.*;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
+import com.thetestingacademy.pagesHC.LegalRequestNewOCPage2;
+import com.thetestingacademy.pagesHC.LoginPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
@@ -16,7 +20,7 @@ import java.time.Duration;
 
 @Epic("VenReq Automation Suite")
 @Feature("NEW OC Request + Task Workflow")
-public class newOCTaskTest_Happypath extends BaseTest {
+public class newOCTaskTest_Happypath2 extends BaseTest {
 
     // =========================================================
     // SANITY
@@ -138,13 +142,13 @@ public class newOCTaskTest_Happypath extends BaseTest {
         executeTask2();
 
 
-        /*// =========================
+        /* // =========================
         // REQUEST RESUBMISSION TASK
         // =========================
         executeTaskrequestResub();
 
         // - RELOGIN AS LEGAL SENIOR MANAGER
-        reloginToApplication(
+       /* reloginToApplication(
                 ConfigReader.getData("newSrLegal.username"),
                 ConfigReader.getData("newSrLegal.password")
         );
@@ -157,7 +161,7 @@ public class newOCTaskTest_Happypath extends BaseTest {
     /*
     relatedAction();*/
 
-        Allure.step("SANITY FLOW COMPLETED SUCCESSFULLY");
+       /* Allure.step("SANITY FLOW COMPLETED SUCCESSFULLY");
     }
 
     // =========================================================
@@ -334,7 +338,7 @@ public class newOCTaskTest_Happypath extends BaseTest {
     // =========================================================
     // RE LOGIN AS  LEGAL MANAGER
     // =========================================================
-    private void reloginAsLegal(String username, String password) {
+    /*private void reloginAsLegal(String username, String password) {
 
         Allure.step("Relaunch application and relogin", () -> {
 

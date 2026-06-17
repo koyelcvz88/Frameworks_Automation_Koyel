@@ -1,21 +1,22 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
-import com.thetestingacademy.config.ConfigReader;
-import com.thetestingacademy.pages.*;
+import com.thetestingacademy.Removed.BaseTest;
+import com.thetestingacademy.pagesHC.ConfirmWorkCompletionPage;
+import com.thetestingacademy.pages.DashboardPage;
+import com.thetestingacademy.pagesHC.ExOCSummaryPage;
+import com.thetestingacademy.pagesHC.Ex_OC_Request_NavigatorPage;
+import com.thetestingacademy.pagesHC.LegalRequestExistingOCPage;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
-import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
-import java.time.Duration;
 
 @Epic("VenReq Automation Suite")
 @Feature("Sanity Suite - EX OC End-to-End Task Flow")
@@ -192,4 +193,4 @@ public class SanityLegalRequest_ExOC_Test extends BaseTest {
             taskPage.handleConfirmWorkCompletionFields();
         });
     }
-}
+} */

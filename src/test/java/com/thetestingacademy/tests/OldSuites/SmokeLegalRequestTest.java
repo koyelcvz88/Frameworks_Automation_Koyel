@@ -1,8 +1,10 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
-import com.thetestingacademy.config.ConfigReader;
-import com.thetestingacademy.pages.*;
+import com.thetestingacademy.Removed.BaseTest;
+import com.thetestingacademy.pagesHC.DashboardPage;
+import com.thetestingacademy.pagesHC.LegalRequestExistingOCPage;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
 import org.openqa.selenium.By;
@@ -130,4 +132,4 @@ public class SmokeLegalRequestTest extends BaseTest {
 
         Allure.step("EX OC Request Stored: " + exOCRequestNumber);
     }
-}
+} */

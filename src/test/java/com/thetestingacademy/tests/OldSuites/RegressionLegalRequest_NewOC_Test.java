@@ -1,8 +1,12 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
+import com.thetestingacademy.Removed.BaseTest;
 import com.thetestingacademy.config.ConfigReader;
 import com.thetestingacademy.pages.*;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
+import com.thetestingacademy.pagesHC.LegalRequestNewOCPage2;
+import com.thetestingacademy.pagesHC.LoginPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
@@ -505,4 +509,4 @@ public class RegressionLegalRequest_NewOC_Test extends BaseTest {
             OFACPage.handleReviewOFACNewVendorEdgeFlow();
         });
     }
-}
+} */

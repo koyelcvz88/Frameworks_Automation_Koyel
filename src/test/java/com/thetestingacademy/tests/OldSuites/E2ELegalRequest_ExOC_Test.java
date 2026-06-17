@@ -1,7 +1,10 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
+import com.thetestingacademy.Removed.BaseTest;
 import com.thetestingacademy.pages.*;
+import com.thetestingacademy.pagesHC.LegalRequestExistingOCPage;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
@@ -14,7 +17,7 @@ import java.io.ByteArrayInputStream;
 
 @Epic("VenReq Automation Suite")
 @Feature("E2E Suite - EX OC End-to-End Task Flow")
-public class E2ELegalRequest_ExOC_Test extends BaseTest {
+public class E2ELegalRequest_ExOC_Test2 extends BaseTest {
 
     @Test(groups = {"E2E"})
     @Severity(SeverityLevel.CRITICAL)
@@ -233,4 +236,4 @@ public class E2ELegalRequest_ExOC_Test extends BaseTest {
             task2Page.handleEnterInvoiceandPaymentConfirmationFields();
         });
     }
-}
+} */

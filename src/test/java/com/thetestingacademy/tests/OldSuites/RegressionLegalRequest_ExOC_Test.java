@@ -1,7 +1,10 @@
-package com.thetestingacademy.tests.OldSuites;
+/*package com.thetestingacademy.tests.OldSuites;
 
-import com.thetestingacademy.base.BaseTest;
+import com.thetestingacademy.Removed.BaseTest;
 import com.thetestingacademy.pages.*;
+import com.thetestingacademy.pagesHC.LegalRequestExistingOCPage;
+import com.thetestingacademy.pagesHC.LegalRequestFormPage;
+import com.thetestingacademy.pagesHC.LegalRequestInitiationPage;
 import com.thetestingacademy.utils.SceenshotUtil;
 import com.thetestingacademy.utils.TestData;
 import io.qameta.allure.*;
@@ -230,6 +233,6 @@ public class RegressionLegalRequest_ExOC_Test extends BaseTest {
         /*Allure.step("Task 2 - Validating and selecting fields", () -> {
 
             //task2Page.handleInvoicePaymentEdgeFlow();
-        }); */
+        });
     }
-}
+}*/
